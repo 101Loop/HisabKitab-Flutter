@@ -5,6 +5,12 @@ import 'package:hisabkitab/utils/const.dart';
 import 'package:intl/intl.dart';
 
 class AddTransaction extends StatefulWidget {
+  AddTransaction({
+    Key key,
+    @required this.transactionType,
+  }) : super(key: key);
+
+  final String transactionType;
   @override
   _AddTransactionState createState() => _AddTransactionState();
 }
@@ -72,7 +78,7 @@ class _AddTransactionState extends State<AddTransaction> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     HeaderWidget(
-                      headerText: 'Add expense',
+                      headerText: 'Add ${widget.transactionType}',
                       fontSize: 25,
                       textColor: Colors.black,
                     ),
@@ -230,7 +236,7 @@ class _AddTransactionState extends State<AddTransaction> {
                     ),
                     child: Center(
                       child: HeaderWidget(
-                        headerText: '+ Save expense',
+                        headerText: '+ Save ${widget.transactionType}',
                         fontSize: 18.0,
                         textColor: Colors.white,
                       ),

@@ -5,7 +5,6 @@ import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
 import 'package:hisabkitab/src/screens/settings.dart';
 import 'package:hisabkitab/utils/const.dart';
-import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,14 +12,21 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  bool addTranscationClicked = false;
+
   Widget addExpense() {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AddTransaction(),
+            builder: (context) => AddTransaction(
+              transactionType: 'expense',
+            ),
           ),
         );
+        setState(() {
+          addTranscationClicked = false;
+        });
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -40,12 +46,17 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget addEarning() {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
+      onTap: () async {
+        await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AddTransaction(),
+            builder: (context) => AddTransaction(
+              transactionType: 'earning',
+            ),
           ),
         );
+        setState(() {
+          addTranscationClicked = false;
+        });
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -104,18 +115,47 @@ class _MainScreenState extends State<MainScreen> {
         floatingActionButton: Stack(
           children: <Widget>[
             Positioned(
-              right: 5.0,
-              bottom: 20.0,
-              child: AnimatedFloatingActionButton(
-                fabButtons: <Widget>[
-                  addEarning(),
-                  addExpense(),
-                ],
-                colorEndAnimation: buttonColor,
-                colorStartAnimation: buttonColor,
-                animatedIconData: AnimatedIcons.close_menu,
+              right: 10.0,
+              bottom: 15.0,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    addTranscationClicked = !addTranscationClicked;
+                  });
+                },
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  child: !addTranscationClicked
+                      ? Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 29,
+                        )
+                      : Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: buttonColor,
+                  ),
+                ),
               ),
             ),
+            addTranscationClicked
+                ? Positioned(
+                    bottom: 100,
+                    right: 10,
+                    child: Column(
+                      children: <Widget>[
+                        addExpense(),
+                        SizedBox(height: 20.0),
+                        addEarning(),
+                      ],
+                    ),
+                  )
+                : Container(),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
