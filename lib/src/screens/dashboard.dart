@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
+import 'package:hisabkitab/utils/pop_up_items.dart';
+
+import '../../utils/const.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key}) : super(key: key);
@@ -12,6 +15,13 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final List itemList = List();
+  static List<PopupMenuItem<PopUpItems>> _popItems = popupItems
+      .map(
+        (PopUpItems val) => PopupMenuItem<PopUpItems>(
+          child: Text(val.name),
+        ),
+      )
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -52,44 +62,15 @@ class _DashboardState extends State<Dashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              color: lightGreen.withRed(210),
-            ),
-            height: 30.0,
-            width: 30.0,
-            child: Center(
-              child: Text(
-                '::',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: primaryColor,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.8,
-                    fontSize: 18.0),
-              ),
-            ),
-          ),
           SizedBox(
             height: 10.0,
           ),
-          HeaderWidget(
-            headerText: 'Total balance',
-            fontSize: 25.0,
-            textColor: Colors.black,
-          ),
-          SizedBox(height: 10.0),
-          GreenCard(
-            totalBalance: '6522.92',
-          ),
-          SizedBox(height: 15.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               HeaderWidget(
-                headerText: 'Latest spending',
-                fontSize: 22.0,
+                headerText: 'Total balance',
+                fontSize: 25.0,
                 textColor: Colors.black,
               ),
               Row(
@@ -99,16 +80,31 @@ class _DashboardState extends State<Dashboard> {
                     color: primaryColor,
                     onPressed: () {},
                   ),
-                  IconButton(
-                    icon: Icon(Icons.more_vert),
-                    color: primaryColor,
-                    onPressed: () {
-                      
+                  PopupMenuButton(
+                    itemBuilder: (BuildContext context) {
+                      return _popItems;
                     },
-                  ),
+                    child: Icon(
+                      Icons.more_vert,
+                      color: primaryColor,
+                    ),
+                    onSelected: (value) {
+                      print(value);
+                    },
+                  )
                 ],
               ),
             ],
+          ),
+          SizedBox(height: 10.0),
+          GreenCard(
+            totalBalance: '6522.92',
+          ),
+          SizedBox(height: 15.0),
+          HeaderWidget(
+            headerText: 'Latest spending',
+            fontSize: 22.0,
+            textColor: Colors.black,
           ),
           SizedBox(
             height: 10.0,
