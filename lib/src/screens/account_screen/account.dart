@@ -54,7 +54,8 @@ class _AccountState extends State<Account> {
                     child: Center(
                       child: HeaderWidget(
                         headerText: 'JD',
-                        fontSize: 32,
+                        maxFontSize: 32,
+                        minFontSize: 30,
                         textColor: primaryColor,
                       ),
                     ),
@@ -63,7 +64,8 @@ class _AccountState extends State<Account> {
                 SizedBox(height: 10.0),
                 HeaderWidget(
                   headerText: 'John Dave',
-                  fontSize: 22,
+                  maxFontSize: 22,
+                  minFontSize: 20,
                   textColor: Colors.black,
                 ),
                 SizedBox(
@@ -83,9 +85,6 @@ class _AccountState extends State<Account> {
                         child: TextFormField(
                           cursorColor: primaryColor,
                           textAlign: TextAlign.center,
-                          // autovalidate: _provider.autoValidate,
-                          // validator: validateField,
-                          // controller: usernameController,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             contentPadding:
@@ -109,9 +108,6 @@ class _AccountState extends State<Account> {
                         child: TextFormField(
                           cursorColor: primaryColor,
                           textAlign: TextAlign.center,
-                          // autovalidate: _provider.autoValidate,
-                          // validator: validateField,
-                          // controller: usernameController,
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             contentPadding:
@@ -135,9 +131,6 @@ class _AccountState extends State<Account> {
                         child: TextFormField(
                           cursorColor: primaryColor,
                           textAlign: TextAlign.center,
-                          // autovalidate: _provider.autoValidate,
-                          // validator: validateField,
-                          // controller: usernameController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             contentPadding:
@@ -161,9 +154,6 @@ class _AccountState extends State<Account> {
                         child: TextFormField(
                           cursorColor: primaryColor,
                           textAlign: TextAlign.center,
-                          // autovalidate: _provider.autoValidate,
-                          // validator: validateField,
-                          // controller: usernameController,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             contentPadding:
@@ -184,18 +174,26 @@ class _AccountState extends State<Account> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10.0),
-                FlatButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Update Profile',
-                    style: GoogleFonts.nunito(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w500,
+                SizedBox(height: 20.0),
+                Container(
+                  width: deviceWidth * 0.75,
+                  height: 45.0,
+                  child: RaisedButton(
+                    onPressed: () {},
+                    child: HeaderWidget(
+                      headerText: 'Update Profile',
+                      maxFontSize: 20,
+                      minFontSize: 18,
+                      textColor: Colors.white,
+                    ),
+                    color: buttonColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: BorderSide(
+                        color: buttonColor,
+                      ),
                     ),
                   ),
-                  color: buttonColor,
                 ),
                 GestureDetector(
                   onTap: () {},

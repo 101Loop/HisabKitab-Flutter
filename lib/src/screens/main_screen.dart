@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/screens/account.dart';
+import 'package:hisabkitab/src/screens/account_screen/account.dart';
 import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
-import 'package:hisabkitab/src/screens/settings.dart';
 import 'package:hisabkitab/utils/const.dart';
 
 class MainScreen extends StatefulWidget {
@@ -76,11 +75,10 @@ class _MainScreenState extends State<MainScreen> {
 
   final Key dashboardKey = PageStorageKey('dashboard');
   final Key accountKey = PageStorageKey('account');
-  final Key settingsKey = PageStorageKey('settings');
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Dashboard dashboard;
   Account account;
-  Setting setting;
 
   double deviceHeight;
   double deviceWidth;
@@ -96,13 +94,10 @@ class _MainScreenState extends State<MainScreen> {
     account = Account(
       key: accountKey,
     );
-    setting = Setting(
-      key: settingsKey,
-    );
+
     pages = [
       dashboard,
       account,
-      setting,
     ];
   }
 
@@ -112,6 +107,7 @@ class _MainScreenState extends State<MainScreen> {
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         floatingActionButton: Stack(
           children: <Widget>[
             Positioned(
@@ -166,9 +162,13 @@ class _MainScreenState extends State<MainScreen> {
           ),
           child: BottomNavigationBar(
             onTap: (int value) {
-              setState(() {
-                currentTab = value;
-              });
+              if (value == 2) {
+                return;
+              } else {
+                setState(() {
+                  currentTab = value;
+                });
+              }
             },
             currentIndex: currentTab,
             type: BottomNavigationBarType.fixed,
@@ -186,15 +186,6 @@ class _MainScreenState extends State<MainScreen> {
                 icon: Icon(Icons.person_outline),
                 title: Text(
                   'Account',
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                title: Text(
-                  'Settings',
                   style: TextStyle(
                     fontSize: 12,
                   ),

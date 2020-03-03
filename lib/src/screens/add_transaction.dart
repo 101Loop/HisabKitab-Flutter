@@ -21,6 +21,10 @@ class _AddTransactionState extends State<AddTransaction> {
 
   String dateTime;
   String date;
+
+  bool _paymentTypeSelected = false;
+
+  String _selectedPaymentType;
   Future<Null> selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
       context: context,
@@ -79,7 +83,8 @@ class _AddTransactionState extends State<AddTransaction> {
                   children: <Widget>[
                     HeaderWidget(
                       headerText: 'Add ${widget.transactionType}',
-                      fontSize: 25,
+                      maxFontSize: 25,
+                      minFontSize: 25,
                       textColor: Colors.black,
                     ),
                     Container(
@@ -97,7 +102,8 @@ class _AddTransactionState extends State<AddTransaction> {
                 ),
                 HeaderWidget(
                   headerText: 'Amount',
-                  fontSize: 18.0,
+                  maxFontSize: 18.0,
+                  minFontSize: 16.0,
                   textColor: Colors.black,
                 ),
                 SizedBox(
@@ -138,44 +144,47 @@ class _AddTransactionState extends State<AddTransaction> {
                 SizedBox(height: 5.0),
                 HeaderWidget(
                   headerText: 'Category',
-                  fontSize: 18.0,
+                  maxFontSize: 18.0,
+                  minFontSize: 16,
                   textColor: Colors.black,
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
                 Container(
-                    margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                    padding: EdgeInsets.all(15.0),
-                    width: deviceWidth,
-                    height: deviceHeight * 0.10,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Color(0xffecf8f8).withRed(210),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          width: deviceWidth * 0.75,
-                          child: TextFormField(
-                            cursorColor: primaryColor,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                            ),
+                  margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                  padding: EdgeInsets.all(15.0),
+                  width: deviceWidth,
+                  height: deviceHeight * 0.10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Color(0xffecf8f8).withRed(210),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        width: deviceWidth * 0.75,
+                        child: TextFormField(
+                          cursorColor: primaryColor,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
                           ),
                         ),
-                        Icon(
-                          Icons.view_list,
-                          color: Colors.black45,
-                          size: 20.0,
-                        ),
-                      ],
-                    )),
+                      ),
+                      Icon(
+                        Icons.view_list,
+                        color: Colors.black45,
+                        size: 20.0,
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 5.0),
                 HeaderWidget(
                   headerText: 'Date',
-                  fontSize: 18.0,
+                  maxFontSize: 18.0,
+                  minFontSize: 16.0,
                   textColor: Colors.black,
                 ),
                 SizedBox(
@@ -213,7 +222,103 @@ class _AddTransactionState extends State<AddTransaction> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 10.0),
+                HeaderWidget(
+                  headerText: 'Mode Of Payment',
+                  maxFontSize: 18.0,
+                  minFontSize: 16,
+                  textColor: Colors.black,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                  padding: EdgeInsets.all(15.0),
+                  width: deviceWidth,
+                  height: deviceHeight * 0.10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Color(0xffecf8f8).withRed(210),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        width: deviceWidth * 0.75,
+                        child: DropdownButton(
+                          hint: Text('Payment Type'),
+                          iconSize: 0.0,
+                          underline: Container(),
+                          value: _selectedPaymentType,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedPaymentType = value;
+                              _paymentTypeSelected = true;
+                            });
+                          },
+                          items: paymentList.map((months) {
+                            return DropdownMenuItem(
+                              child: Text(months),
+                              value: months,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.black45,
+                        size: 30.0,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                HeaderWidget(
+                  headerText: 'Comment',
+                  maxFontSize: 18.0,
+                  minFontSize: 16.0,
+                  textColor: Colors.black,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                  padding: EdgeInsets.all(15.0),
+                  width: deviceWidth,
+                  height: deviceHeight * 0.10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Color(0xffecf8f8).withRed(210),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        width: deviceWidth * 0.75,
+                        child: TextFormField(
+                          maxLength: 40,
+                          cursorColor: primaryColor,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.only(
+                                bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.comment,
+                        color: Colors.black45,
+                        size: 20.0,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop();
@@ -237,7 +342,8 @@ class _AddTransactionState extends State<AddTransaction> {
                     child: Center(
                       child: HeaderWidget(
                         headerText: '+ Save ${widget.transactionType}',
-                        fontSize: 18.0,
+                        maxFontSize: 18.0,
+                        minFontSize: 18.0,
                         textColor: Colors.white,
                       ),
                     ),

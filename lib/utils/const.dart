@@ -19,3 +19,11 @@ Map<int, Color> primaryColorMap = {
   800: Color.fromRGBO(73, 2, 36, .9),
   900: Color.fromRGBO(73, 2, 36, 1),
 };
+const List<String> paymentList = [
+  'Cash',
+  'Cheque',
+  'Account Type',
+  'Card',
+];
+const String Spendings = 'spendings';
+const String Earnings = 'earnings';
