@@ -22,7 +22,7 @@ class _AddTransactionState extends State<AddTransaction> {
   String dateTime;
   String date;
 
-  bool _paymentTypeSelected = false;
+  // bool _paymentTypeSelected = false;
 
   String _selectedPaymentType;
   Future<Null> selectDate(BuildContext context) async {
@@ -254,7 +254,7 @@ class _AddTransactionState extends State<AddTransaction> {
                           onChanged: (value) {
                             setState(() {
                               _selectedPaymentType = value;
-                              _paymentTypeSelected = true;
+                              // _paymentTypeSelected = true;
                             });
                           },
                           items: paymentList.map((months) {
