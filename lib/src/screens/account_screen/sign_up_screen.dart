@@ -18,7 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: profileBG,
         body: Container(
           padding: EdgeInsets.all(10.0),
           child: SingleChildScrollView(
@@ -37,21 +37,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Hero(
                   tag: 'Logo',
                   child: Container(
-                    height: 120.0,
-                    width: 150.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image:
-                              AssetImage('assets/images/hisab_kitab_logo.png')),
-                    ),
+                    height: 10.0,
                   ),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 10.0),
                 Container(
                   width: deviceWidth,
                   decoration: BoxDecoration(
-                    color: profileBG,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Column(
@@ -198,11 +191,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       minFontSize: 18,
                       textColor: Colors.white,
                     ),
-                    color: buttonColor,
+                    color: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                       side: BorderSide(
-                        color: buttonColor,
+                        color: primaryColor,
                       ),
                     ),
                   ),
@@ -237,11 +230,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       headerText: 'LOGIN',
                       maxFontSize: 20,
                       minFontSize: 18,
-                      textColor: Colors.black54,
+                      textColor: primaryColor,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
+                    splashColor: lightGreen.withRed(210),
                   ),
                 ),
                 SizedBox(height: 20.0),

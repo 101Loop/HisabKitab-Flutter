@@ -84,11 +84,11 @@ class _AccountState extends State<Account> {
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
                           cursorColor: primaryColor,
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             contentPadding:
-                                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Name',
                             alignLabelWithHint: true,
@@ -107,11 +107,11 @@ class _AccountState extends State<Account> {
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
                           cursorColor: primaryColor,
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             contentPadding:
-                                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Mobile',
                             alignLabelWithHint: true,
@@ -130,11 +130,11 @@ class _AccountState extends State<Account> {
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
                           cursorColor: primaryColor,
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             contentPadding:
-                                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Email-ID',
                             alignLabelWithHint: true,
@@ -153,11 +153,11 @@ class _AccountState extends State<Account> {
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
                           cursorColor: primaryColor,
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.left,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             contentPadding:
-                                EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Address',
                             alignLabelWithHint: true,

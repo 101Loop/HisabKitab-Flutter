@@ -30,7 +30,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> {
             child: Column(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                  margin: EdgeInsets.only(top: 30.0, bottom: 20.0),
                   child: HeaderWidget(
                     headerText: 'LOGIN WITH OTP',
                     maxFontSize: 30,
@@ -41,14 +41,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> {
                 Hero(
                   tag: 'Logo',
                   child: Container(
-                    height: 120.0,
-                    width: 150.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image:
-                              AssetImage('assets/images/hisab_kitab_logo.png')),
-                    ),
+                    height: 50.0,
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -165,11 +158,12 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> {
                       headerText: 'SIGN UP',
                       maxFontSize: 20,
                       minFontSize: 18,
-                      textColor: Colors.black54,
+                      textColor: primaryColor,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
+                    splashColor: lightGreen.withRed(210),
                   ),
                 ),
                 SizedBox(height: 20.0),
