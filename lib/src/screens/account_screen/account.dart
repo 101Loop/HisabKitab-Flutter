@@ -245,7 +245,7 @@ class _AccountState extends State<Account> {
                 SizedBox(height: 20.0),
                 Container(
                   width: deviceWidth * 0.75,
-                  height: 50.0,
+                  height: 45.0,
                   child: OutlineButton(
                     borderSide: BorderSide(
                       color: primaryColor,
