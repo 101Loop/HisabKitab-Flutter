@@ -196,7 +196,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(Icons.info_outline),
                 title: Text(
                   'About Us',
                   style: TextStyle(
