@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
+import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
 
@@ -29,12 +31,37 @@ class _AccountState extends State<Account> {
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      'Profile',
-                      style: GoogleFonts.roboto(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                            color: lightGreen.withRed(210),
+                          ),
+                          height: 35.0,
+                          width: 35.0,
+                          child: Center(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.arrow_back,
+                                color: primaryColor,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20.0),
+                        Text(
+                          'Profile',
+                          style: GoogleFonts.roboto(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -196,7 +223,13 @@ class _AccountState extends State<Account> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChangePasswordScreen(),
+                      ),
+                    );
+                  },
                   child: Container(
                     margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
                     child: Text(
@@ -208,7 +241,36 @@ class _AccountState extends State<Account> {
                       ),
                     ),
                   ),
-                )
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  width: deviceWidth * 0.75,
+                  height: 50.0,
+                  child: OutlineButton(
+                    borderSide: BorderSide(
+                      color: primaryColor,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => WelcomeScreen(),
+                        ),
+                      );
+                    },
+                    child: HeaderWidget(
+                      headerText: 'LOGOUT',
+                      maxFontSize: 20,
+                      minFontSize: 18,
+                      textColor: primaryColor,
+                    ),
+                    color: primaryColor,
+                    splashColor: lightGreen.withRed(210),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
               ],
             ),
           ),

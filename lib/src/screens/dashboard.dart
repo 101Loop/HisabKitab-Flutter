@@ -5,7 +5,6 @@ import 'package:hisabkitab/src/screens/filter_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/common_widgets/sorting_items.dart';
 import 'package:hisabkitab/utils/const.dart';
-import 'package:hisabkitab/utils/pop_up_items.dart';
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
@@ -22,15 +21,6 @@ class _DashboardState extends State<Dashboard> {
 
   double deviceHeight;
   double deviceWidth;
-
-  static List<PopupMenuItem<PopUpItems>> _popItems = popupItems
-      .map(
-        (PopUpItems val) => PopupMenuItem<PopUpItems>(
-          child: Text(val.name),
-          value: val,
-        ),
-      )
-      .toList();
 
   static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
       .map(
@@ -55,7 +45,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('earnings',
+                        provider.setTransactionType('Earnings',
                             willNotify: true);
                       },
                       child: Container(
@@ -73,7 +63,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('spendings',
+                        provider.setTransactionType('Spendings',
                             willNotify: true);
                       },
                       child: Container(
@@ -91,7 +81,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('all transaction',
+                        provider.setTransactionType('All transaction',
                             willNotify: true);
                       },
                       child: Container(
@@ -132,13 +122,6 @@ class _DashboardState extends State<Dashboard> {
               );
             }) ??
         false;
-  }
-
-  void _dragEnd(DragEndDetails details) {
-    if (details.primaryVelocity < 0)
-      reduceCardHeight();
-    else
-      increaseCardHeight();
   }
 
   @override
@@ -236,81 +219,69 @@ class _DashboardState extends State<Dashboard> {
         type: Spendings,
       ),
     ];
-    return Container(
-      margin: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.sort),
-                    color: primaryColor,
-                    onPressed: () {
-                      _onSortPressed();
-                    },
-                  ),
-                  PopupMenuButton(
-                    itemBuilder: (BuildContext context) {
-                      return _popItems;
-                    },
-                    child: Icon(
-                      Icons.more_vert,
-                      color: primaryColor,
+    return Scaffold(
+      body: Container(
+        margin: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: lightGreen.withRed(210),
                     ),
-                    onSelected: (value) {
-                      getPopUpItem(value.name);
-                      print(value.name);
-                    },
+                    height: 50.0,
+                    width: 50.0,
                   ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.0),
-          provider.getTransactionType == Earnings
-              ? GreenCard(totalBalance: '20000.0')
-              : provider.getTransactionType == Spendings
-                  ? RedCard(totalBalance: '5220.0')
-                  : RedGreenCard(
-                      totalEarning: '20000.0',
-                      totalExpense: '5220.0',
-                    ),
-          SizedBox(height: 15.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              HeaderWidget(
-                headerText:
-                    '${provider.getPopMenuItem} ${provider.getTransactionType}',
-                maxFontSize: 22.0,
-                minFontSize: 20.0,
-                textColor: Colors.black,
-              ),
-              PopupMenuButton(
-                itemBuilder: (BuildContext context) {
-                  return _sortingItems;
-                },
-                child: Icon(
-                  Icons.more_vert,
-                  color: primaryColor,
                 ),
-                onSelected: (value) {},
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Expanded(
-            child: GestureDetector(
-              onVerticalDragEnd: _dragEnd,
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.sort),
+                      color: primaryColor,
+                      onPressed: () {
+                        _onSortPressed();
+                      },
+                    ),
+                    PopupMenuButton(
+                      itemBuilder: (BuildContext context) {
+                        return _sortingItems;
+                      },
+                      child: Icon(
+                        Icons.more_vert,
+                        color: primaryColor,
+                      ),
+                      onSelected: (value) {},
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 20.0),
+            provider.getTransactionType == Earnings
+                ? GreenCard(totalBalance: '20000.0')
+                : provider.getTransactionType == Spendings
+                    ? RedCard(totalBalance: '5220.0')
+                    : RedGreenCard(
+                        totalEarning: '20000.0',
+                        totalExpense: '5220.0',
+                      ),
+            SizedBox(height: 15.0),
+            HeaderWidget(
+              headerText: '${provider.getTransactionType}',
+              maxFontSize: 22.0,
+              minFontSize: 20.0,
+              textColor: Colors.black,
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
@@ -352,28 +323,10 @@ class _DashboardState extends State<Dashboard> {
                 },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
-  }
-
-  void getPopUpItem(String value) {
-    if (value == 'This week (Latest)') {
-      provider.setPopMenuItem('Latest', willNotify: true);
-    } else if (value == 'This Month') {
-      provider.setPopMenuItem('Month', willNotify: true);
-    } else if (value == 'This Year') {
-      provider.setPopMenuItem('Year', willNotify: true);
-    }
-  }
-
-  void reduceCardHeight() {
-    provider.setCardHeight(deviceHeight * 0.1, willNotify: true);
-  }
-
-  void increaseCardHeight() {
-    provider.setCardHeight(deviceHeight * 0.2, willNotify: true);
   }
 }
 
@@ -387,16 +340,15 @@ class GreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppState>(context);
     double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: deviceWidth,
         minWidth: deviceWidth * 0.7,
+        maxHeight: deviceHeight * 0.11,
       ),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        height: provider.getCardHeight,
+      child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           color: primaryColor,
@@ -484,9 +436,9 @@ class RedCard extends StatelessWidget {
       constraints: BoxConstraints(
         maxWidth: deviceWidth,
         minWidth: deviceWidth * 0.7,
+        maxHeight: deviceHeight * 0.11,
       ),
       child: Container(
-        height: deviceHeight * 0.2,
         width: deviceWidth,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
@@ -571,16 +523,15 @@ class RedGreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppState>(context);
     double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: deviceWidth,
         minWidth: deviceWidth * 0.7,
+        maxHeight: deviceHeight * 0.11,
       ),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
-        height: provider.getCardHeight,
+      child: Container(
         padding: EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),

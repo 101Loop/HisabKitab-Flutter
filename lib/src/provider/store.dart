@@ -2,22 +2,15 @@ import 'package:flutter/foundation.dart';
 
 class AppState extends ChangeNotifier {
   bool _otpRequested = false;
-  String _popUpMenuItem = 'Latest';
-  String _transactionType = 'earnings';
-  double _cardHeight;
+  String _transactionType = 'Earnings';
+  bool _autoValidate = false;
 
   bool get getOTPRequested => _otpRequested;
-  String get getPopMenuItem => _popUpMenuItem;
   String get getTransactionType => _transactionType;
-  double get getCardHeight => _cardHeight;
+  bool get getAutoValidate => _autoValidate;
 
   setOTPRequested(bool value, {bool willNotify = false}) {
     _otpRequested = value;
-    if (willNotify) notifyListeners();
-  }
-
-  setPopMenuItem(String value, {bool willNotify = false}) {
-    _popUpMenuItem = value;
     if (willNotify) notifyListeners();
   }
 
@@ -26,8 +19,12 @@ class AppState extends ChangeNotifier {
     if (willNotify) notifyListeners();
   }
 
-  setCardHeight(double value, {bool willNotify = false}) {
-    _cardHeight = value;
+  setAutoValidate(bool value, {bool willNotify = false}) {
+    _autoValidate = value;
     if (willNotify) notifyListeners();
+  }
+
+  void initalState() {
+    _autoValidate = false;
   }
 }

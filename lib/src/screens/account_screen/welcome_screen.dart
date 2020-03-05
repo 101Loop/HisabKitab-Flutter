@@ -32,8 +32,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Hero(
                   tag: 'Logo',
                   child: Container(
-                    height: 150.0,
-                    width: 180.0,
+                    height: 120.0,
+                    width: 150.0,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.fill,

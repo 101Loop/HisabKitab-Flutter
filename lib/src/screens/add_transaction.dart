@@ -245,7 +245,7 @@ class _AddTransactionState extends State<AddTransaction> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Container(
-                        width: deviceWidth * 0.75,
+                        width: deviceWidth * 0.7,
                         child: DropdownButton(
                           iconSize: 0.0,
                           underline: Container(),
