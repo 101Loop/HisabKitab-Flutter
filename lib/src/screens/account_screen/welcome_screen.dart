@@ -32,8 +32,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Hero(
                   tag: 'Logo',
                   child: Container(
-                    height: 150.0,
-                    width: 180.0,
+                    height: 120.0,
+                    width: 150.0,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.fill,
@@ -51,7 +51,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     textColor: Colors.black,
                   ),
                 ),
-                SizedBox(height: 50.0),
+                SizedBox(height: 40.0),
                 Center(
                   child: HeaderWidget(
                     headerText: 'Welcome to Hisab Kitab!',
@@ -69,62 +69,73 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     textColor: Colors.black54,
                   ),
                 ),
-                SizedBox(height: 60.0),
+                SizedBox(height: 40.0),
                 Container(
-                  width: deviceWidth * 0.75,
-                  height: 50.0,
-                  child: RaisedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => LoginScreen(),
+                  padding: EdgeInsets.all(20.0),
+                  width: deviceWidth,
+                  decoration: BoxDecoration(
+                    color: profileBG,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: deviceWidth * 0.75,
+                        height: 50.0,
+                        child: RaisedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
+                          },
+                          child: HeaderWidget(
+                            headerText: 'LOGIN',
+                            maxFontSize: 20,
+                            minFontSize: 18,
+                            textColor: Colors.white,
+                          ),
+                          color: primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            side: BorderSide(
+                              color: primaryColor,
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    child: HeaderWidget(
-                      headerText: 'LOGIN',
-                      maxFontSize: 20,
-                      minFontSize: 18,
-                      textColor: Colors.white,
-                    ),
-                    color: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      side: BorderSide(
-                        color: primaryColor,
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Container(
-                  width: deviceWidth * 0.75,
-                  height: 50.0,
-                  child: OutlineButton(
-                    borderSide: BorderSide(
-                      color: primaryColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SignUpScreen(),
+                      SizedBox(height: 20.0),
+                      Container(
+                        width: deviceWidth * 0.75,
+                        height: 50.0,
+                        child: OutlineButton(
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => SignUpScreen(),
+                              ),
+                            );
+                          },
+                          child: HeaderWidget(
+                            headerText: 'SIGN UP',
+                            maxFontSize: 20,
+                            minFontSize: 18,
+                            textColor: primaryColor,
+                          ),
+                          color: primaryColor,
+                          splashColor: lightGreen.withRed(210),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
                         ),
-                      );
-                    },
-                    child: HeaderWidget(
-                      headerText: 'SIGN UP',
-                      maxFontSize: 20,
-                      minFontSize: 18,
-                      textColor: primaryColor,
-                    ),
-                    color: primaryColor,
-                    splashColor: lightGreen.withRed(210),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 20.0),
               ],
             ),
           ),

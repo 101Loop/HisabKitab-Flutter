@@ -25,5 +25,5 @@ const List<String> paymentList = [
   'Account Type',
   'Card',
 ];
-const String Spendings = 'spendings';
-const String Earnings = 'earnings';
+const String Spendings = 'Spendings';
+const String Earnings = 'Earnings';

@@ -1,24 +1,42 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/mixins/validator.dart';
+import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/login_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
+import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
   double deviceHeight;
   double deviceWidth;
+  AppState provider;
+
+  final signUpFormKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    super.initState();
+    var _provider = Provider.of<AppState>(context, listen: false);
+    _provider.initalState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        key: _scaffoldKey,
+        backgroundColor: profileBG,
         body: Container(
           padding: EdgeInsets.all(10.0),
           child: SingleChildScrollView(
@@ -37,21 +55,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Hero(
                   tag: 'Logo',
                   child: Container(
-                    height: 120.0,
-                    width: 150.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image:
-                              AssetImage('assets/images/hisab_kitab_logo.png')),
-                    ),
+                    height: 10.0,
                   ),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 10.0),
                 Container(
                   width: deviceWidth,
                   decoration: BoxDecoration(
-                    color: profileBG,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Column(
@@ -66,12 +77,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           minFontSize: 16,
                         ),
                       ),
+                      Form(
+                        key: signUpFormKey,
+                        child: Column(
+                          children: <Widget>[],
+                        ),
+                      ),
                       Container(
                         margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
+                          autovalidate: provider.getAutoValidate,
+                          validator: validateField,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             contentPadding:
@@ -95,6 +114,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: TextFormField(
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
+                          autovalidate: provider.getAutoValidate,
+                          validator: validateEmail,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             contentPadding:
@@ -118,6 +139,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: TextFormField(
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
+                          autovalidate: provider.getAutoValidate,
+                          validator: validateMobile,
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             contentPadding:
@@ -142,6 +165,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           obscureText: true,
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
+                          autovalidate: provider.getAutoValidate,
+                          validator: validatePassword,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             contentPadding:
@@ -166,6 +191,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           obscureText: true,
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
+                          autovalidate: provider.getAutoValidate,
+                          validator: validatePassword,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             contentPadding:
@@ -191,18 +218,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: deviceWidth * 0.75,
                   height: 50.0,
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      onSignUpClicked();
+                    },
                     child: HeaderWidget(
                       headerText: 'SIGN UP',
                       maxFontSize: 20,
                       minFontSize: 18,
                       textColor: Colors.white,
                     ),
-                    color: buttonColor,
+                    color: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                       side: BorderSide(
-                        color: buttonColor,
+                        color: primaryColor,
                       ),
                     ),
                   ),
@@ -227,6 +256,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: primaryColor,
                     ),
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => LoginScreen(),
@@ -237,11 +267,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       headerText: 'LOGIN',
                       maxFontSize: 20,
                       minFontSize: 18,
-                      textColor: Colors.black54,
+                      textColor: primaryColor,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
+                    splashColor: lightGreen.withRed(210),
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -250,6 +281,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void onSignUpClicked() {
+    provider.setAutoValidate(true);
+    if (signUpFormKey.currentState.validate()) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      signUpFormKey.currentState.save();
+      showSnackBar('Sign Up Sucessfully!');
+      Future.delayed(
+        Duration(seconds: 2),
+        navigateLogin,
+      );
+    }
+  }
+
+  showSnackBar(String message) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        shape: RoundedRectangleBorder(),
+      ),
+    );
+  }
+
+  navigateLogin() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) {
+        return LoginScreen();
+      }),
     );
   }
 }

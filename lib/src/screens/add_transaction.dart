@@ -245,16 +245,14 @@ class _AddTransactionState extends State<AddTransaction> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Container(
-                        width: deviceWidth * 0.75,
+                        width: deviceWidth * 0.7,
                         child: DropdownButton(
-                          hint: Text('Payment Type'),
                           iconSize: 0.0,
                           underline: Container(),
                           value: _selectedPaymentType,
                           onChanged: (value) {
                             setState(() {
                               _selectedPaymentType = value;
-                              // _paymentTypeSelected = true;
                             });
                           },
                           items: paymentList.map((months) {

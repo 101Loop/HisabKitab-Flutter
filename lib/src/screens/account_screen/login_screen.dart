@@ -1,27 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/mixins/validator.dart';
+import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/otp_login.dart';
 import 'package:hisabkitab/src/screens/account_screen/sign_up_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   double deviceHeight;
   double deviceWidth;
   bool _showPassword = false;
+  AppState provider;
+
+  final formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    var _provider = Provider.of<AppState>(context, listen: false);
+    _provider.initalState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: profileBG,
         body: Container(
           padding: EdgeInsets.all(10.0),
           child: SingleChildScrollView(
@@ -29,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                  margin: EdgeInsets.only(top: 30.0, bottom: 20.0),
                   child: HeaderWidget(
                     headerText: 'LOGIN',
                     maxFontSize: 30,
@@ -40,21 +54,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 Hero(
                   tag: 'Logo',
                   child: Container(
-                    height: 120.0,
-                    width: 150.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image:
-                              AssetImage('assets/images/hisab_kitab_logo.png')),
-                    ),
+                    height: 50.0,
                   ),
                 ),
                 SizedBox(height: 20.0),
                 Container(
                   width: deviceWidth,
                   decoration: BoxDecoration(
-                    color: profileBG,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Column(
@@ -69,65 +76,77 @@ class _LoginScreenState extends State<LoginScreen> {
                           minFontSize: 15,
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.all(15.0),
-                        padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          textAlign: TextAlign.left,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                            fillColor: Colors.white,
-                            hintText: 'Email/Phone',
-                            alignLabelWithHint: true,
-                            hintStyle: GoogleFonts.nunito(
-                              color: Colors.grey.shade400,
-                              fontSize: 14,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
-                        padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          obscureText: !_showPassword ? true : false,
-                          cursorColor: primaryColor,
-                          textAlign: TextAlign.left,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                              fillColor: Colors.white,
-                              hintText: 'Password',
-                              alignLabelWithHint: true,
-                              hintStyle: GoogleFonts.nunito(
-                                color: Colors.grey.shade400,
-                                fontSize: 14,
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.all(15.0),
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                autovalidate: provider.getAutoValidate,
+                                validator: validateField,
+                                cursorColor: primaryColor,
+                                textAlign: TextAlign.left,
+                                keyboardType: TextInputType.text,
+                                decoration: InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  fillColor: Colors.white,
+                                  hintText: 'Email/Phone',
+                                  alignLabelWithHint: true,
+                                  hintStyle: GoogleFonts.nunito(
+                                    color: Colors.grey.shade400,
+                                    fontSize: 14,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            Container(
+                              margin:
+                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                obscureText: !_showPassword ? true : false,
+                                cursorColor: primaryColor,
+                                textAlign: TextAlign.left,
+                                autovalidate: provider.getAutoValidate,
+                                validator: validateField,
+                                keyboardType: TextInputType.text,
+                                decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        10.0, 0.0, 0.0, 0.0),
+                                    fillColor: Colors.white,
+                                    hintText: 'Password',
+                                    alignLabelWithHint: true,
+                                    hintStyle: GoogleFonts.nunito(
+                                      color: Colors.grey.shade400,
+                                      fontSize: 14,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    suffixIcon: IconButton(
+                                        icon: !_showPassword
+                                            ? Icon(
+                                                Icons.visibility_off,
+                                                color: Colors.grey.shade400,
+                                              )
+                                            : Icon(
+                                                Icons.visibility,
+                                                color: Colors.grey.shade400,
+                                              ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _showPassword = !_showPassword;
+                                          });
+                                        })),
                               ),
-                              suffixIcon: IconButton(
-                                  icon: !_showPassword
-                                      ? Icon(
-                                          Icons.visibility_off,
-                                          color: Colors.grey.shade400,
-                                        )
-                                      : Icon(
-                                          Icons.visibility,
-                                          color: Colors.grey.shade400,
-                                        ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _showPassword = !_showPassword;
-                                    });
-                                  })),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -139,11 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 50.0,
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => MainScreen(),
-                        ),
-                      );
+                      _onLoginPressed();
                     },
                     child: HeaderWidget(
                       headerText: 'LOGIN',
@@ -199,11 +214,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       headerText: 'SIGN UP',
                       maxFontSize: 20,
                       minFontSize: 18,
-                      textColor: Colors.black54,
+                      textColor: primaryColor,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
+                    splashColor: lightGreen.withRed(210),
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -213,5 +229,18 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _onLoginPressed() {
+    provider.setAutoValidate(true);
+    if (formKey.currentState.validate()) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      formKey.currentState.save();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => MainScreen(),
+        ),
+      );
+    }
   }
 }
