@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/src/api_controller/transaction_api_controller.dart';
+import 'package:hisabkitab/src/models/paginated_response.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/filter_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
@@ -22,106 +24,18 @@ class _DashboardState extends State<Dashboard> {
   double deviceHeight;
   double deviceWidth;
 
-  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
-      .map(
-        (SortingItems val) => PopupMenuItem<SortingItems>(
-          child: Text(val.name),
-          value: val,
-        ),
-      )
-      .toList();
+  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems.map((SortingItems val) => PopupMenuItem<SortingItems>(child: Text(val.name), value: val)).toList();
   AppState provider;
-  Future<bool> _onSortPressed() {
-    return showDialog(
-            context: context,
-            builder: (context) {
-              provider = Provider.of<AppState>(context);
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('Earnings',
-                            willNotify: true);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'Earnings',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('Spendings',
-                            willNotify: true);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'Spendings',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('All transaction',
-                            willNotify: true);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'All Transactions',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => FilterScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'More Filter Option',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }) ??
-        false;
+
+  Future<PaginatedResponse> _futureCredit;
+  Future<PaginatedResponse> _futureDebit;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _futureCredit = TransactionApiController.getDetails('C');
+    _futureDebit = TransactionApiController.getDetails('D');
   }
 
   @override
@@ -285,19 +199,11 @@ class _DashboardState extends State<Dashboard> {
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
-                itemCount: provider.getTransactionType == Earnings
-                    ? earningItemList.length
-                    : provider.getTransactionType == Spendings
-                        ? expenseItemList.length
-                        : allTransactions.length,
+                itemCount: provider.getTransactionType == Earnings ? earningItemList.length : provider.getTransactionType == Spendings ? expenseItemList.length : allTransactions.length,
                 itemBuilder: (context, index) {
                   return Dismissible(
                     key: Key('list'),
-                    child: provider.getTransactionType == Earnings
-                        ? earningItemList[index]
-                        : provider.getTransactionType == Spendings
-                            ? expenseItemList[index]
-                            : allTransactions[index],
+                    child: provider.getTransactionType == Earnings ? earningItemList[index] : provider.getTransactionType == Spendings ? expenseItemList[index] : allTransactions[index],
                     direction: DismissDirection.endToStart,
                     onDismissed: (value) {
                       Scaffold.of(context).showSnackBar(
@@ -327,6 +233,95 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  Future<bool> _onSortPressed() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          provider = Provider.of<AppState>(context);
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    provider.setTransactionType('Earnings', willNotify: true);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'Earnings',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    provider.setTransactionType('Spendings', willNotify: true);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'Spendings',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    provider.setTransactionType('All transaction', willNotify: true);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'All Transactions',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => FilterScreen(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'More Filter Option',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }) ??
+        false;
   }
 }
 
@@ -405,11 +400,7 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: totalBalance,
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -496,11 +487,7 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: totalBalance,
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -579,11 +566,7 @@ class RedGreenCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 5.0),
-                      HeaderWidget(
-                          headerText: totalEarning,
-                          maxFontSize: 28,
-                          minFontSize: 25,
-                          textColor: Colors.white),
+                      HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
                     ],
                   ),
                   Row(
@@ -596,11 +579,7 @@ class RedGreenCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 5.0),
-                      HeaderWidget(
-                          headerText: totalExpense,
-                          maxFontSize: 28,
-                          minFontSize: 25,
-                          textColor: Colors.white),
+                      HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
                     ],
                   ),
                 ],
@@ -639,8 +618,7 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color:
-            type == Spendings ? Colors.red.shade100 : lightGreen.withRed(210),
+        color: type == Spendings ? Colors.red.shade100 : lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

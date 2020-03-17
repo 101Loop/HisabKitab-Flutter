@@ -65,7 +65,7 @@ class LoginAPIConroller {
    
   }
     static _saveToken(String token) async {
-    await prefs.remove(Constants.TOKEN);
+//    await prefs.remove(Constants.TOKEN);
     await prefs.setString(Constants.TOKEN, token);
   }
 }

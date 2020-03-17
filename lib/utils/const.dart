@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 ///urls
-const String BASE_URL = 'https://admin.hisabkitab.in/';
-const String LOGIN_URL = BASE_URL + 'api/users/login/';
-const String REGISTER_URL = BASE_URL + 'api/users/register/';
+const String BASE_URL = 'https://admin.hisabkitab.in/api/';
+const String LOGIN_URL = BASE_URL + 'users/login/';
+const String REGISTER_URL = BASE_URL + 'users/register/';
+const String SHOW_CREDIT_URL = BASE_URL + 'account/credit/show/';
+const String ADD_CREDIT_URL = BASE_URL + 'account/credit/add/';
+const String SHOW_DEBIT_URL = BASE_URL + 'account/debit/show/';
+const String ADD_DEBIT_URL = BASE_URL + 'account/debit/add/';
 
 
 /// Strings
-
 const String appName = 'Hisab Kitab';
 const String name = "name";
 const String email = "email";
@@ -23,7 +26,7 @@ const String TOKEN = "token";
 const String serverError =
     "Server is not responding, Please check your connection and try again later!";
 
-//http codes
+///http codes
 const int HTTP_200_OK = 200;
 const int HTTP_201_CREATED = 201;
 const int HTTP_202_ACCEPTED = 202;
