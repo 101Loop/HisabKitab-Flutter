@@ -35,10 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     height: 120.0,
                     width: 150.0,
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image:
-                              AssetImage('assets/images/hisab_kitab_logo.png')),
+                      image: DecorationImage(fit: BoxFit.fill, image: AssetImage('assets/images/hisab_kitab_logo.png')),
                     ),
                   ),
                 ),

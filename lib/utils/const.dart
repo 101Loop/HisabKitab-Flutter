@@ -10,7 +10,6 @@ const String ADD_CREDIT_URL = BASE_URL + 'account/credit/add/';
 const String SHOW_DEBIT_URL = BASE_URL + 'account/debit/show/';
 const String ADD_DEBIT_URL = BASE_URL + 'account/debit/add/';
 
-
 /// Strings
 const String appName = 'Hisab Kitab';
 const String name = "name";
@@ -23,8 +22,7 @@ const String Earnings = 'Earnings';
 const String TOKEN = "token";
 
 ///constants
-const String serverError =
-    "Server is not responding, Please check your connection and try again later!";
+const String serverError = "Server is not responding, Please check your connection and try again later!";
 
 ///http codes
 const int HTTP_200_OK = 200;

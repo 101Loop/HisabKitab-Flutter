@@ -16,7 +16,7 @@ class TransactionApiController {
 
     var response;
     try {
-      response = await http.get(type == 'C' ? Constants.SHOW_CREDIT_URL: Constants.SHOW_DEBIT_URL, headers: headers);
+      response = await http.get(type == 'C' ? Constants.SHOW_CREDIT_URL : Constants.SHOW_DEBIT_URL, headers: headers);
     } catch (_) {
       return PaginatedResponse.withError(Constants.serverError);
     }
@@ -60,7 +60,7 @@ class TransactionApiController {
 
     var response;
     try {
-      response = await http.post(type == 'C' ? Constants.ADD_CREDIT_URL: Constants.ADD_DEBIT_URL, headers: headers, body: json.encode(data.toMap()));
+      response = await http.post(type == 'C' ? Constants.ADD_CREDIT_URL : Constants.ADD_DEBIT_URL, headers: headers, body: json.encode(data.toMap()));
     } catch (_) {
       return PaginatedResponse.withError(Constants.serverError);
     }

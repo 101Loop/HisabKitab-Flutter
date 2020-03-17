@@ -102,8 +102,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     textAlign: TextAlign.left,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Email/Phone',
                                       alignLabelWithHint: true,
@@ -112,15 +111,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     obscureText: !_showPassword ? true : false,
@@ -131,8 +128,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     validator: validateField,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Password',
                                       alignLabelWithHint: true,
@@ -141,8 +137,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: !_showPassword
@@ -281,7 +276,6 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
             ),
           );
         }
-        
       });
     }
   }

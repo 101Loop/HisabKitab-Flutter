@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
-import 'package:hisabkitab/utils/const.dart';
+import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/const.dart' as Constants;
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -14,10 +16,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 3), () async {
+      String token = prefs.getString(Constants.TOKEN);
+
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => WelcomeScreen(),
+          builder: (context) => token == null ? WelcomeScreen() : MainScreen(),
         ),
       );
     });
@@ -33,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Container(
           width: deviceWidth,
           height: deviceHeight,
-          color: primaryColor,
+          color: Constants.primaryColor,
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[

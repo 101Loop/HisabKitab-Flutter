@@ -237,90 +237,90 @@ class _DashboardState extends State<Dashboard> {
 
   Future<bool> _onSortPressed() {
     return showDialog(
-        context: context,
-        builder: (context) {
-          provider = Provider.of<AppState>(context);
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    provider.setTransactionType('Earnings', willNotify: true);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15.0),
-                    child: Center(
-                      child: Text(
-                        'Earnings',
-                        style: GoogleFonts.nunito(
-                          fontSize: 16.0,
+            context: context,
+            builder: (context) {
+              provider = Provider.of<AppState>(context);
+              return AlertDialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        provider.setTransactionType('Earnings', willNotify: true);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15.0),
+                        child: Center(
+                          child: Text(
+                            'Earnings',
+                            style: GoogleFonts.nunito(
+                              fontSize: 16.0,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    provider.setTransactionType('Spendings', willNotify: true);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15.0),
-                    child: Center(
-                      child: Text(
-                        'Spendings',
-                        style: GoogleFonts.nunito(
-                          fontSize: 16.0,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        provider.setTransactionType('Spendings', willNotify: true);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15.0),
+                        child: Center(
+                          child: Text(
+                            'Spendings',
+                            style: GoogleFonts.nunito(
+                              fontSize: 16.0,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    provider.setTransactionType('All transaction', willNotify: true);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15.0),
-                    child: Center(
-                      child: Text(
-                        'All Transactions',
-                        style: GoogleFonts.nunito(
-                          fontSize: 16.0,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        provider.setTransactionType('All transaction', willNotify: true);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15.0),
+                        child: Center(
+                          child: Text(
+                            'All Transactions',
+                            style: GoogleFonts.nunito(
+                              fontSize: 16.0,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FilterScreen(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(15.0),
-                    child: Center(
-                      child: Text(
-                        'More Filter Option',
-                        style: GoogleFonts.nunito(
-                          fontSize: 16.0,
+                    GestureDetector(
+                      onTap: () async {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => FilterScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(15.0),
+                        child: Center(
+                          child: Text(
+                            'More Filter Option',
+                            style: GoogleFonts.nunito(
+                              fontSize: 16.0,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }) ??
+              );
+            }) ??
         false;
   }
 }
