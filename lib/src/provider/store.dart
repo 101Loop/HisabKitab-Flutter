@@ -4,10 +4,17 @@ class AppState extends ChangeNotifier {
   bool _otpRequested = false;
   String _transactionType = 'Earnings';
   bool _autoValidate = false;
+  bool _isLoading = false;
 
   bool get getOTPRequested => _otpRequested;
   String get getTransactionType => _transactionType;
   bool get getAutoValidate => _autoValidate;
+  bool get getIsLoading => _isLoading;
+
+  setIsLoading(bool value, {bool willNotify = false}) {
+    _isLoading = value;
+    if (willNotify) notifyListeners();
+  }
 
   setOTPRequested(bool value, {bool willNotify = false}) {
     _otpRequested = value;
