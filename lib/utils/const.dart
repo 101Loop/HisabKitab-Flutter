@@ -11,6 +11,7 @@ const String SHOW_DEBIT_URL = BASE_URL + 'account/debit/show/';
 const String ADD_DEBIT_URL = BASE_URL + 'account/debit/add/';
 const String GET_TRANSACTION_URL = BASE_URL + 'transactions/show/';
 const String ADD_TRANSACTION_URL = BASE_URL + 'transactions/add/';
+const String DELETE_TRANSACTION_URL = BASE_URL + 'transactions/';
 
 /// Strings
 const String appName = 'Hisab Kitab';
@@ -22,7 +23,8 @@ const String password = "password";
 const String TOKEN = "token";
 
 ///constants
-const String serverError = "Server is not responding, Please check your connection and try again later!";
+const String serverError =
+    "Server is not responding, Please check your connection and try again later!";
 
 ///http codes
 const int HTTP_200_OK = 200;
