@@ -38,13 +38,13 @@ class _DashboardState extends State<Dashboard> {
       var list = response.results as List;
       List<TransactionDetails> transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
 
-      double creditAmount= 0;
+      double creditAmount = 0;
       double debitAmount = 0;
 
-      transactionList.forEach((item){
-        if(item.category == 'C'){
+      transactionList.forEach((item) {
+        if (item.category == 'C') {
           creditAmount += item.amount;
-        }else{
+        } else {
           debitAmount += item.amount;
         }
       });
@@ -109,7 +109,7 @@ class _DashboardState extends State<Dashboard> {
                 : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: '${provider.transactionType}',
+              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : 'Spending',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -126,6 +126,12 @@ class _DashboardState extends State<Dashboard> {
 
                     var list = snapshot.data.results as List;
                     _transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+
+                    if (provider.transactionType == Constants.CREDIT) {
+                      _transactionList.removeWhere((item) => item.category != Constants.CREDIT);
+                    } else if (provider.transactionType == Constants.DEBIT) {
+                      _transactionList.removeWhere((item) => item.category == Constants.CREDIT);
+                    }
                   } else {
                     provider.setIsLoading(true, willNotify: false);
                   }
