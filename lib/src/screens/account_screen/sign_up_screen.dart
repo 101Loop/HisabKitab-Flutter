@@ -108,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     validator: validateField,
                                     controller: _name,
                                     keyboardType: TextInputType.text,
@@ -136,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     validator: validateEmail,
                                     controller: _email,
                                     keyboardType: TextInputType.emailAddress,
@@ -164,7 +164,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     validator: validateMobile,
                                     controller: _mobile,
                                     keyboardType: TextInputType.phone,
@@ -193,7 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     obscureText: !_showPassword ? true : false,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     validator: validatePassword,
                                     controller: _password,
                                     keyboardType: TextInputType.text,
@@ -239,7 +239,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                         !_showConfPassword ? true : false,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     validator: (value) {
                                       if (value != _password.text) {
                                         return 'Password does\'t match';
@@ -352,7 +352,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                   ],
                 ),
               ),
-              provider.getIsLoading
+              provider.isLoading
                   ? Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(primaryColor),

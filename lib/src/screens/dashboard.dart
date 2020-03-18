@@ -1,12 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/api_controller/transaction_api_controller.dart';
 import 'package:hisabkitab/src/models/paginated_response.dart';
+import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/filter_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/common_widgets/sorting_items.dart';
-import 'package:hisabkitab/utils/const.dart';
+import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
@@ -17,25 +19,21 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final List earningItemList = List();
-  final List expenseItemList = List();
-  final List allTransactions = List();
-
   double deviceHeight;
   double deviceWidth;
 
   static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems.map((SortingItems val) => PopupMenuItem<SortingItems>(child: Text(val.name), value: val)).toList();
   AppState provider;
 
-  Future<PaginatedResponse> _futureCredit;
-  Future<PaginatedResponse> _futureDebit;
+  Future<PaginatedResponse> _futureTransactionDetails;
+
+  List<TransactionDetails> _transactionList = List();
 
   @override
   void initState() {
     super.initState();
 
-    _futureCredit = TransactionApiController.getDetails('C');
-    _futureDebit = TransactionApiController.getDetails('D');
+    _futureTransactionDetails = TransactionApiController.getTransaction();
   }
 
   @override
@@ -43,96 +41,7 @@ class _DashboardState extends State<Dashboard> {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
-    List earningItemList = [
-      ListCard(
-        icon: Icons.monetization_on,
-        name: 'Salary',
-        amount: '+₹20000',
-        transactionDate: '1/02/2020',
-        transactionType: 'In Account',
-        comment: 'Salary of Feb',
-        type: Earnings,
-      ),
-    ];
-    List expenseItemList = [
-      ListCard(
-        icon: Icons.shutter_speed,
-        name: 'Clock',
-        amount: '-₹1020',
-        transactionDate: '2/02/2020',
-        transactionType: 'Card',
-        type: Spendings,
-      ),
-      ListCard(
-        icon: Icons.school,
-        name: 'School Fee',
-        amount: '-₹1500',
-        transactionDate: '2/02/2020',
-        transactionType: 'card',
-        comment: 'need',
-        type: Spendings,
-      ),
-      ListCard(
-        icon: Icons.scanner,
-        name: 'Wifi bill',
-        amount: '-₹1800',
-        transactionDate: '2/02/2020',
-        transactionType: 'Cash',
-        type: Spendings,
-      ),
-      ListCard(
-        icon: Icons.restaurant,
-        name: 'Eating out',
-        amount: '-₹900',
-        transactionDate: '2/02/2020',
-        transactionType: 'Cash',
-        type: Spendings,
-      ),
-    ];
-    List allTransactions = [
-      ListCard(
-        icon: Icons.monetization_on,
-        name: 'Salary',
-        amount: '+₹20000',
-        transactionDate: '1/02/2020',
-        transactionType: 'In Account',
-        comment: 'Salary of Feb',
-        type: Earnings,
-      ),
-      ListCard(
-        icon: Icons.shutter_speed,
-        name: 'Clock',
-        amount: '-₹1020',
-        transactionDate: '2/02/2020',
-        transactionType: 'Card',
-        type: Spendings,
-      ),
-      ListCard(
-        icon: Icons.school,
-        name: 'School Fee',
-        amount: '-₹1500',
-        transactionDate: '2/02/2020',
-        transactionType: 'card',
-        comment: 'need',
-        type: Spendings,
-      ),
-      ListCard(
-        icon: Icons.scanner,
-        name: 'Wifi bill',
-        amount: '-₹1800',
-        transactionDate: '2/02/2020',
-        transactionType: 'Cash',
-        type: Spendings,
-      ),
-      ListCard(
-        icon: Icons.restaurant,
-        name: 'Eating out',
-        amount: '-₹900',
-        transactionDate: '2/02/2020',
-        transactionType: 'Cash',
-        type: Spendings,
-      ),
-    ];
+
     return Scaffold(
       body: Container(
         margin: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
@@ -147,7 +56,7 @@ class _DashboardState extends State<Dashboard> {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
-                      color: lightGreen.withRed(210),
+                      color: Constants.lightGreen.withRed(210),
                     ),
                     height: 50.0,
                     width: 50.0,
@@ -157,7 +66,7 @@ class _DashboardState extends State<Dashboard> {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(Icons.sort),
-                      color: primaryColor,
+                      color: Constants.primaryColor,
                       onPressed: () {
                         _onSortPressed();
                       },
@@ -168,7 +77,7 @@ class _DashboardState extends State<Dashboard> {
                       },
                       child: Icon(
                         Icons.more_vert,
-                        color: primaryColor,
+                        color: Constants.primaryColor,
                       ),
                       onSelected: (value) {},
                     ),
@@ -177,17 +86,12 @@ class _DashboardState extends State<Dashboard> {
               ],
             ),
             SizedBox(height: 20.0),
-            provider.getTransactionType == Earnings
+            provider.transactionType == Constants.earnings
                 ? GreenCard(totalBalance: '20000.0')
-                : provider.getTransactionType == Spendings
-                    ? RedCard(totalBalance: '5220.0')
-                    : RedGreenCard(
-                        totalEarning: '20000.0',
-                        totalExpense: '5220.0',
-                      ),
+                : provider.transactionType == Constants.spendings ? RedCard(totalBalance: '5220.0') : RedGreenCard(totalEarning: '20000.0', totalExpense: '5220.0'),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: '${provider.getTransactionType}',
+              headerText: '${provider.transactionType}',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -196,36 +100,19 @@ class _DashboardState extends State<Dashboard> {
               height: 10.0,
             ),
             Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: BouncingScrollPhysics(),
-                itemCount: provider.getTransactionType == Earnings ? earningItemList.length : provider.getTransactionType == Spendings ? expenseItemList.length : allTransactions.length,
-                itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: Key('list'),
-                    child: provider.getTransactionType == Earnings ? earningItemList[index] : provider.getTransactionType == Spendings ? expenseItemList[index] : allTransactions[index],
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (value) {
-                      Scaffold.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Transaction deleted'),
-                        ),
-                      );
-                    },
-                    background: Container(
-                      color: Colors.red,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+              child: FutureBuilder(
+                future: _futureTransactionDetails,
+                builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    provider.setIsLoading(false, willNotify: false);
+
+                    var list = snapshot.data.results as List;
+                    _transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+                  } else {
+                    provider.setIsLoading(true, willNotify: false);
+                  }
+
+                  return provider.isLoading ? Center(child: CircularProgressIndicator()) : _transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
                 },
               ),
             ),
@@ -323,6 +210,54 @@ class _DashboardState extends State<Dashboard> {
             }) ??
         false;
   }
+
+  _listViewBuilder() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: BouncingScrollPhysics(),
+      itemCount: _transactionList.length,
+      itemBuilder: (context, index) {
+        TransactionDetails _currentTransaction = _transactionList[index];
+
+        return Dismissible(
+          key: Key('list'),
+          child: ListCard(
+            icon: Icons.done,
+            name: _currentTransaction.contact.name,
+            amount: _currentTransaction.amount.toString(),
+            transactionType: _currentTransaction.category,
+            transactionDate: _currentTransaction.transactionDate,
+            type: _currentTransaction.mode.mode,
+          ),
+          direction: DismissDirection.endToStart,
+          onDismissed: (value) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Transaction deleted'),
+              ),
+            );
+          },
+          background: Container(
+            color: Colors.red,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _nothingToShowWidget() {
+    return Center(child: Text('There\'s nothing to show :)'));
+  }
 }
 
 class GreenCard extends StatelessWidget {
@@ -346,7 +281,7 @@ class GreenCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
-          color: primaryColor,
+          color: Constants.primaryColor,
         ),
         child: Stack(
           children: <Widget>[
@@ -523,7 +458,7 @@ class RedGreenCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           gradient: LinearGradient(
-            colors: [primaryColor, Colors.red.shade400],
+            colors: [Constants.primaryColor, Colors.red.shade400],
           ),
         ),
         child: Stack(
@@ -618,7 +553,7 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: type == Spendings ? Colors.red.shade100 : lightGreen.withRed(210),
+        color: type == Constants.spendings ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -676,7 +611,7 @@ class ListCard extends StatelessWidget {
               Text(
                 amount,
                 style: GoogleFonts.nunito(
-                  color: type != Earnings ? Colors.red.shade300 : primaryColor,
+                  color: type != Constants.earnings ? Colors.red.shade300 : Constants.primaryColor,
                   fontWeight: FontWeight.w800,
                 ),
               ),

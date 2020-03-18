@@ -1,4 +1,4 @@
-class Credit {
+class CardDetails {
   final int id;
   final String nickname;
   final Bank bank;
@@ -9,10 +9,10 @@ class Credit {
   final String limit;
   final int dueDateDuration;
 
-  Credit({this.id, this.nickname, this.bank, this.description, this.account, this.vendor, this.statementDate, this.limit, this.dueDateDuration});
+  CardDetails({this.id, this.nickname, this.bank, this.description, this.account, this.vendor, this.statementDate, this.limit, this.dueDateDuration});
 
-  factory Credit.fromJson(var json) {
-    return Credit(
+  factory CardDetails.fromJson(var json) {
+    return CardDetails(
       id: json['id'],
       nickname: json['nickname'],
       bank: Bank.fromJson(json['bank']),

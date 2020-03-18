@@ -9,6 +9,7 @@ const String SHOW_CREDIT_URL = BASE_URL + 'account/credit/show/';
 const String ADD_CREDIT_URL = BASE_URL + 'account/credit/add/';
 const String SHOW_DEBIT_URL = BASE_URL + 'account/debit/show/';
 const String ADD_DEBIT_URL = BASE_URL + 'account/debit/add/';
+const String GET_TRANSACTION_URL = BASE_URL + 'transactions/show/';
 
 /// Strings
 const String appName = 'Hisab Kitab';
@@ -17,8 +18,9 @@ const String email = "email";
 const String mobile = "mobile";
 const String username = "username";
 const String password = "password";
-const String Spendings = 'Spendings';
-const String Earnings = 'Earnings';
+const String spendings = 'Spendings';
+const String earnings = 'Earnings';
+const String allTransaction = 'All transaction';
 const String TOKEN = "token";
 
 ///constants

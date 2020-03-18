@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   margin: EdgeInsets.all(15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     controller: usernameController,
                                     validator: validateField,
                                     cursorColor: primaryColor,
@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     controller: passwordController,
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     validator: validateField,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
@@ -238,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                   ],
                 ),
               ),
-              provider.getIsLoading
+              provider.isLoading
                   ? Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(primaryColor),

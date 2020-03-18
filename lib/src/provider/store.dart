@@ -7,9 +7,9 @@ class AppState extends ChangeNotifier {
   bool _isLoading = false;
 
   bool get getOTPRequested => _otpRequested;
-  String get getTransactionType => _transactionType;
-  bool get getAutoValidate => _autoValidate;
-  bool get getIsLoading => _isLoading;
+  String get transactionType => _transactionType;
+  bool get autoValidate => _autoValidate;
+  bool get isLoading => _isLoading;
 
   setIsLoading(bool value, {bool willNotify = false}) {
     _isLoading = value;

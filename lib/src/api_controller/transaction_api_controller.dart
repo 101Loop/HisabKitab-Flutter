@@ -9,14 +9,14 @@ class TransactionApiController {
   static String token;
 
   ///api call to get details, credit or debit
-  static Future<PaginatedResponse> getDetails(String type) async {
+  static Future<PaginatedResponse> getTransaction() async {
     if (token == null) token = prefs.getString(Constants.TOKEN);
 
     final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": token};
 
     var response;
     try {
-      response = await http.get(type == 'C' ? Constants.SHOW_CREDIT_URL : Constants.SHOW_DEBIT_URL, headers: headers);
+      response = await http.get(Constants.GET_TRANSACTION_URL, headers: headers);
     } catch (_) {
       return PaginatedResponse.withError(Constants.serverError);
     }
