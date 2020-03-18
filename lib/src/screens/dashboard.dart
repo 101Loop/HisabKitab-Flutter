@@ -22,7 +22,10 @@ class _DashboardState extends State<Dashboard> {
   double deviceHeight;
   double deviceWidth;
 
-  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems.map((SortingItems val) => PopupMenuItem<SortingItems>(child: Text(val.name), value: val)).toList();
+  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
+      .map((SortingItems val) =>
+          PopupMenuItem<SortingItems>(child: Text(val.name), value: val))
+      .toList();
   AppState provider;
 
   Future<PaginatedResponse> _futureTransactionDetails;
@@ -36,7 +39,8 @@ class _DashboardState extends State<Dashboard> {
     _futureTransactionDetails = TransactionApiController.getTransaction();
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
-      List<TransactionDetails> transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+      List<TransactionDetails> transactionList =
+          list.map((item) => TransactionDetails.fromJson(item)).toList();
 
       double creditAmount = 0;
       double debitAmount = 0;
@@ -49,8 +53,10 @@ class _DashboardState extends State<Dashboard> {
         }
       });
 
-      Provider.of<AppState>(context, listen: false).setCreditAmount(creditAmount.toString());
-      Provider.of<AppState>(context, listen: false).setDebitAmount(debitAmount.toString());
+      Provider.of<AppState>(context, listen: false)
+          .setCreditAmount(creditAmount.toString());
+      Provider.of<AppState>(context, listen: false)
+          .setDebitAmount(debitAmount.toString());
     });
   }
 
@@ -106,10 +112,16 @@ class _DashboardState extends State<Dashboard> {
             SizedBox(height: 20.0),
             provider.transactionType == Constants.CREDIT
                 ? GreenCard(totalBalance: provider.creditAmount)
-                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
+                : provider.transactionType == Constants.DEBIT
+                    ? RedCard(totalBalance: provider.debitAmount)
+                    : RedGreenCard(
+                        totalEarning: provider.creditAmount,
+                        totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : 'Spending',
+              headerText: provider.transactionType == Constants.CREDIT
+                  ? 'Earnings'
+                  : 'Spending',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -120,23 +132,32 @@ class _DashboardState extends State<Dashboard> {
             Expanded(
               child: FutureBuilder(
                 future: _futureTransactionDetails,
-                builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     provider.setIsLoading(false, willNotify: false);
 
                     var list = snapshot.data.results as List;
-                    _transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+                    _transactionList = list
+                        .map((item) => TransactionDetails.fromJson(item))
+                        .toList();
 
                     if (provider.transactionType == Constants.CREDIT) {
-                      _transactionList.removeWhere((item) => item.category != Constants.CREDIT);
+                      _transactionList.removeWhere(
+                          (item) => item.category != Constants.CREDIT);
                     } else if (provider.transactionType == Constants.DEBIT) {
-                      _transactionList.removeWhere((item) => item.category == Constants.CREDIT);
+                      _transactionList.removeWhere(
+                          (item) => item.category == Constants.CREDIT);
                     }
                   } else {
                     provider.setIsLoading(true, willNotify: false);
                   }
 
-                  return provider.isLoading ? Center(child: CircularProgressIndicator()) : _transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
+                  return provider.isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : _transactionList.length > 0
+                          ? _listViewBuilder()
+                          : _nothingToShowWidget();
                 },
               ),
             ),
@@ -152,7 +173,8 @@ class _DashboardState extends State<Dashboard> {
             builder: (context) {
               provider = Provider.of<AppState>(context);
               return AlertDialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -245,6 +267,31 @@ class _DashboardState extends State<Dashboard> {
 
         return Dismissible(
           key: Key('list'),
+          confirmDismiss: (DismissDirection direction) async {
+            return await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  title: Text('Confirm'),
+                  content: Text('Are you sure to delete this item?'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text('DELETE'),
+                    ),
+                    FlatButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('CANCEL'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
           child: ListCard(
             icon: Icons.done,
             name: _currentTransaction.contact.name,
@@ -358,7 +405,11 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
+                  HeaderWidget(
+                      headerText: totalBalance,
+                      maxFontSize: 30,
+                      minFontSize: 28,
+                      textColor: Colors.white),
                 ],
               ),
             ),
@@ -445,7 +496,11 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
+                  HeaderWidget(
+                      headerText: totalBalance,
+                      maxFontSize: 30,
+                      minFontSize: 28,
+                      textColor: Colors.white),
                 ],
               ),
             ),
@@ -521,11 +576,16 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                        HeaderWidget(
+                            headerText: totalEarning,
+                            maxFontSize: 28,
+                            minFontSize: 25,
+                            textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -537,11 +597,16 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                        HeaderWidget(
+                            headerText: totalExpense,
+                            maxFontSize: 28,
+                            minFontSize: 25,
+                            textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -579,7 +644,9 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT
+            ? Colors.red.shade100
+            : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -637,7 +704,9 @@ class ListCard extends StatelessWidget {
               Text(
                 '₹ ' + amount,
                 style: GoogleFonts.nunito(
-                  color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
+                  color: transactionType != Constants.CREDIT
+                      ? Colors.red.shade300
+                      : Constants.primaryColor,
                   fontWeight: FontWeight.w800,
                 ),
               ),
