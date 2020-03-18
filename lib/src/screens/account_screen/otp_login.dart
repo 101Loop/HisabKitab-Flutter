@@ -15,6 +15,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> {
   double deviceHeight;
   double deviceWidth;
   AppState provider;
+
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<AppState>(context);
@@ -71,8 +72,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> {
                           textAlign: TextAlign.left,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                            contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Email/Phone',
                             alignLabelWithHint: true,
@@ -88,16 +88,14 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> {
                       ),
                       provider.getOTPRequested
                           ? Container(
-                              margin:
-                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 cursorColor: primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'OTP',
                                   alignLabelWithHint: true,
@@ -121,11 +119,10 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> {
                   height: 50.0,
                   child: RaisedButton(
                     onPressed: () {
-                      provider.setOTPRequested(true, willNotify: true);
+                      provider.setOTPRequested(true);
                     },
                     child: HeaderWidget(
-                      headerText:
-                          !provider.getOTPRequested ? 'GET OTP' : 'LOGIN',
+                      headerText: !provider.getOTPRequested ? 'GET OTP' : 'LOGIN',
                       maxFontSize: 20,
                       minFontSize: 18,
                       textColor: Colors.white,

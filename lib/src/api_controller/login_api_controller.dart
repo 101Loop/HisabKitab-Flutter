@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/models/user.dart';
-import 'package:http/http.dart' as http;
 import 'package:hisabkitab/utils/const.dart' as Constants;
+import 'package:http/http.dart' as http;
 
 class LoginAPIConroller {
   static String _token;
@@ -16,8 +16,7 @@ class LoginAPIConroller {
     var response;
 
     try {
-      response = await http.post(Constants.LOGIN_URL,
-          headers: headers, body: json.encode(user.toMap()));
+      response = await http.post(Constants.LOGIN_URL, headers: headers, body: json.encode(user.toMap()));
     } catch (_) {
       return User(error: Constants.serverError);
     }
@@ -62,10 +61,10 @@ class LoginAPIConroller {
       }
       return User(error: Constants.serverError);
     }
-   
   }
-    static _saveToken(String token) async {
-    await prefs.remove(Constants.TOKEN);
+
+  static _saveToken(String token) async {
+//    await prefs.remove(Constants.TOKEN);
     await prefs.setString(Constants.TOKEN, token);
   }
 }

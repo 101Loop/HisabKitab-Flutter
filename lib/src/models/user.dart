@@ -20,6 +20,7 @@ class User {
       data: json['data'] != null ? new Data.fromJson(json['data']) : null,
     );
   }
+
   factory User.withError(String error) {
     return User(
       error: error,

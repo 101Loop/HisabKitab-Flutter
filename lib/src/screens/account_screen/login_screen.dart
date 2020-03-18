@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   void initState() {
     super.initState();
     var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initalState();
+    _provider.initialState();
   }
 
   @override
@@ -95,15 +95,14 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   margin: EdgeInsets.all(15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     controller: usernameController,
                                     validator: validateField,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Email/Phone',
                                       alignLabelWithHint: true,
@@ -112,27 +111,24 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     obscureText: !_showPassword ? true : false,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     controller: passwordController,
-                                    autovalidate: provider.getAutoValidate,
+                                    autovalidate: provider.autoValidate,
                                     validator: validateField,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Password',
                                       alignLabelWithHint: true,
@@ -141,8 +137,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: !_showPassword
@@ -243,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                   ],
                 ),
               ),
-              provider.getIsLoading
+              provider.isLoading
                   ? Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
@@ -260,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   void _onLoginPressed() {
     provider.setAutoValidate(true);
     if (formKey.currentState.validate()) {
-      provider.setIsLoading(true, willNotify: true);
+      provider.setIsLoading(true);
       FocusScope.of(context).requestFocus(FocusNode());
       formKey.currentState.save();
       print(usernameController.text);
@@ -271,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
       );
       _futureUser = LoginAPIConroller.login(user);
       _futureUser.then((response) {
-        provider.setIsLoading(false, willNotify: true);
+        provider.setIsLoading(false);
         if (response.error != null) {
           showSnackBar(response.error ?? '');
         } else if (response.data.token != null) {
@@ -281,7 +276,6 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
             ),
           );
         }
-        
       });
     }
   }

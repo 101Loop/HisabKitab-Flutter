@@ -86,6 +86,7 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> pages;
   int currentTab = 0;
   int currentIndex;
+
   @override
   void initState() {
     super.initState();
