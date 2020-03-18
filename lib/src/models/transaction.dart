@@ -1,7 +1,7 @@
 class TransactionDetails {
   final int id;
-  final Mode mode;
-  final Contact contact;
+  final mode;
+  final contact;
   final String transactionDate;
   final String createDate;
   final String updateDate;
@@ -9,14 +9,39 @@ class TransactionDetails {
   final amount;
   final String comments;
   final int createdBy;
+  final String message;
+  final int statusCode;
 
-  TransactionDetails({this.id, this.mode, this.contact, this.transactionDate, this.createDate, this.updateDate, this.category, this.amount, this.comments, this.createdBy});
+  TransactionDetails({
+    this.id,
+    this.mode,
+    this.contact,
+    this.transactionDate,
+    this.createDate,
+    this.updateDate,
+    this.category,
+    this.amount,
+    this.comments,
+    this.createdBy,
+    this.message,
+    this.statusCode,
+  });
 
   factory TransactionDetails.fromJson(var json) {
+    var mode = json['mode'];
+    var contact = json['contact'];
+
+    if (mode is! int) {
+      mode = Mode.fromJson(json['mode']);
+    }
+    if (contact is! String) {
+      contact = Contact.fromJson(json['contact']);
+    }
+
     return TransactionDetails(
       id: json['id'],
-      mode: Mode.fromJson(json['mode']),
-      contact: Contact.fromJson(json['contact']),
+      mode: mode,
+      contact: contact,
       transactionDate: json['transaction_date'],
       createDate: json['create_date'],
       updateDate: json['update_date'],
@@ -24,7 +49,27 @@ class TransactionDetails {
       amount: json['amount'],
       comments: json['comments'],
       createdBy: json['created_by'],
+      message: 'Details added successfully!',
+      statusCode: 200,
     );
+  }
+
+  factory TransactionDetails.withError(String error) {
+    return TransactionDetails(message: error);
+  }
+
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+
+    map['amount'] = amount;
+    map['category'] = category;
+    map['transaction_date'] = transactionDate;
+    map['mode'] = mode;
+    map['contact'] = contact;
+
+    if (comments != null && comments.isNotEmpty) map['comments'] = comments;
+
+    return map;
   }
 }
 

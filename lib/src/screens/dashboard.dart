@@ -34,6 +34,24 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
 
     _futureTransactionDetails = TransactionApiController.getTransaction();
+    _futureTransactionDetails.then((response) {
+      var list = response.results as List;
+      List<TransactionDetails> transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+
+      double creditAmount= 0;
+      double debitAmount = 0;
+
+      transactionList.forEach((item){
+        if(item.category == 'C'){
+          creditAmount += item.amount;
+        }else{
+          debitAmount += item.amount;
+        }
+      });
+
+      Provider.of<AppState>(context, listen: false).setCreditAmount(creditAmount.toString());
+      Provider.of<AppState>(context, listen: false).setDebitAmount(debitAmount.toString());
+    });
   }
 
   @override
@@ -86,9 +104,9 @@ class _DashboardState extends State<Dashboard> {
               ],
             ),
             SizedBox(height: 20.0),
-            provider.transactionType == Constants.earnings
-                ? GreenCard(totalBalance: '20000.0')
-                : provider.transactionType == Constants.spendings ? RedCard(totalBalance: '5220.0') : RedGreenCard(totalEarning: '20000.0', totalExpense: '5220.0'),
+            provider.transactionType == Constants.CREDIT
+                ? GreenCard(totalBalance: provider.creditAmount)
+                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
               headerText: '${provider.transactionType}',
@@ -135,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('Earnings', willNotify: true);
+                        provider.setTransactionType('C');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -152,7 +170,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('Spendings', willNotify: true);
+                        provider.setTransactionType('D');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -169,7 +187,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('All transaction', willNotify: true);
+                        provider.setTransactionType('A');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -227,7 +245,6 @@ class _DashboardState extends State<Dashboard> {
             amount: _currentTransaction.amount.toString(),
             transactionType: _currentTransaction.category,
             transactionDate: _currentTransaction.transactionDate,
-            type: _currentTransaction.mode.mode,
           ),
           direction: DismissDirection.endToStart,
           onDismissed: (value) {
@@ -491,31 +508,36 @@ class RedGreenCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Text(
-                          '₹',
-                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                  Expanded(
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(
+                            '₹',
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5.0),
-                      HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
-                    ],
+                        SizedBox(width: 5.0),
+                        HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: Text(
-                          '₹',
-                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(
+                            '₹',
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 5.0),
-                      HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
-                    ],
+                        SizedBox(width: 5.0),
+                        HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -536,7 +558,6 @@ class ListCard extends StatelessWidget {
     @required this.transactionType,
     @required this.transactionDate,
     this.comment,
-    @required this.type,
   }) : super(key: key);
   final IconData icon;
   final String name;
@@ -544,7 +565,6 @@ class ListCard extends StatelessWidget {
   final String transactionType;
   final String transactionDate;
   final String comment;
-  final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -553,7 +573,7 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: type == Constants.spendings ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -609,9 +629,9 @@ class ListCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Text(
-                amount,
+                '₹ ' + amount,
                 style: GoogleFonts.nunito(
-                  color: type != Constants.earnings ? Colors.red.shade300 : Constants.primaryColor,
+                  color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -619,7 +639,7 @@ class ListCard extends StatelessWidget {
                 height: 5.0,
               ),
               Text(
-                transactionType,
+                transactionType == Constants.CREDIT ? 'Credit' : 'Debit',
                 style: GoogleFonts.nunito(
                   color: Colors.black45,
                   fontWeight: FontWeight.w300,

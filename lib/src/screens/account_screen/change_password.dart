@@ -14,6 +14,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   double deviceHeight;
   double deviceWidth;
   AppState provider;
+
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<AppState>(context);
@@ -61,8 +62,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           textAlign: TextAlign.left,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                            contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'New password',
                             alignLabelWithHint: true,
@@ -84,8 +84,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           textAlign: TextAlign.left,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                            contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Confirm password',
                             alignLabelWithHint: true,
@@ -108,7 +107,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   height: 50.0,
                   child: RaisedButton(
                     onPressed: () {
-                      provider.setOTPRequested(true, willNotify: true);
+                      provider.setOTPRequested(true);
                     },
                     child: HeaderWidget(
                       headerText: 'UPDATE PASSWORD',
