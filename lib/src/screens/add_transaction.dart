@@ -437,6 +437,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     super.deactivate();
 
     provider.setTransactionType('', willNotify: false);
+    provider.setMode(null, willNotify: false);
   }
 
   void _submit() {

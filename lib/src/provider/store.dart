@@ -8,7 +8,7 @@ class AppState extends ChangeNotifier {
   bool _isLoading = false;
   String _creditAmount = '0';
   String _debitAmount = '0';
-  String _mode = '';
+  String _mode;
   bool _isEarning = false;
   bool _isSpending = false;
   String _searchQuery = '';
