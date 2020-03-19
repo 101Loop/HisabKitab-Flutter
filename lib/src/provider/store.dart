@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:hisabkitab/src/models/transaction.dart';
 
 class AppState extends ChangeNotifier {
   bool _otpRequested = false;
@@ -18,6 +19,7 @@ class AppState extends ChangeNotifier {
   bool _isCardQuery = false;
   bool _isChequeQuery = false;
   bool _isAccountQuery = false;
+  List<TransactionDetails> _transactionList = List();
 
   bool get getOTPRequested => _otpRequested;
   String get transactionType => _transactionType;
@@ -36,7 +38,7 @@ class AppState extends ChangeNotifier {
   bool get isCardQuery => _isCardQuery;
   bool get isChequeQuery => _isChequeQuery;
   bool get isAccountQuery => _isAccountQuery;
-
+  List<TransactionDetails> get transactionList => _transactionList;
 
   setIsLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
@@ -120,6 +122,11 @@ class AppState extends ChangeNotifier {
 
   setAccountQuery(bool accountQuery, {bool willNotify = true}) {
     _isAccountQuery = accountQuery;
+    if (willNotify) notifyListeners();
+  }
+
+  setTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
+    _transactionList = list;
     if (willNotify) notifyListeners();
   }
 
