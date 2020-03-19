@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
-              transactionType: 'expense',
+              transactionType: 'Add expense',
             ),
           ),
         );
@@ -50,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
-              transactionType: 'earning',
+              transactionType: 'Add earning',
             ),
           ),
         );

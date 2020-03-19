@@ -9,9 +9,9 @@ const String SHOW_CREDIT_URL = BASE_URL + 'account/credit/show/';
 const String ADD_CREDIT_URL = BASE_URL + 'account/credit/add/';
 const String SHOW_DEBIT_URL = BASE_URL + 'account/debit/show/';
 const String ADD_DEBIT_URL = BASE_URL + 'account/debit/add/';
-const String GET_TRANSACTION_URL = BASE_URL + 'transactions/show/';
-const String ADD_TRANSACTION_URL = BASE_URL + 'transactions/add/';
-const String DELETE_TRANSACTION_URL = BASE_URL + 'transactions/';
+const String TRANSACTION_URL = BASE_URL + 'transactions/';
+const String GET_TRANSACTION_URL = TRANSACTION_URL + 'show/';
+const String ADD_TRANSACTION_URL = TRANSACTION_URL + 'add/';
 
 /// Strings
 const String appName = 'Hisab Kitab';
@@ -59,6 +59,7 @@ const List<String> paymentList = [
   'Account Transfer',
   'Card',
 ];
+const List<String> categoryList = ['Credit', 'Debit'];
 const Map<String, String> paymentMap = {
   'Cash': '1',
   'Cheque': '2',

@@ -27,7 +27,7 @@ class TransactionDetails {
     this.statusCode,
   });
 
-  factory TransactionDetails.fromJson(var json) {
+  factory TransactionDetails.fromJson(var json, {String message}) {
     var mode = json['mode'];
     var contact = json['contact'];
 
@@ -49,7 +49,7 @@ class TransactionDetails {
       amount: json['amount'],
       comments: json['comments'],
       createdBy: json['created_by'],
-      message: 'Details added successfully!',
+      message: message,
       statusCode: 200,
     );
   }

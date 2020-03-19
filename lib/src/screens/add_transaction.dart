@@ -14,9 +14,11 @@ class AddTransaction extends StatefulWidget {
   AddTransaction({
     Key key,
     @required this.transactionType,
+    this.transaction,
   }) : super(key: key);
 
   final String transactionType;
+  final TransactionDetails transaction;
 
   @override
   _AddTransactionState createState() => _AddTransactionState();
@@ -39,6 +41,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  TransactionDetails _transaction;
+
   Future<Null> selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
       context: context,
@@ -52,6 +56,27 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       setState(() {
         dateTime = DateFormat('yyyy-MM-dd').format(pickedDate).toString();
       });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _transaction = widget.transaction;
+
+    if (_transaction != null) {
+      AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+      if (_transaction.category == 'C') {
+        initStateProvider.setCategory('Credit', willNotify: false);
+      } else {
+        initStateProvider.setCategory('Debit', willNotify: false);
+      }
+
+      dateTime = _transaction.transactionDate;
+      initStateProvider.setMode(_transaction.mode?.mode, willNotify: false);
+      _contact = _transaction.contact?.name ?? '';
+      _comment = _transaction.comments ?? '';
     }
   }
 
@@ -107,7 +132,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             HeaderWidget(
-                              headerText: 'Add ${widget.transactionType}',
+                              headerText: widget.transactionType,
                               maxFontSize: 25,
                               minFontSize: 25,
                               textColor: Colors.black,
@@ -148,6 +173,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               Container(
                                 width: deviceWidth * 0.75,
                                 child: TextFormField(
+                                  initialValue: _transaction?.amount?.toString() ?? '',
                                   validator: validateDoubleValue,
                                   onSaved: (value) {
                                     _amount = value;
@@ -188,21 +214,30 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Container(
-                                width: deviceWidth * 0.75,
-                                child: TextFormField(
-                                  initialValue: widget.transactionType == 'expense' ? 'Debit' : 'Credit',
-                                  cursorColor: Constant.primaryColor,
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
+                              IgnorePointer(
+                                ignoring: _transaction != null ? false : true,
+                                child: Container(
+                                  width: deviceWidth * 0.7,
+                                  child: DropdownButton(
+                                    iconSize: 0.0,
+                                    underline: Container(),
+                                    value: provider.category,
+                                    onChanged: (value) {
+                                      provider.setCategory(value);
+                                    },
+                                    items: Constant.categoryList.map((category) {
+                                      return DropdownMenuItem(
+                                        child: Text(category),
+                                        value: category,
+                                      );
+                                    }).toList(),
                                   ),
                                 ),
                               ),
                               Icon(
-                                Icons.view_list,
+                                Icons.arrow_drop_down,
                                 color: Colors.black45,
-                                size: 20.0,
+                                size: 30.0,
                               ),
                             ],
                           ),
@@ -319,6 +354,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               Container(
                                 width: deviceWidth * 0.75,
                                 child: TextFormField(
+                                  initialValue: _contact,
                                   validator: validateField,
                                   onSaved: (value) {
                                     _contact = value;
@@ -366,6 +402,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               Container(
                                 width: deviceWidth * 0.75,
                                 child: TextFormField(
+                                  initialValue: _comment,
                                   maxLength: 40,
                                   onSaved: (value) {
                                     _comment = value;
@@ -437,6 +474,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     super.deactivate();
 
     provider.setTransactionType('', willNotify: false);
+    provider.setMode(null, willNotify: false);
   }
 
   void _submit() {
@@ -448,20 +486,22 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
       TransactionDetails transactionDetails = TransactionDetails(
           amount: double.parse(_amount),
-          category: widget.transactionType == 'expense' ? 'D' : 'C',
+          category: provider.category[0],
           transactionDate: dateTime,
           mode: Constant.paymentMap[provider.mode],
           contact: _contact,
           comments: _comment);
 
-      TransactionApiController.addTransaction(transactionDetails).then((response) {
+      TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
         _showSnackBar(response.message);
 
         //if the response is ok, then pop with a delay of 1 sec, otherwise instantly
         if (response.statusCode == 200) {
           Future.delayed(Duration(seconds: 1), () {
             provider.setIsLoading(false, willNotify: false);
-            Navigator.pop(context);
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
+            );
           });
         } else {
           provider.setIsLoading(false);
