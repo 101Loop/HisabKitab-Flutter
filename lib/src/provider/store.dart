@@ -9,6 +9,7 @@ class AppState extends ChangeNotifier {
   String _creditAmount = '0';
   String _debitAmount = '0';
   String _mode;
+  String _category;
   bool _isEarning = false;
   bool _isSpending = false;
   String _searchQuery = '';
@@ -28,6 +29,7 @@ class AppState extends ChangeNotifier {
   String get debitAmount => _debitAmount;
   bool get autoValidate => _autoValidate;
   String get mode => _mode;
+  String get category => _category;
   bool get isEarning => _isEarning;
   bool get isSpending => _isSpending;
   String get searchQuery => _searchQuery;
@@ -72,6 +74,11 @@ class AppState extends ChangeNotifier {
 
   setMode(String mode, {bool willNotify = true}) {
     _mode = mode;
+    if (willNotify) notifyListeners();
+  }
+
+  setCategory(String category, {bool willNotify = true}) {
+    _category = category;
     if (willNotify) notifyListeners();
   }
 
