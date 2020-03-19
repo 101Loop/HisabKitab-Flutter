@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,7 +23,10 @@ class _DashboardState extends State<Dashboard> {
   double deviceHeight;
   double deviceWidth;
 
-  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems.map((SortingItems val) => PopupMenuItem<SortingItems>(child: Text(val.name), value: val)).toList();
+  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
+      .map((SortingItems val) =>
+          PopupMenuItem<SortingItems>(child: Text(val.name), value: val))
+      .toList();
   AppState provider;
 
   Future<PaginatedResponse> _futureTransactionDetails;
@@ -67,7 +71,8 @@ class _DashboardState extends State<Dashboard> {
     _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
-      List<TransactionDetails> transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+      List<TransactionDetails> transactionList =
+          list.map((item) => TransactionDetails.fromJson(item)).toList();
 
       double creditAmount = 0;
       double debitAmount = 0;
@@ -80,8 +85,10 @@ class _DashboardState extends State<Dashboard> {
         }
       });
 
-      Provider.of<AppState>(context, listen: false).setCreditAmount(creditAmount.toString());
-      Provider.of<AppState>(context, listen: false).setDebitAmount(debitAmount.toString());
+      Provider.of<AppState>(context, listen: false)
+          .setCreditAmount(creditAmount.toString());
+      Provider.of<AppState>(context, listen: false)
+          .setDebitAmount(debitAmount.toString());
     });
   }
 
@@ -139,7 +146,11 @@ class _DashboardState extends State<Dashboard> {
             SizedBox(height: 20.0),
             provider.transactionType == Constants.CREDIT
                 ? GreenCard(totalBalance: provider.creditAmount)
-                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
+                : provider.transactionType == Constants.DEBIT
+                    ? RedCard(totalBalance: provider.debitAmount)
+                    : RedGreenCard(
+                        totalEarning: provider.creditAmount,
+                        totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
               headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Spending' : 'All Transactions',
@@ -153,7 +164,8 @@ class _DashboardState extends State<Dashboard> {
             Expanded(
               child: FutureBuilder(
                 future: _futureTransactionDetails,
-                builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     provider.setIsLoading(false, willNotify: false);
 
@@ -185,7 +197,8 @@ class _DashboardState extends State<Dashboard> {
             builder: (context) {
               provider = Provider.of<AppState>(context);
               return AlertDialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -277,7 +290,45 @@ class _DashboardState extends State<Dashboard> {
         TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
 
         return Dismissible(
-          key: Key('list'),
+          key: Key(_currentTransaction.id.toString()),
+          onDismissed: (value) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Transaction deleted successfully'),
+              ),
+            );
+          },
+          confirmDismiss: (DismissDirection direction) async {
+            return await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  title: Text('Confirm'),
+                  content: Text('Are you sure to delete this item?'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        print(_currentTransaction.id);
+                        print(_currentTransaction.amount);
+                        TransactionApiController.deleteTransaction(
+                            _currentTransaction.id);
+                        Navigator.of(context).pop(true);
+                      },
+                      child: Text('DELETE'),
+                    ),
+                    FlatButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('CANCEL'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
           child: ListCard(
             icon: Icons.done,
             name: _currentTransaction.contact.name,
@@ -286,13 +337,6 @@ class _DashboardState extends State<Dashboard> {
             transactionDate: _currentTransaction.transactionDate,
           ),
           direction: DismissDirection.endToStart,
-          onDismissed: (value) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Transaction deleted'),
-              ),
-            );
-          },
           background: Container(
             color: Colors.red,
             child: Padding(
@@ -411,7 +455,11 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
+                  HeaderWidget(
+                      headerText: totalBalance,
+                      maxFontSize: 30,
+                      minFontSize: 28,
+                      textColor: Colors.white),
                 ],
               ),
             ),
@@ -498,7 +546,11 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
+                  HeaderWidget(
+                      headerText: totalBalance,
+                      maxFontSize: 30,
+                      minFontSize: 28,
+                      textColor: Colors.white),
                 ],
               ),
             ),
@@ -574,11 +626,16 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                        HeaderWidget(
+                            headerText: totalEarning,
+                            maxFontSize: 28,
+                            minFontSize: 25,
+                            textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -590,11 +647,16 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                        HeaderWidget(
+                            headerText: totalExpense,
+                            maxFontSize: 28,
+                            minFontSize: 25,
+                            textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -627,12 +689,15 @@ class ListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.only(bottom: 7.0, top: 7.0),
-      padding: EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT
+            ? Colors.red.shade100
+            : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -643,29 +708,42 @@ class ListCard extends StatelessWidget {
               Icon(
                 icon,
                 color: Colors.black45,
-                size: 20.0,
+                size: 15.0,
               ),
-              SizedBox(width: 20.0),
+              SizedBox(width: 10.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Text(
-                        name,
-                        style: GoogleFonts.nunito(
-                          color: Colors.black45,
-                          fontWeight: FontWeight.w700,
+                      Container(
+                        width: deviceWidth * 0.3,
+                        child: AutoSizeText(
+                          name,
+                          minFontSize: 10,
+                          maxFontSize: 14,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.nunito(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       SizedBox(
                         width: 10.0,
                       ),
-                      Text(
-                        transactionDate,
-                        style: GoogleFonts.nunito(
-                          color: Colors.black45,
-                          fontWeight: FontWeight.w300,
+                      Container(
+                        width: deviceWidth * 0.2,
+                        child: AutoSizeText(
+                          transactionDate,
+                          minFontSize: 10,
+                          maxFontSize: 14,
+                          maxLines: 1,
+                          style: GoogleFonts.nunito(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
                       ),
                     ],
@@ -687,21 +765,35 @@ class ListCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Text(
-                '₹ ' + amount,
-                style: GoogleFonts.nunito(
-                  color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
-                  fontWeight: FontWeight.w800,
+              Container(
+                width: deviceWidth * 0.19,
+                child: AutoSizeText(
+                  '₹ ' + amount,
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                  maxLines: 1,
+                  style: GoogleFonts.nunito(
+                    color: transactionType != Constants.CREDIT
+                        ? Colors.red.shade300
+                        : Constants.primaryColor,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               SizedBox(
                 height: 5.0,
               ),
-              Text(
-                transactionType == Constants.CREDIT ? 'Credit' : 'Debit',
-                style: GoogleFonts.nunito(
-                  color: Colors.black45,
-                  fontWeight: FontWeight.w300,
+              Container(
+                width: deviceWidth * 0.15,
+                child: AutoSizeText(
+                  transactionType == Constants.CREDIT ? 'Credit' : 'Debit',
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                  maxLines: 1,
+                  style: GoogleFonts.nunito(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
               ),
             ],
