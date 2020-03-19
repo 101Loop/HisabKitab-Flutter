@@ -127,8 +127,36 @@ class ValidationMixin {
     }
   }
 
+  ///method to validate double value
+  String validateNullableDoubleValue(String value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+
+    String result = validateNonEmoji(value);
+    if (result != null) return result;
+
+    try {
+      double _value = double.parse(value);
+
+      if (_value > 9999)
+        return isLargeValue;
+      else if (_value < 0) return isSmallValue;
+    } on FormatException catch (_) {
+      return isValidValue;
+    }
+
+    String pattern = r'^\d+\.\d*|\.?\d+';
+    RegExp regExp = RegExp(pattern);
+    if (!regExp.hasMatch(value)) {
+      return isValidValue;
+    } else {
+      return null;
+    }
+  }
+
   ///method to check if the string isn't an emoji
-  String validateNonEmoji(String value) {
+  static String validateNonEmoji(String value) {
     if (value == null || value.trim().isEmpty) {
       return isEmpty;
     }

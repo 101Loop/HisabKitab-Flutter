@@ -31,13 +31,44 @@ class _DashboardState extends State<Dashboard> {
 
   Future<PaginatedResponse> _futureTransactionDetails;
 
-  List<TransactionDetails> _transactionList = List();
+  String queryParams = '?';
+
+  Map<dynamic, int> _sortScheme = Map();
 
   @override
   void initState() {
     super.initState();
 
-    _futureTransactionDetails = TransactionApiController.getTransaction();
+    //sets sort scheme
+    for (int i = 0; i < sortingItems.length; i++) {
+      _sortScheme.putIfAbsent(sortingItems[i].name, () => i);
+    }
+
+    AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+    if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
+    if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
+    if (initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
+    if (initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
+    if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
+    if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
+    if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
+    if (initStateProvider.isAccountQuery) queryParams += 'mode=3';
+
+    if (initStateProvider.isEarning) {
+      if (initStateProvider.isSpending) {
+        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
+      } else {
+        queryParams += 'category=C&';
+        initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
+      }
+    } else {
+      if (initStateProvider.isSpending) {
+        queryParams += 'category=D&';
+        initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
+      }
+    }
+
+    _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
       List<TransactionDetails> transactionList =
@@ -104,7 +135,9 @@ class _DashboardState extends State<Dashboard> {
                         Icons.more_vert,
                         color: Constants.primaryColor,
                       ),
-                      onSelected: (value) {},
+                      onSelected: (value) {
+                        _sortTransactionList(value);
+                      },
                     ),
                   ],
                 ),
@@ -120,9 +153,7 @@ class _DashboardState extends State<Dashboard> {
                         totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT
-                  ? 'Earnings'
-                  : 'Spending',
+              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Spending' : 'All Transactions',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -139,26 +170,18 @@ class _DashboardState extends State<Dashboard> {
                     provider.setIsLoading(false, willNotify: false);
 
                     var list = snapshot.data.results as List;
-                    _transactionList = list
-                        .map((item) => TransactionDetails.fromJson(item))
-                        .toList();
+                    provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
 
                     if (provider.transactionType == Constants.CREDIT) {
-                      _transactionList.removeWhere(
-                          (item) => item.category != Constants.CREDIT);
+                      provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
                     } else if (provider.transactionType == Constants.DEBIT) {
-                      _transactionList.removeWhere(
-                          (item) => item.category == Constants.CREDIT);
+                      provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
                     }
                   } else {
                     provider.setIsLoading(true, willNotify: false);
                   }
 
-                  return provider.isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : _transactionList.length > 0
-                          ? _listViewBuilder()
-                          : _nothingToShowWidget();
+                  return provider.isLoading ? Center(child: CircularProgressIndicator()) : provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
                 },
               ),
             ),
@@ -233,7 +256,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () async {
                         Navigator.of(context).pop();
-                        Navigator.of(context).push(
+                        Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder: (context) => FilterScreen(),
                           ),
@@ -262,9 +285,9 @@ class _DashboardState extends State<Dashboard> {
     return ListView.builder(
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),
-      itemCount: _transactionList.length,
+      itemCount: provider.transactionList.length,
       itemBuilder: (context, index) {
-        TransactionDetails _currentTransaction = _transactionList[index];
+        TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
 
         return Dismissible(
           key: Key(_currentTransaction.id.toString()),
@@ -334,6 +357,26 @@ class _DashboardState extends State<Dashboard> {
 
   _nothingToShowWidget() {
     return Center(child: Text('There\'s nothing to show :)'));
+  }
+
+  ///sorts the transaction list, according to [value] received
+  void _sortTransactionList(SortingItems value) {
+    int sortScheme = _sortScheme[value.name];
+
+    switch (sortScheme) {
+      case 0: //name ascending
+        provider.transactionList.sort((transaction1, transaction2) => transaction1.contact?.compareTo(transaction2.contact ?? ''));
+        break;
+      case 1: //name descending
+        provider.transactionList.sort((transaction1, transaction2) => transaction2.contact?.compareTo(transaction1.contact ?? ''));
+        break;
+      case 2: //amount high to low
+        provider.transactionList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        break;
+      case 3: //amount low to high
+        provider.transactionList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        break;
+    }
   }
 }
 

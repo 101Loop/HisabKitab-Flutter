@@ -4,6 +4,7 @@ import 'package:hisabkitab/src/api_controller/transaction_api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
+import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constant;
 import 'package:intl/intl.dart';
@@ -94,7 +95,9 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   size: 20,
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
+                                  );
                                 },
                               ),
                             ),
