@@ -29,11 +29,38 @@ class _DashboardState extends State<Dashboard> {
 
   List<TransactionDetails> _transactionList = List();
 
+  String queryParams = '?';
+
   @override
   void initState() {
     super.initState();
 
-    _futureTransactionDetails = TransactionApiController.getTransaction();
+    AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+    if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
+    if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
+    if (initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
+    if (initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
+    if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
+    if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
+    if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
+    if (initStateProvider.isAccountQuery) queryParams += 'mode=3';
+
+    if (initStateProvider.isEarning) {
+      if (initStateProvider.isSpending) {
+        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
+      } else {
+
+        queryParams += 'category=C&';
+        initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
+      }
+    } else {
+      if (initStateProvider.isSpending) {
+        queryParams += 'category=D&';
+        initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
+      }
+    }
+
+    _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
       List<TransactionDetails> transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
@@ -109,7 +136,7 @@ class _DashboardState extends State<Dashboard> {
                 : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : 'Spending',
+              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Spending' : 'All Transactions',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -125,7 +152,7 @@ class _DashboardState extends State<Dashboard> {
                     provider.setIsLoading(false, willNotify: false);
 
                     var list = snapshot.data.results as List;
-                    _transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+                    _transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
 
                     if (provider.transactionType == Constants.CREDIT) {
                       _transactionList.removeWhere((item) => item.category != Constants.CREDIT);
@@ -136,7 +163,7 @@ class _DashboardState extends State<Dashboard> {
                     provider.setIsLoading(true, willNotify: false);
                   }
 
-                  return provider.isLoading ? Center(child: CircularProgressIndicator()) : _transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
+                  return provider.isLoading ? Center(child: CircularProgressIndicator()) : _transactionList != null && _transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
                 },
               ),
             ),
@@ -210,7 +237,7 @@ class _DashboardState extends State<Dashboard> {
                     GestureDetector(
                       onTap: () async {
                         Navigator.of(context).pop();
-                        Navigator.of(context).push(
+                        Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder: (context) => FilterScreen(),
                           ),
@@ -239,9 +266,9 @@ class _DashboardState extends State<Dashboard> {
     return ListView.builder(
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),
-      itemCount: _transactionList.length,
+      itemCount: _transactionList?.length,
       itemBuilder: (context, index) {
-        TransactionDetails _currentTransaction = _transactionList[index];
+        TransactionDetails _currentTransaction = _transactionList?.elementAt(index);
 
         return Dismissible(
           key: Key('list'),

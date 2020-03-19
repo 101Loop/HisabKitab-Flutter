@@ -10,14 +10,26 @@ class TransactionApiController {
   static String token;
 
   ///api call to fetch transaction details
-  static Future<PaginatedResponse> getTransaction() async {
+  static Future<PaginatedResponse> getTransaction(String queryParams) async {
+
+    //removes &, if present at last
+    if (queryParams.endsWith("\&")) {
+      queryParams = queryParams.substring(0, queryParams.length - 1);
+    }
+
+    //when there's nothing in query param, make the query param empty
+    if(queryParams.length == 1) {
+      queryParams = '';
+    }
+
+    print('query params: $queryParams');
     if (token == null) token = prefs.getString(Constants.TOKEN);
 
     final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": token};
 
     var response;
     try {
-      response = await http.get(Constants.GET_TRANSACTION_URL, headers: headers);
+      response = await http.get(Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
     } catch (_) {
       return PaginatedResponse.withError(Constants.serverError);
     }
