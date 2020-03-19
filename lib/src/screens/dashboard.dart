@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -266,7 +267,14 @@ class _DashboardState extends State<Dashboard> {
         TransactionDetails _currentTransaction = _transactionList[index];
 
         return Dismissible(
-          key: Key('list'),
+          key: Key(_currentTransaction.id.toString()),
+          onDismissed: (value) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Transaction deleted successfully'),
+              ),
+            );
+          },
           confirmDismiss: (DismissDirection direction) async {
             return await showDialog(
               context: context,
@@ -280,7 +288,13 @@ class _DashboardState extends State<Dashboard> {
                   content: Text('Are you sure to delete this item?'),
                   actions: <Widget>[
                     FlatButton(
-                      onPressed: () => Navigator.of(context).pop(true),
+                      onPressed: () {
+                        print(_currentTransaction.id);
+                        print(_currentTransaction.amount);
+                        TransactionApiController.deleteTransaction(
+                            _currentTransaction.id);
+                        Navigator.of(context).pop(true);
+                      },
                       child: Text('DELETE'),
                     ),
                     FlatButton(
@@ -300,13 +314,6 @@ class _DashboardState extends State<Dashboard> {
             transactionDate: _currentTransaction.transactionDate,
           ),
           direction: DismissDirection.endToStart,
-          onDismissed: (value) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Transaction deleted'),
-              ),
-            );
-          },
           background: Container(
             color: Colors.red,
             child: Padding(
@@ -639,9 +646,10 @@ class ListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.only(bottom: 7.0, top: 7.0),
-      padding: EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
         color: transactionType == Constants.DEBIT
@@ -657,29 +665,42 @@ class ListCard extends StatelessWidget {
               Icon(
                 icon,
                 color: Colors.black45,
-                size: 20.0,
+                size: 15.0,
               ),
-              SizedBox(width: 20.0),
+              SizedBox(width: 10.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Text(
-                        name,
-                        style: GoogleFonts.nunito(
-                          color: Colors.black45,
-                          fontWeight: FontWeight.w700,
+                      Container(
+                        width: deviceWidth * 0.3,
+                        child: AutoSizeText(
+                          name,
+                          minFontSize: 10,
+                          maxFontSize: 14,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.nunito(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       SizedBox(
                         width: 10.0,
                       ),
-                      Text(
-                        transactionDate,
-                        style: GoogleFonts.nunito(
-                          color: Colors.black45,
-                          fontWeight: FontWeight.w300,
+                      Container(
+                        width: deviceWidth * 0.2,
+                        child: AutoSizeText(
+                          transactionDate,
+                          minFontSize: 10,
+                          maxFontSize: 14,
+                          maxLines: 1,
+                          style: GoogleFonts.nunito(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
                       ),
                     ],
@@ -701,23 +722,35 @@ class ListCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Text(
-                '₹ ' + amount,
-                style: GoogleFonts.nunito(
-                  color: transactionType != Constants.CREDIT
-                      ? Colors.red.shade300
-                      : Constants.primaryColor,
-                  fontWeight: FontWeight.w800,
+              Container(
+                width: deviceWidth * 0.19,
+                child: AutoSizeText(
+                  '₹ ' + amount,
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                  maxLines: 1,
+                  style: GoogleFonts.nunito(
+                    color: transactionType != Constants.CREDIT
+                        ? Colors.red.shade300
+                        : Constants.primaryColor,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               SizedBox(
                 height: 5.0,
               ),
-              Text(
-                transactionType == Constants.CREDIT ? 'Credit' : 'Debit',
-                style: GoogleFonts.nunito(
-                  color: Colors.black45,
-                  fontWeight: FontWeight.w300,
+              Container(
+                width: deviceWidth * 0.15,
+                child: AutoSizeText(
+                  transactionType == Constants.CREDIT ? 'Credit' : 'Debit',
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                  maxLines: 1,
+                  style: GoogleFonts.nunito(
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
               ),
             ],
