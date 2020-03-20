@@ -65,6 +65,13 @@ flutter:
     - family:  RupeeIcon
       fonts:
         - asset: fonts/RupeeIcon.ttf
+    - family:  Earning
+      fonts:
+       - asset: fonts/Earning.ttf
+    - family:  Spending
+      fonts:
+       - asset: fonts/Spending.ttf
+
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
