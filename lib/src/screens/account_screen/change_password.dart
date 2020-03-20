@@ -4,7 +4,7 @@ import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
-import 'package:hisabkitab/utils/const.dart';
+import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -60,7 +60,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                     Container(
                       width: deviceWidth,
                       decoration: BoxDecoration(
-                        color: profileBG,
+                        color: Constants.profileBG,
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Form(
@@ -78,7 +78,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                                 },
                                 autovalidate: provider.autoValidate,
                                 obscureText: true,
-                                cursorColor: primaryColor,
+                                cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
@@ -106,7 +106,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                                 validator: validateField,
                                 obscureText: true,
                                 autovalidate: provider.autoValidate,
-                                cursorColor: primaryColor,
+                                cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
@@ -142,11 +142,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                           minFontSize: 17,
                           textColor: Colors.white,
                         ),
-                        color: primaryColor,
+                        color: Constants.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25.0),
                           side: BorderSide(
-                            color: primaryColor,
+                            color: Constants.primaryColor,
                           ),
                         ),
                       ),
@@ -177,7 +177,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
         LoginAPIController.updatePassword(_password).then((response){
           provider.setLoading(false, willNotify: false);
 
-          if(response.statusCode == HTTP_202_ACCEPTED || response.statusCode == HTTP_200_OK) {
+          if(response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
             _showSnackBar(response.data ?? 'Password updated successfully');
 
             Future.delayed(Duration(milliseconds: 300), (){
@@ -185,7 +185,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
             });
           }else{
             provider.setLoading(false);
-            _showSnackBar(response.data ?? 'Server is not responding, Please check your internet connection!');
+            _showSnackBar(response.data ?? Constants.serverError);
           }
         });
       } else {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/models/password_response.dart';
 import 'package:hisabkitab/src/models/user.dart';
+import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:http/http.dart' as http;
 
@@ -63,6 +64,59 @@ class LoginAPIController {
     }
   }
 
+  /// api call to get user profile
+  static Future<UserProfile> getUserProfile() async {
+    _token = _token ?? prefs.getString(Constants.TOKEN);
+
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": _token};
+
+    var response;
+
+    try {
+      response = await http.get(Constants.LOGIN_URL, headers: headers);
+    } catch (_) {
+      return UserProfile(error: Constants.serverError);
+    }
+
+    int statusCode = response.statusCode;
+
+    if (statusCode == Constants.HTTP_200_OK) {
+      String responseBody = response.body.toString();
+      var parsedResponse = json.decode(responseBody);
+      return UserProfile.fromJson(parsedResponse);
+    } else {
+      String errorMessage = response.body.toString();
+      if (errorMessage != null) {
+        try {
+          var errorResponse = json.decode(errorMessage);
+
+          if (errorResponse['detail'] != null) {
+            var detail = errorResponse['detail'];
+            return UserProfile(error: detail.toString());
+          } else if (errorResponse['data'] != null) {
+            var data = errorResponse['data'];
+            var dataObject = json.encode(data);
+            var parsedData = json.decode(dataObject);
+            var nonFieldErrors = parsedData['non_field_errors'];
+            if (nonFieldErrors != null) {
+              String message = nonFieldErrors[0];
+              return UserProfile(error: message);
+            } else {
+              return UserProfile(error: errorResponse);
+            }
+          } else {
+            UserProfile(error: errorResponse);
+          }
+        } catch (e) {
+          return UserProfile(error: e.toString());
+        }
+      } else {
+        return UserProfile(error: Constants.serverError);
+      }
+      return UserProfile(error: Constants.serverError);
+    }
+  }
+
   /// api call to update password
   static Future<PasswordResponse> updatePassword(String password) async {
     _token = _token ?? prefs.getString(Constants.TOKEN);
@@ -111,13 +165,12 @@ class LoginAPIController {
           return PasswordResponse(data: e.toString(), statusCode: statusCode);
         }
       } else {
-        return PasswordResponse(data: 'Server is not responding, Please try again later!', statusCode: statusCode);
+        return PasswordResponse(data: Constants.serverError, statusCode: statusCode);
       }
     }
   }
 
   static _saveToken(String token) async {
-//    await prefs.remove(Constants.TOKEN);
     await prefs.setString(Constants.TOKEN, token);
   }
 }

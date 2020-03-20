@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
+import 'package:provider/provider.dart';
 
 class Account extends StatefulWidget {
   Account({Key key}) : super(key: key);
+
   @override
   _AccountState createState() => _AccountState();
 }
@@ -14,12 +18,40 @@ class Account extends StatefulWidget {
 class _AccountState extends State<Account> {
   double deviceHeight;
   double deviceWidth;
+
+  AppState provider;
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    LoginAPIController.getUserProfile().then((response) {
+      if (response != null) {
+        Provider.of<AppState>(context, listen: false).setUserProfile(response, willNotify: false);
+
+        if (response.error?.isNotEmpty ?? false) {
+          Future.delayed(Duration.zero, () {
+            _showSnackBar(response.error);
+          });
+        }
+      } else {
+        Future.delayed(Duration.zero, () {
+          _showSnackBar('Couldn\'t fetch user\'s data');
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: profileBG,
         body: Container(
           padding: EdgeInsets.all(10.0),
@@ -80,7 +112,7 @@ class _AccountState extends State<Account> {
                     backgroundColor: lightGreen.withRed(210),
                     child: Center(
                       child: HeaderWidget(
-                        headerText: 'JD',
+                        headerText: '?',
                         maxFontSize: 32,
                         minFontSize: 30,
                         textColor: primaryColor,
@@ -90,7 +122,7 @@ class _AccountState extends State<Account> {
                 ),
                 SizedBox(height: 10.0),
                 HeaderWidget(
-                  headerText: 'John Dave',
+                  headerText: provider.userProfile?.name ?? 'Unknown',
                   maxFontSize: 22,
                   minFontSize: 20,
                   textColor: Colors.black,
@@ -110,12 +142,12 @@ class _AccountState extends State<Account> {
                         margin: EdgeInsets.all(15.0),
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
+                          initialValue: provider.userProfile?.name ?? '',
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                            contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Name',
                             alignLabelWithHint: true,
@@ -133,12 +165,12 @@ class _AccountState extends State<Account> {
                         margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
+                          initialValue: provider.userProfile?.mobile ?? '',
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                            contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Mobile',
                             alignLabelWithHint: true,
@@ -156,37 +188,14 @@ class _AccountState extends State<Account> {
                         margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
+                          initialValue: provider.userProfile?.email ?? '',
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                            contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Email-ID',
-                            alignLabelWithHint: true,
-                            hintStyle: GoogleFonts.nunito(
-                              color: Colors.grey.shade400,
-                              fontSize: 14,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
-                        padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          cursorColor: primaryColor,
-                          textAlign: TextAlign.left,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                            fillColor: Colors.white,
-                            hintText: 'Address',
                             alignLabelWithHint: true,
                             hintStyle: GoogleFonts.nunito(
                               color: Colors.grey.shade400,
@@ -276,6 +285,13 @@ class _AccountState extends State<Account> {
           ),
         ),
       ),
+    );
+  }
+
+  ///shows a [SnackBar], displaying [message]
+  void _showSnackBar(String message) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }

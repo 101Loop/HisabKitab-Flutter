@@ -6,6 +6,7 @@ const String BASE_URL = 'https://admin.hisabkitab.in/api/';
 const String USERS_URL = BASE_URL + 'users/';
 const String LOGIN_URL = USERS_URL + 'login/';
 const String REGISTER_URL = USERS_URL + 'register/';
+const String PROFILE_URL = USERS_URL + 'userprofile/';
 const String UPDATE_PASSWORD_URL = USERS_URL + 'changepassword/';
 const String ACCOUNT_URL = BASE_URL + 'account/';
 const String CREDIT_URL = ACCOUNT_URL + 'credit/';
