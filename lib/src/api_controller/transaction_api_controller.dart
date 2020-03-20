@@ -10,7 +10,7 @@ class TransactionApiController {
   static String token;
 
   ///api call to fetch transaction details
-  static Future<PaginatedResponse> getTransaction(String queryParams) async {
+  static Future<PaginatedResponse> getTransaction(String queryParams, {String next}) async {
     //removes &, if present at last
     if (queryParams.endsWith("\&")) {
       queryParams = queryParams.substring(0, queryParams.length - 1);
@@ -28,7 +28,7 @@ class TransactionApiController {
 
     var response;
     try {
-      response = await http.get(Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
+      response = await http.get(next ?? Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
     } catch (_) {
       return PaginatedResponse.withError(Constants.serverError);
     }

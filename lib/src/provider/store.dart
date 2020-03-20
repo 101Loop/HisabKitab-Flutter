@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
+import 'package:hisabkitab/src/models/user_profile.dart';
 
 class AppState extends ChangeNotifier {
   bool _otpRequested = false;
@@ -20,6 +21,8 @@ class AppState extends ChangeNotifier {
   bool _isCardQuery = false;
   bool _isChequeQuery = false;
   bool _isAccountQuery = false;
+  bool _isLoadingItems = false;
+  UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
 
   bool get getOTPRequested => _otpRequested;
@@ -40,9 +43,11 @@ class AppState extends ChangeNotifier {
   bool get isCardQuery => _isCardQuery;
   bool get isChequeQuery => _isChequeQuery;
   bool get isAccountQuery => _isAccountQuery;
+  bool get isLoadingItems => _isLoadingItems;
+  UserProfile get userProfile => _userProfile;
   List<TransactionDetails> get transactionList => _transactionList;
 
-  setIsLoading(bool value, {bool willNotify = true}) {
+  setLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
     if (willNotify) notifyListeners();
   }
@@ -134,6 +139,21 @@ class AppState extends ChangeNotifier {
 
   setTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
     _transactionList = list;
+    if (willNotify) notifyListeners();
+  }
+
+  updateTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
+    _transactionList.addAll(list);
+    if (willNotify) notifyListeners();
+  }
+
+  setLoadingItems(bool isLoadingItems, {bool willNotify = true}) {
+    _isLoadingItems = isLoadingItems;
+    if (willNotify) notifyListeners();
+  }
+
+  setUserProfile(UserProfile userProfile, {bool willNotify = true}) {
+    _userProfile = userProfile;
     if (willNotify) notifyListeners();
   }
 

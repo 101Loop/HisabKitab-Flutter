@@ -3,12 +3,19 @@ import 'package:flutter/painting.dart';
 
 ///urls
 const String BASE_URL = 'https://admin.hisabkitab.in/api/';
-const String LOGIN_URL = BASE_URL + 'users/login/';
-const String REGISTER_URL = BASE_URL + 'users/register/';
-const String SHOW_CREDIT_URL = BASE_URL + 'account/credit/show/';
-const String ADD_CREDIT_URL = BASE_URL + 'account/credit/add/';
-const String SHOW_DEBIT_URL = BASE_URL + 'account/debit/show/';
-const String ADD_DEBIT_URL = BASE_URL + 'account/debit/add/';
+const String USERS_URL = BASE_URL + 'users/';
+const String LOGIN_URL = USERS_URL + 'login/';
+const String REGISTER_URL = USERS_URL + 'register/';
+const String PROFILE_URL = USERS_URL + 'userprofile/';
+const String UPDATE_PROFILE_URL = USERS_URL + 'updateprofile/';
+const String UPDATE_PASSWORD_URL = USERS_URL + 'changepassword/';
+const String ACCOUNT_URL = BASE_URL + 'account/';
+const String CREDIT_URL = ACCOUNT_URL + 'credit/';
+const String DEBIT_URL = ACCOUNT_URL + 'debit/';
+const String SHOW_CREDIT_URL = CREDIT_URL + 'show/';
+const String ADD_CREDIT_URL = CREDIT_URL + 'add/';
+const String SHOW_DEBIT_URL = DEBIT_URL + 'show/';
+const String ADD_DEBIT_URL = DEBIT_URL + 'add/';
 const String TRANSACTION_URL = BASE_URL + 'transactions/';
 const String GET_TRANSACTION_URL = TRANSACTION_URL + 'show/';
 const String ADD_TRANSACTION_URL = TRANSACTION_URL + 'add/';

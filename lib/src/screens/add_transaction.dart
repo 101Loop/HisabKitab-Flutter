@@ -481,7 +481,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     final _formState = _formKey.currentState;
 
     if (_formState.validate() && dateTime != null && dateTime.isNotEmpty && provider.mode.isNotEmpty) {
-      provider.setIsLoading(true);
+      provider.setLoading(true);
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
@@ -498,13 +498,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         //if the response is ok, then pop with a delay of 1 sec, otherwise instantly
         if (response.statusCode == 200) {
           Future.delayed(Duration(seconds: 1), () {
-            provider.setIsLoading(false, willNotify: false);
+            provider.setLoading(false, willNotify: false);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
             );
           });
         } else {
-          provider.setIsLoading(false);
+          provider.setLoading(false);
         }
       });
     } else {

@@ -255,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   void _onLoginPressed() {
     provider.setAutoValidate(true);
     if (formKey.currentState.validate()) {
-      provider.setIsLoading(true);
+      provider.setLoading(true);
       FocusScope.of(context).requestFocus(FocusNode());
       formKey.currentState.save();
       print(usernameController.text);
@@ -264,9 +264,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
         username: usernameController.text,
         password: passwordController.text,
       );
-      _futureUser = LoginAPIConroller.login(user);
+      _futureUser = LoginAPIController.login(user);
       _futureUser.then((response) {
-        provider.setIsLoading(false);
+        provider.setLoading(false);
         if (response.error != null) {
           showSnackBar(response.error ?? '');
         } else if (response.data.token != null) {

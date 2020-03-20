@@ -33,6 +33,8 @@ class _DashboardState extends State<Dashboard> {
 
   Map<dynamic, int> _sortScheme = Map();
 
+  String _next;
+
   @override
   void initState() {
     super.initState();
@@ -149,16 +151,16 @@ class _DashboardState extends State<Dashboard> {
               minFontSize: 20.0,
               textColor: Colors.black,
             ),
-            SizedBox(
-              height: 10.0,
-            ),
+            SizedBox(height: 10.0),
             Expanded(
               child: FutureBuilder(
                 future: _futureTransactionDetails,
                 builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     provider.transactionList.clear();
-                    provider.setIsLoading(false, willNotify: false);
+                    provider.setLoading(false, willNotify: false);
+
+                    _next = snapshot.data.next;
 
                     var list = snapshot.data.results as List;
                     provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
@@ -169,13 +171,14 @@ class _DashboardState extends State<Dashboard> {
                       provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
                     }
                   } else {
-                    provider.setIsLoading(true, willNotify: false);
+                    provider.setLoading(true, willNotify: false);
                   }
 
                   return provider.isLoading ? Center(child: CircularProgressIndicator()) : provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
                 },
               ),
             ),
+            provider.isLoadingItems ? Center(child: CircularProgressIndicator()) : Container()
           ],
         ),
       ),
@@ -272,86 +275,94 @@ class _DashboardState extends State<Dashboard> {
   }
 
   _listViewBuilder() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: BouncingScrollPhysics(),
-      itemCount: provider.transactionList.length,
-      itemBuilder: (context, index) {
-        TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
+    return NotificationListener(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+          _loadMore();
+        }
+        return true;
+      },
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
+        itemCount: provider.transactionList.length,
+        itemBuilder: (context, index) {
+          TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
 
-        return GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (BuildContext context) => AddTransaction(transactionType: 'Edit Transacition', transaction: _currentTransaction),
-              ),
-            );
-          },
-          child: Dismissible(
-            key: Key(_currentTransaction.id.toString()),
-            onDismissed: (value) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Transaction deleted successfully'),
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => AddTransaction(transactionType: 'Edit Transacition', transaction: _currentTransaction),
                 ),
               );
             },
-            confirmDismiss: (DismissDirection direction) async {
-              return await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    title: Text('Confirm'),
-                    content: Text('Are you sure?'),
-                    actions: <Widget>[
-                      FlatButton(
-                        onPressed: () {
-                          print(_currentTransaction.id);
-                          print(_currentTransaction.amount);
-                          TransactionApiController.deleteTransaction(_currentTransaction.id);
-                          Navigator.of(context).pop(true);
+            child: Dismissible(
+              key: Key(_currentTransaction.id.toString()),
+              onDismissed: (value) {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Transaction deleted successfully'),
+                  ),
+                );
+              },
+              confirmDismiss: (DismissDirection direction) async {
+                return await showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      title: Text('Confirm'),
+                      content: Text('Are you sure?'),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            print(_currentTransaction.id);
+                            print(_currentTransaction.amount);
+                            TransactionApiController.deleteTransaction(_currentTransaction.id);
+                            Navigator.of(context).pop(true);
 
-                          provider.transactionList.removeAt(index);
-                        },
-                        child: Text('DELETE'),
-                      ),
-                      FlatButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('CANCEL'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: ListCard(
-              icon: Icons.done,
-              name: _currentTransaction.contact.name,
-              amount: _currentTransaction.amount.toString(),
-              transactionType: _currentTransaction.category,
-              transactionDate: _currentTransaction.transactionDate,
-            ),
-            direction: DismissDirection.endToStart,
-            background: Container(
-              color: Colors.red,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
+                            provider.transactionList.removeAt(index);
+                          },
+                          child: Text('DELETE'),
+                        ),
+                        FlatButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text('CANCEL'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: ListCard(
+                icon: Icons.done,
+                name: _currentTransaction.contact.name,
+                amount: _currentTransaction.amount.toString(),
+                transactionType: _currentTransaction.category,
+                transactionDate: _currentTransaction.transactionDate,
+              ),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -365,10 +376,10 @@ class _DashboardState extends State<Dashboard> {
 
     switch (sortScheme) {
       case 0: //name ascending
-        provider.transactionList.sort((transaction1, transaction2) => transaction1.contact?.compareTo(transaction2.contact ?? ''));
+        provider.transactionList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
         break;
       case 1: //name descending
-        provider.transactionList.sort((transaction1, transaction2) => transaction2.contact?.compareTo(transaction1.contact ?? ''));
+        provider.transactionList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
         break;
       case 2: //amount high to low
         provider.transactionList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
@@ -376,6 +387,29 @@ class _DashboardState extends State<Dashboard> {
       case 3: //amount low to high
         provider.transactionList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
         break;
+    }
+  }
+
+  ///loads more items on scrolling
+  void _loadMore() {
+    provider.setLoadingItems(true, willNotify: false);
+    if (_next?.isNotEmpty ?? false) {
+      TransactionApiController.getTransaction(queryParams, next: _next).then(
+        (response) {
+          provider.setLoadingItems(false, willNotify: false);
+
+          _next = response.next;
+
+          var list = response.results as List;
+          provider.updateTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+
+          if (provider.transactionType == Constants.CREDIT) {
+            provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
+          } else if (provider.transactionType == Constants.DEBIT) {
+            provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
+          }
+        },
+      );
     }
   }
 }
