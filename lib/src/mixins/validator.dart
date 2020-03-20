@@ -46,6 +46,26 @@ class ValidationMixin {
     }
   }
 
+  ///method to validate email
+  String validateNullableEmail(String value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+
+    String result = validateNonEmoji(value);
+    if (result != null) return result;
+
+    String pattern =
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    RegExp regExp = RegExp(pattern);
+
+    if (!regExp.hasMatch(value)) {
+      return "Invalid Email";
+    } else {
+      return null;
+    }
+  }
+
   ///method to validate if the field is empty or not
   String validateField(String value) {
     String result = validateNonEmoji(value);
@@ -62,6 +82,24 @@ class ValidationMixin {
   String validateMobile(String value) {
     if (value == null || value.trim().isEmpty) {
       return isEmpty;
+    }
+
+    String result = validateNonEmoji(value);
+    if (result != null) return result;
+
+    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = RegExp(pattern);
+    if (!regExp.hasMatch(value)) {
+      return isValidMobileMessage;
+    } else {
+      return null;
+    }
+  }
+
+  ///method to validate mobile number
+  String validateNullableMobile(String value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
     }
 
     String result = validateNonEmoji(value);

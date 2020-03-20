@@ -17,12 +17,12 @@ class UserProfile {
     );
   }
 
-  Map<String, String> toMap(){
+  Map<String, String> toMap() {
     var map = Map<String, String>();
 
-    map['name'] = name;
-    map['email'] = email;
-    map['mobile'] = mobile;
+    if (name?.isNotEmpty ?? false) map['name'] = name;
+    if (email?.isNotEmpty ?? false) map['email'] = email;
+    if (mobile?.isNotEmpty ?? false) map['mobile'] = mobile;
 
     return map;
   }

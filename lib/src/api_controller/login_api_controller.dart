@@ -117,6 +117,59 @@ class LoginAPIController {
     }
   }
 
+  /// api call to update user profile
+  static Future<UserProfile> updateUserProfile(UserProfile data) async {
+    _token = _token ?? prefs.getString(Constants.TOKEN);
+
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": _token};
+
+    var response;
+
+    try {
+      response = await http.patch(Constants.UPDATE_PROFILE_URL, headers: headers, body: json.encode(data.toMap()));
+    } catch (_) {
+      return UserProfile(error: Constants.serverError);
+    }
+
+    int statusCode = response.statusCode;
+
+    if (statusCode == Constants.HTTP_200_OK || statusCode == Constants.HTTP_202_ACCEPTED) {
+      String responseBody = response.body.toString();
+      var parsedResponse = json.decode(responseBody);
+      return UserProfile.fromJson(parsedResponse);
+    } else {
+      String errorMessage = response.body.toString();
+      if (errorMessage != null) {
+        try {
+          var errorResponse = json.decode(errorMessage);
+
+          if (errorResponse['detail'] != null) {
+            var detail = errorResponse['detail'];
+            return UserProfile(error: detail.toString());
+          } else if (errorResponse['data'] != null) {
+            var data = errorResponse['data'];
+            var dataObject = json.encode(data);
+            var parsedData = json.decode(dataObject);
+            var nonFieldErrors = parsedData['non_field_errors'];
+            if (nonFieldErrors != null) {
+              String message = nonFieldErrors[0];
+              return UserProfile(error: message);
+            } else {
+              return UserProfile(error: errorResponse);
+            }
+          } else {
+            UserProfile(error: errorResponse);
+          }
+        } catch (e) {
+          return UserProfile(error: e.toString());
+        }
+      } else {
+        return UserProfile(error: Constants.serverError);
+      }
+      return UserProfile(error: Constants.serverError);
+    }
+  }
+
   /// api call to update password
   static Future<PasswordResponse> updatePassword(String password) async {
     _token = _token ?? prefs.getString(Constants.TOKEN);
