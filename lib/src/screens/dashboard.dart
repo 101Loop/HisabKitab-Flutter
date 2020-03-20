@@ -87,7 +87,7 @@ class _DashboardState extends State<Dashboard> {
       });
 
       initStateProvider.setCreditAmount(creditAmount.toString(), willNotify: false);
-      initStateProvider.setDebitAmount(debitAmount.toString(), willNotify: false);
+      initStateProvider.setDebitAmount(debitAmount.toString());
     });
   }
 
