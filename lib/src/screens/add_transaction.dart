@@ -14,11 +14,13 @@ class AddTransaction extends StatefulWidget {
   AddTransaction({
     Key key,
     @required this.transactionType,
+    this.category = '',
     this.transaction,
   }) : super(key: key);
 
   final String transactionType;
   final TransactionDetails transaction;
+  final String category;
 
   @override
   _AddTransactionState createState() => _AddTransactionState();
@@ -52,7 +54,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
-        provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
+      provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
   }
 
@@ -62,8 +64,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
     _transaction = widget.transaction;
 
+    AppState initStateProvider = Provider.of<AppState>(context, listen: false);
     if (_transaction != null) {
-      AppState initStateProvider = Provider.of<AppState>(context, listen: false);
       if (_transaction.category == 'C') {
         initStateProvider.setCategory('Credit', willNotify: false);
       } else {
@@ -74,6 +76,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       initStateProvider.setMode(_transaction.mode?.mode, willNotify: false);
       _contact = _transaction.contact?.name ?? '';
       _comment = _transaction.comments ?? '';
+    } else {
+      initStateProvider.setCategory(widget.category, willNotify: false);
     }
   }
 
@@ -145,6 +149,52 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               ),
                             ),
                           ],
+                        ),
+                        HeaderWidget(
+                          headerText: 'Name *',
+                          maxFontSize: 18.0,
+                          minFontSize: 16.0,
+                          textColor: Colors.black,
+                        ),
+                        SizedBox(height: 10.0),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                          padding: EdgeInsets.all(15.0),
+                          width: deviceWidth,
+                          height: deviceHeight * 0.10,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Color(0xffecf8f8).withRed(210),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Container(
+                                width: deviceWidth * 0.75,
+                                child: TextFormField(
+                                  initialValue: _contact,
+                                  validator: validateField,
+                                  onSaved: (value) {
+                                    _contact = value;
+                                  },
+                                  cursorColor: Constant.primaryColor,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                Icons.comment,
+                                color: Colors.black45,
+                                size: 20.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
                         ),
                         HeaderWidget(
                           headerText: 'Amount *',
@@ -330,52 +380,6 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                         ),
                         SizedBox(height: 10.0),
                         HeaderWidget(
-                          headerText: 'Contact *',
-                          maxFontSize: 18.0,
-                          minFontSize: 16.0,
-                          textColor: Colors.black,
-                        ),
-                        SizedBox(height: 10.0),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                          padding: EdgeInsets.all(15.0),
-                          width: deviceWidth,
-                          height: deviceHeight * 0.10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Color(0xffecf8f8).withRed(210),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                width: deviceWidth * 0.75,
-                                child: TextFormField(
-                                  initialValue: _contact,
-                                  validator: validateField,
-                                  onSaved: (value) {
-                                    _contact = value;
-                                  },
-                                  cursorColor: Constant.primaryColor,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    isDense: true,
-                                    contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
-                                  ),
-                                ),
-                              ),
-                              Icon(
-                                Icons.comment,
-                                color: Colors.black45,
-                                size: 20.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        HeaderWidget(
                           headerText: 'Comment',
                           maxFontSize: 18.0,
                           minFontSize: 16.0,
@@ -482,12 +486,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount),
-          category: provider.category[0],
-          transactionDate: provider.dateTime,
-          mode: Constant.paymentMap[provider.mode],
-          contact: _contact,
-          comments: _comment);
+          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
 
       TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
         _showSnackBar(response.message);

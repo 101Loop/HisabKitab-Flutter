@@ -24,6 +24,7 @@ class _MainScreenState extends State<MainScreen> {
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add expense',
+              category: 'Debit',
             ),
           ),
         );
@@ -52,6 +53,7 @@ class _MainScreenState extends State<MainScreen> {
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add earning',
+              category: 'Credit',
             ),
           ),
         );
