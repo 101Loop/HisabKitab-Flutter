@@ -33,7 +33,8 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
       lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
-      provider.setDateQuery(DateFormat('dd-MM-yyyy').format(pickedDate).toString());
+      provider.setDateQuery(DateFormat('yyyy-MM-dd').format(pickedDate).toString(), willNotify: false);
+      provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
   }
 
@@ -161,34 +162,37 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                       ),
                       GestureDetector(
                         onTap: () {
+                          FocusScope.of(context).unfocus();
                           selectDate(context);
                         },
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
-                          padding: EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            readOnly: true,
-                            initialValue: provider.dateQuery,
-                            cursorColor: primaryColor,
-                            textAlign: TextAlign.left,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.date_range,
-                                color: Colors.black45,
+                          margin: EdgeInsets.only(bottom: 15.0),
+                          width: deviceWidth * 0.87,
+                          height: 50,
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), border: Border.all(color: Colors.grey)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Container(
+                                width: deviceWidth * 0.70,
+                                margin: EdgeInsets.only(left: 10),
+                                child: Text(
+                                  provider.dateTime != null && provider.dateTime.isNotEmpty ? provider.dateTime : 'Search By Date',
+                                  style: GoogleFonts.nunito(
+                                    color: provider.dateTime != null && provider.dateTime.isNotEmpty ? Colors.black54 : Colors.grey.shade400,
+                                    fontSize: 14,
+                                  ),
+                                ),
                               ),
-                              contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                              fillColor: Colors.white,
-                              hintText: 'Search By Date',
-                              alignLabelWithHint: true,
-                              hintStyle: GoogleFonts.nunito(
-                                color: Colors.grey.shade400,
-                                fontSize: 14,
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Icon(
+                                  Icons.date_range,
+                                  color: Colors.black45,
+                                  size: 20.0,
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
