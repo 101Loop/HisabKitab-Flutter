@@ -104,10 +104,6 @@ class _MainScreenState extends State<MainScreen> {
       account,
       aboutUs,
     ];
-
-    LoginAPIController.getUserProfile().then((response) {
-      if (response != null) Provider.of<AppState>(context, listen: false).setUserProfile(response, willNotify: false);
-    });
   }
 
   @override
