@@ -376,10 +376,10 @@ class _DashboardState extends State<Dashboard> {
 
     switch (sortScheme) {
       case 0: //name ascending
-        provider.transactionList.sort((transaction1, transaction2) => transaction1.contact?.compareTo(transaction2.contact ?? ''));
+        provider.transactionList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
         break;
       case 1: //name descending
-        provider.transactionList.sort((transaction1, transaction2) => transaction2.contact?.compareTo(transaction1.contact ?? ''));
+        provider.transactionList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
         break;
       case 2: //amount high to low
         provider.transactionList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
