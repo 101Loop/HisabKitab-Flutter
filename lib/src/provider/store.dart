@@ -44,7 +44,7 @@ class AppState extends ChangeNotifier {
   bool get isLoadingItems => _isLoadingItems;
   List<TransactionDetails> get transactionList => _transactionList;
 
-  setIsLoading(bool value, {bool willNotify = true}) {
+  setLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
     if (willNotify) notifyListeners();
   }

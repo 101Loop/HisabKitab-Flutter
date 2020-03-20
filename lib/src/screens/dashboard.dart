@@ -158,7 +158,7 @@ class _DashboardState extends State<Dashboard> {
                 builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     provider.transactionList.clear();
-                    provider.setIsLoading(false, willNotify: false);
+                    provider.setLoading(false, willNotify: false);
 
                     _next = snapshot.data.next;
 
@@ -171,7 +171,7 @@ class _DashboardState extends State<Dashboard> {
                       provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
                     }
                   } else {
-                    provider.setIsLoading(true, willNotify: false);
+                    provider.setLoading(true, willNotify: false);
                   }
 
                   return provider.isLoading ? Center(child: CircularProgressIndicator()) : provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();

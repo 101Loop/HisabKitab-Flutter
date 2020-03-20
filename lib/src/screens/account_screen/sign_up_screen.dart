@@ -363,11 +363,11 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
     );
     final FormState form = signUpFormKey.currentState;
     if (form.validate()) {
-      provider.setIsLoading(true);
+      provider.setLoading(true);
       form.save();
       signUpResponse = SignUpAPIController.registerUser(userAccount);
       signUpResponse.then((response) {
-        provider.setIsLoading(false);
+        provider.setLoading(false);
         if (response.error != null) {
           showSnackBar(response.error);
         } else if (response.data.email != null && response.data.mobile != null) {
