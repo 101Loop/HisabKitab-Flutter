@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/const.dart';
 
 class AboutUs extends StatelessWidget {
   AboutUs({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -36,7 +38,9 @@ class AboutUs extends StatelessWidget {
                                 size: 20,
                               ),
                               onPressed: () {
-                                Navigator.of(context).pop();
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
+                                );
                               },
                             ),
                           ),

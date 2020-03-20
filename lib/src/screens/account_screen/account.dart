@@ -35,21 +35,17 @@ class _AccountState extends State<Account> with ValidationMixin {
   void initState() {
     super.initState();
 
-    LoginAPIController.getUserProfile().then((response) {
-      if (response != null) {
-        Provider.of<AppState>(context, listen: false).setUserProfile(response, willNotify: false);
+    AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+    UserProfile userProfile = initStateProvider.userProfile;
 
-        if (response.error?.isNotEmpty ?? false) {
-          Future.delayed(Duration.zero, () {
-            _showSnackBar(response.error);
-          });
-        }
-      } else {
-        Future.delayed(Duration.zero, () {
-          _showSnackBar('Couldn\'t fetch user\'s data');
-        });
+    List<String> name = userProfile?.name?.split(' ');
+    if (name != null) {
+      if (name.length == 1) {
+        initStateProvider.setInitials(name[0][0].toUpperCase(), willNotify: false);
+      } else if (name.length > 1) {
+        initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);
       }
-    });
+    }
   }
 
   @override
@@ -122,7 +118,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                         backgroundColor: Constants.lightGreen.withRed(210),
                         child: Center(
                           child: HeaderWidget(
-                            headerText: '?',
+                            headerText: provider.initials,
                             maxFontSize: 32,
                             minFontSize: 30,
                             textColor: Constants.primaryColor,
@@ -340,6 +336,16 @@ class _AccountState extends State<Account> with ValidationMixin {
             _showSnackBar(response.error);
           } else {
             _showSnackBar('Profile updated successfully');
+
+            List<String> name = response.name?.split(' ');
+            if (name != null) {
+              if (name.length == 1) {
+                provider.setInitials(name[0][0].toUpperCase(), willNotify: false);
+              } else if (name.length > 1) {
+                provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);
+              }
+            }
+
             provider.setUserProfile(response);
           }
         });

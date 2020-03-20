@@ -24,6 +24,7 @@ class AppState extends ChangeNotifier {
   bool _isLoadingItems = false;
   UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
+  String _initials = '?';
 
   bool get getOTPRequested => _otpRequested;
   String get transactionType => _transactionType;
@@ -44,6 +45,7 @@ class AppState extends ChangeNotifier {
   bool get isChequeQuery => _isChequeQuery;
   bool get isAccountQuery => _isAccountQuery;
   bool get isLoadingItems => _isLoadingItems;
+  String get initials => _initials;
   UserProfile get userProfile => _userProfile;
   List<TransactionDetails> get transactionList => _transactionList;
 
@@ -154,6 +156,11 @@ class AppState extends ChangeNotifier {
 
   setUserProfile(UserProfile userProfile, {bool willNotify = true}) {
     _userProfile = userProfile;
+    if (willNotify) notifyListeners();
+  }
+
+  setInitials(String initials, {bool willNotify = true}) {
+    _initials = initials;
     if (willNotify) notifyListeners();
   }
 
