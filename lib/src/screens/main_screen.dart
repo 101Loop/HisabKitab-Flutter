@@ -118,31 +118,43 @@ class _MainScreenState extends State<MainScreen> {
             Positioned(
               right: 10.0,
               bottom: 15.0,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    addTranscationClicked = !addTranscationClicked;
-                  });
-                },
-                child: Container(
-                  height: 60,
-                  width: 60,
-                  child: !addTranscationClicked
-                      ? Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 29,
-                        )
-                      : Icon(
-                          Icons.close,
-                          color: Colors.white,
+              child: currentTab == 0
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          addTranscationClicked = !addTranscationClicked;
+                        });
+                      },
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        child: !addTranscationClicked
+                            ? Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 29,
+                              )
+                            : Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          color: buttonColor,
                         ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: buttonColor,
-                  ),
-                ),
-              ),
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          color: buttonColor,
+                        ),
+                      ),
+                    ),
             ),
             addTranscationClicked
                 ? Positioned(
