@@ -6,6 +6,7 @@ import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
+import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
@@ -31,19 +32,49 @@ class _AccountState extends State<Account> with ValidationMixin {
   String _mobile;
   String _email;
 
+  TextEditingController _mobileController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
-    UserProfile userProfile = initStateProvider.userProfile;
 
-    List<String> name = userProfile?.name?.split(' ');
-    if (name != null) {
-      if (name.length == 1) {
-        initStateProvider.setInitials(name[0][0].toUpperCase(), willNotify: false);
-      } else if (name.length > 1) {
-        initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);
+    if (initStateProvider.userProfile == null)
+      LoginAPIController.getUserProfile().then(
+        (response) {
+          if (response != null) {
+            initStateProvider.setUserProfile(response, willNotify: false);
+
+            _nameController.text = response.name;
+            _emailController.text = response.email;
+            _mobileController.text = response.mobile;
+
+            List<String> name = response.name?.split(' ');
+            if (name != null) {
+              if (name.length == 1) {
+                initStateProvider.setInitials(name[0][0].toUpperCase());
+              } else if (name.length > 1) {
+                initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+              }
+            }
+          }
+        },
+      );
+    else {
+      UserProfile userProfile = initStateProvider.userProfile;
+      _nameController.text = userProfile.name;
+      _emailController.text = userProfile.email;
+      _mobileController.text = userProfile.mobile;
+
+      List<String> name = userProfile.name?.split(' ');
+      if (name != null) {
+        if (name.length == 1) {
+          initStateProvider.setInitials(name[0][0].toUpperCase());
+        } else if (name.length > 1) {
+          initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+        }
       }
     }
   }
@@ -86,7 +117,9 @@ class _AccountState extends State<Account> with ValidationMixin {
                                     size: 20,
                                   ),
                                   onPressed: () {
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
+                                    );
                                   },
                                 ),
                               ),
@@ -150,7 +183,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                               margin: EdgeInsets.all(15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
-                                initialValue: provider.userProfile?.name ?? '',
+                                controller: _nameController,
                                 onSaved: (value) {
                                   _name = value;
                                 },
@@ -176,7 +209,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
-                                initialValue: provider.userProfile?.mobile ?? '',
+                                controller: _mobileController,
                                 onSaved: (value) {
                                   _mobile = value;
                                 },
@@ -203,7 +236,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
-                                initialValue: provider.userProfile?.email ?? '',
+                                controller: _emailController,
                                 onSaved: (value) {
                                   _email = value;
                                 },

@@ -19,7 +19,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   double deviceHeight;
   double deviceWidth;
-  bool _showPassword = false;
   AppState provider;
   Future<User> _futureUser;
 
@@ -120,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
-                                    obscureText: !_showPassword ? true : false,
+                                    obscureText: provider.isHideText,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     controller: passwordController,
@@ -140,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                         borderRadius: BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
-                                        icon: !_showPassword
+                                        icon: provider.isHideText
                                             ? Icon(
                                                 Icons.visibility_off,
                                                 color: Colors.grey.shade400,
@@ -150,9 +149,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                                 color: Colors.grey.shade400,
                                               ),
                                         onPressed: () {
-                                          setState(() {
-                                            _showPassword = !_showPassword;
-                                          });
+                                          provider.setHideText(!provider.isHideText);
                                         },
                                       ),
                                     ),

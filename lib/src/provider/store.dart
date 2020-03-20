@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
@@ -22,31 +23,66 @@ class AppState extends ChangeNotifier {
   bool _isChequeQuery = false;
   bool _isAccountQuery = false;
   bool _isLoadingItems = false;
+  bool _addTransactionClicked = false;
+  bool _isHideText = true;
+  bool _isHideText1 = true;
+  int _currentTab = 0;
+  String _dateTime = '';
   UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
   String _initials = '?';
 
   bool get getOTPRequested => _otpRequested;
+
   String get transactionType => _transactionType;
+
   String get creditAmount => _creditAmount;
+
   bool get isLoading => _isLoading;
+
   String get debitAmount => _debitAmount;
+
   bool get autoValidate => _autoValidate;
+
   String get mode => _mode;
+
   String get category => _category;
+
   bool get isEarning => _isEarning;
+
   bool get isSpending => _isSpending;
+
   String get searchQuery => _searchQuery;
+
   String get dateQuery => _dateQuery;
+
   double get minAmountQuery => _minAmountQuery;
+
   double get maxAmountQuery => _maxAmountQuery;
+
   bool get isCashQuery => _isCashQuery;
+
   bool get isCardQuery => _isCardQuery;
+
   bool get isChequeQuery => _isChequeQuery;
+
   bool get isAccountQuery => _isAccountQuery;
+
   bool get isLoadingItems => _isLoadingItems;
+
+  bool get addTransactionClicked => _addTransactionClicked;
+
+  bool get isHideText => _isHideText;
+  bool get isHideText1 => _isHideText1;
+
+  int get currentTab => _currentTab;
+
+  String get dateTime => _dateTime;
+
   String get initials => _initials;
+
   UserProfile get userProfile => _userProfile;
+
   List<TransactionDetails> get transactionList => _transactionList;
 
   setLoading(bool value, {bool willNotify = true}) {
@@ -125,7 +161,7 @@ class AppState extends ChangeNotifier {
   }
 
   setCardQuery(bool cardQuery, {bool willNotify = true}) {
-    _isCardQuery =cardQuery;
+    _isCardQuery = cardQuery;
     if (willNotify) notifyListeners();
   }
 
@@ -161,6 +197,31 @@ class AppState extends ChangeNotifier {
 
   setInitials(String initials, {bool willNotify = true}) {
     _initials = initials;
+    if (willNotify) notifyListeners();
+  }
+
+  setTransactionClicked(bool transactionClicked, {bool willNotify = true}) {
+    _addTransactionClicked = transactionClicked;
+    if (willNotify) notifyListeners();
+  }
+
+  setCurrentTab(int currentTab, {bool willNotify = true}) {
+    _currentTab = currentTab;
+    if (willNotify) notifyListeners();
+  }
+
+  setDateTime(String dateTime, {bool willNotify = true}) {
+    _dateTime = dateTime;
+    if (willNotify) notifyListeners();
+  }
+
+  setHideText(bool isHideText, {bool willNotify = true}) {
+    _isHideText = isHideText;
+    if (willNotify) notifyListeners();
+  }
+
+  setHideText1(bool isHideText, {bool willNotify = true}) {
+    _isHideText1 = isHideText;
     if (willNotify) notifyListeners();
   }
 
