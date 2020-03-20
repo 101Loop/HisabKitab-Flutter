@@ -23,6 +23,17 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _initEarning = false;
+  bool _initSpending = false;
+  String _initSearchQuery = '';
+  String _initDateQuery = '';
+  String _initMinQuery = '';
+  String _initMaxQuery = '';
+  bool _initCashQuery = false;
+  bool _initChequeQuery = false;
+  bool _initCardQuery = false;
+  bool _initAccountQuery = false;
+
   Future<Null> selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
       context: context,
@@ -36,6 +47,26 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
       provider.setDateQuery(DateFormat('yyyy-MM-dd').format(pickedDate).toString(), willNotify: false);
       provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    AppState initialStateProvider = Provider.of<AppState>(context, listen: false);
+    _initEarning = initialStateProvider.isEarning;
+    _initSpending = initialStateProvider.isSpending;
+    _initSearchQuery = initialStateProvider.searchQuery;
+    _initDateQuery = initialStateProvider.dateQuery;
+    _initMinQuery = initialStateProvider.minAmountQuery.toString();
+    _initMaxQuery = initialStateProvider.maxAmountQuery.toString();
+    _initCashQuery = initialStateProvider.isCashQuery;
+    _initCardQuery = initialStateProvider.isCardQuery;
+    _initChequeQuery = initialStateProvider.isChequeQuery;
+    _initAccountQuery = initialStateProvider.isAccountQuery;
+
+    if(initialStateProvider.minAmountQuery == -1) _initMinQuery = '';
+    if(initialStateProvider.maxAmountQuery == -1) _initMaxQuery = '';
   }
 
   @override
@@ -135,6 +166,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                         margin: EdgeInsets.all(15.0),
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
+                          initialValue: _initSearchQuery,
                           onSaved: (value) {
                             provider.setSearchQuery(value, willNotify: false);
                           },
@@ -206,6 +238,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             margin: EdgeInsets.fromLTRB(10.0, 0.0, 15.0, 0.0),
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
+                              initialValue: _initMinQuery,
                               validator: validateNullableDoubleValue,
                               onSaved: (value) {
                                 if (value == null || value.isEmpty) return;
@@ -247,6 +280,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             margin: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
+                              initialValue: _initMaxQuery,
                               validator: validateNullableDoubleValue,
                               onSaved: (value) {
                                 if (value == null || value.isEmpty) return;
@@ -404,6 +438,16 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
   }
 
   Future<bool> _onBackPressed() async {
+    provider.setEarning(_initEarning, willNotify: false);
+    provider.setSpending(_initSpending, willNotify: false);
+    provider.setSearchQuery(_initSearchQuery, willNotify: false);
+    provider.setDateQuery(_initDateQuery, willNotify: false);
+    provider.setMinAmountQuery(double.parse(_initMinQuery), willNotify: false);
+    provider.setMaxAmountQuery(double.parse(_initMaxQuery), willNotify: false);
+    provider.setCashQuery(_initCashQuery, willNotify: false);
+    provider.setCardQuery(_initCardQuery, willNotify: false);
+    provider.setChequeQuery(_initChequeQuery, willNotify: false);
+    provider.setAccountQuery(_initAccountQuery, willNotify: false);
     _goToMainScreen();
     return false;
   }
