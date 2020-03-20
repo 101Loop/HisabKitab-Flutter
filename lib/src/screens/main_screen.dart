@@ -15,21 +15,18 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  bool addTranscationClicked = false;
+  AppState provider;
 
   Widget addExpense() {
     return GestureDetector(
-      onTap: () async {
-        await Navigator.of(context).pushReplacement(
+      onTap: () {
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add expense',
             ),
           ),
         );
-        setState(() {
-          addTranscationClicked = false;
-        });
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -49,17 +46,15 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget addEarning() {
     return GestureDetector(
-      onTap: () async {
-        await Navigator.of(context).pushReplacement(
+      onTap: () {
+        provider.setTransactionClicked(false, willNotify: false);
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add earning',
             ),
           ),
         );
-        setState(() {
-          addTranscationClicked = false;
-        });
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -87,7 +82,6 @@ class _MainScreenState extends State<MainScreen> {
   double deviceHeight;
   double deviceWidth;
   List<Widget> pages;
-  int currentTab = 0;
   int currentIndex;
 
   @override
@@ -116,6 +110,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -125,17 +120,15 @@ class _MainScreenState extends State<MainScreen> {
             Positioned(
               right: 10.0,
               bottom: 15.0,
-              child: currentTab == 0
+              child: provider.currentTab == 0
                   ? GestureDetector(
                       onTap: () {
-                        setState(() {
-                          addTranscationClicked = !addTranscationClicked;
-                        });
+                        provider.setTransactionClicked(!provider.addTransactionClicked);
                       },
                       child: Container(
                         height: 60,
                         width: 60,
-                        child: !addTranscationClicked
+                        child: !provider.addTransactionClicked
                             ? Icon(
                                 Icons.add,
                                 color: Colors.white,
@@ -163,7 +156,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
             ),
-            addTranscationClicked
+            provider.addTransactionClicked
                 ? Positioned(
                     bottom: 100,
                     right: 10,
@@ -189,13 +182,11 @@ class _MainScreenState extends State<MainScreen> {
               if (value == 3) {
                 return;
               } else {
-                setState(() {
-                  currentTab = value;
-                  addTranscationClicked = false;
-                });
+                provider.setCurrentTab(value, willNotify: false);
+                provider.setTransactionClicked(false);
               }
             },
-            currentIndex: currentTab,
+            currentIndex: provider.currentTab,
             type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -240,7 +231,7 @@ class _MainScreenState extends State<MainScreen> {
             unselectedItemColor: Colors.black38,
           ),
         ),
-        body: pages[currentTab],
+        body: pages[provider.currentTab],
       ),
     );
   }

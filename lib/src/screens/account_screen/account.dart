@@ -6,6 +6,7 @@ import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
+import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
@@ -86,7 +87,9 @@ class _AccountState extends State<Account> with ValidationMixin {
                                     size: 20,
                                   ),
                                   onPressed: () {
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
+                                    );
                                   },
                                 ),
                               ),

@@ -28,7 +28,6 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   double deviceHeight;
   double deviceWidth;
 
-  String dateTime;
   String date;
 
   final _formKey = GlobalKey<FormState>();
@@ -53,9 +52,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
-      setState(() {
-        dateTime = DateFormat('yyyy-MM-dd').format(pickedDate).toString();
-      });
+        provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
   }
 
@@ -73,7 +70,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         initStateProvider.setCategory('Debit', willNotify: false);
       }
 
-      dateTime = _transaction.transactionDate;
+      initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
       initStateProvider.setMode(_transaction.mode?.mode, willNotify: false);
       _contact = _transaction.contact?.name ?? '';
       _comment = _transaction.comments ?? '';
@@ -272,7 +269,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 Container(
                                   width: deviceWidth * 0.70,
                                   child: Text(
-                                    dateTime ?? '',
+                                    provider.dateTime ?? '',
                                   ),
                                 ),
                                 Icon(
@@ -480,14 +477,14 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   void _submit() {
     final _formState = _formKey.currentState;
 
-    if (_formState.validate() && dateTime != null && dateTime.isNotEmpty && provider.mode.isNotEmpty) {
+    if (_formState.validate() && (provider.dateTime.isNotEmpty ?? false) && (provider.mode.isNotEmpty ?? false)) {
       provider.setLoading(true);
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
           amount: double.parse(_amount),
           category: provider.category[0],
-          transactionDate: dateTime,
+          transactionDate: provider.dateTime,
           mode: Constant.paymentMap[provider.mode],
           contact: _contact,
           comments: _comment);
