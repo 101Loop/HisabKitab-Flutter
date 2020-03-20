@@ -184,6 +184,7 @@ class _MainScreenState extends State<MainScreen> {
               } else {
                 setState(() {
                   currentTab = value;
+                  addTranscationClicked = false;
                 });
               }
             },
