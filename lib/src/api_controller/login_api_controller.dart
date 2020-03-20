@@ -73,7 +73,7 @@ class LoginAPIController {
     var response;
 
     try {
-      response = await http.get(Constants.LOGIN_URL, headers: headers);
+      response = await http.get(Constants.PROFILE_URL, headers: headers);
     } catch (_) {
       return UserProfile(error: Constants.serverError);
     }
@@ -83,7 +83,7 @@ class LoginAPIController {
     if (statusCode == Constants.HTTP_200_OK) {
       String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
-      return UserProfile.fromJson(parsedResponse);
+      return UserProfile.fromJson(parsedResponse[0]);
     } else {
       String errorMessage = response.body.toString();
       if (errorMessage != null) {
@@ -136,7 +136,7 @@ class LoginAPIController {
     if (statusCode == Constants.HTTP_200_OK || statusCode == Constants.HTTP_202_ACCEPTED) {
       String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
-      return UserProfile.fromJson(parsedResponse);
+      return UserProfile.fromJson(parsedResponse['data']);
     } else {
       String errorMessage = response.body.toString();
       if (errorMessage != null) {

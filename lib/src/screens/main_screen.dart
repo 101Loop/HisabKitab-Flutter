@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/about_us.dart';
 import 'package:hisabkitab/src/screens/account_screen/account.dart';
 import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
 import 'package:hisabkitab/utils/const.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -17,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addExpense() {
     return GestureDetector(
       onTap: () async {
-        await Navigator.of(context).push(
+        await Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add expense',
@@ -47,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addEarning() {
     return GestureDetector(
       onTap: () async {
-        await Navigator.of(context).push(
+        await Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add earning',
@@ -105,6 +108,10 @@ class _MainScreenState extends State<MainScreen> {
       account,
       aboutUs,
     ];
+
+    LoginAPIController.getUserProfile().then((response) {
+      if (response != null) Provider.of<AppState>(context, listen: false).setUserProfile(response, willNotify: false);
+    });
   }
 
   @override
