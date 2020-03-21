@@ -4,11 +4,10 @@ import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/models/paginated_response.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
+import 'package:hisabkitab/utils/utility.dart';
 import 'package:http/http.dart' as http;
 
 class TransactionApiController {
-  static String token;
-
   ///api call to fetch transaction details
   static Future<PaginatedResponse> getTransaction(String queryParams, {String next}) async {
     //removes &, if present at last
@@ -22,9 +21,8 @@ class TransactionApiController {
     }
 
     print('query params: $queryParams');
-    if (token == null) token = prefs.getString(Constants.TOKEN);
 
-    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": token};
+    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
     var response;
     try {
@@ -66,9 +64,7 @@ class TransactionApiController {
 
   ///api call to add transaction details
   static Future<TransactionDetails> addUpdateTransaction(TransactionDetails data, int id) async {
-    if (token == null) token = prefs.getString(Constants.TOKEN);
-
-    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": token};
+    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
     var response;
     try {
@@ -120,9 +116,7 @@ class TransactionApiController {
 
   /// api call to delete the transaction
   static void deleteTransaction(int transactionId) async {
-    if (token == null) token = prefs.getString(Constants.TOKEN);
-
-    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": token};
+    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
     try {
       http.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
     } catch (_) {

@@ -5,11 +5,10 @@ import 'package:hisabkitab/src/models/password_response.dart';
 import 'package:hisabkitab/src/models/user.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
+import 'package:hisabkitab/utils/utility.dart';
 import 'package:http/http.dart' as http;
 
 class LoginAPIController {
-  static String _token;
-
   /// api call to login the user
   static Future<User> login(User user) async {
     Map<String, String> headers = {"Content-Type": "application/json"};
@@ -33,8 +32,8 @@ class LoginAPIController {
       // print(token);
 
       User user = User.fromJson(parsedResponse);
-      _token = user.data.token;
-      _saveToken(_token);
+      String _token = user.data.token;
+      Utility.saveToken(_token);
       print(_token);
       return user;
     } else {
@@ -66,9 +65,7 @@ class LoginAPIController {
 
   /// api call to get user profile
   static Future<UserProfile> getUserProfile() async {
-    _token = _token ?? prefs.getString(Constants.TOKEN);
-
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": _token};
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
     var response;
 
@@ -119,9 +116,7 @@ class LoginAPIController {
 
   /// api call to update user profile
   static Future<UserProfile> updateUserProfile(UserProfile data) async {
-    _token = _token ?? prefs.getString(Constants.TOKEN);
-
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": _token};
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
     var response;
 
@@ -172,9 +167,7 @@ class LoginAPIController {
 
   /// api call to update password
   static Future<PasswordResponse> updatePassword(String password) async {
-    _token = _token ?? prefs.getString(Constants.TOKEN);
-
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": _token};
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
     var response;
 
@@ -221,9 +214,5 @@ class LoginAPIController {
         return PasswordResponse(data: Constants.serverError, statusCode: statusCode);
       }
     }
-  }
-
-  static _saveToken(String token) async {
-    await prefs.setString(Constants.TOKEN, token);
   }
 }

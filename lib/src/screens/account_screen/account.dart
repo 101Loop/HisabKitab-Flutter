@@ -10,6 +10,7 @@ import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
+import 'package:hisabkitab/utils/utility.dart';
 import 'package:provider/provider.dart';
 
 class Account extends StatefulWidget {
@@ -384,6 +385,7 @@ class _AccountState extends State<Account> with ValidationMixin {
   ///clears provider and preference's data
   void _logout() {
     provider.clearData();
+    Utility.deleteToken();
     prefs.clear();
 
     Navigator.of(context).pushReplacement(
