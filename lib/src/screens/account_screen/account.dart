@@ -7,7 +7,6 @@ import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
-import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/utility.dart';
@@ -41,44 +40,46 @@ class _AccountState extends State<Account> with ValidationMixin {
   @override
   void initState() {
     super.initState();
-    AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AppState initStateProvider = Provider.of<AppState>(context, listen: false);
 
-    if (initStateProvider.userProfile == null)
-      LoginAPIController.getUserProfile().then(
-        (response) {
-          if (response != null) {
-            initStateProvider.setUserProfile(response, willNotify: false);
+      if (initStateProvider.userProfile == null)
+        LoginAPIController.getUserProfile().then(
+          (response) {
+            if (response != null) {
+              initStateProvider.setUserProfile(response, willNotify: false);
 
-            _nameController.text = response.name;
-            _emailController.text = response.email;
-            _mobileController.text = response.mobile;
+              _nameController.text = response.name;
+              _emailController.text = response.email;
+              _mobileController.text = response.mobile;
 
-            List<String> name = response.name?.split(' ');
-            if (name != null) {
-              if (name.length == 1) {
-                initStateProvider.setInitials(name[0][0].toUpperCase());
-              } else if (name.length > 1) {
-                initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+              List<String> name = response.name?.split(' ');
+              if (name != null) {
+                if (name.length == 1) {
+                  initStateProvider.setInitials(name[0][0].toUpperCase());
+                } else if (name.length > 1) {
+                  initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+                }
               }
             }
-          }
-        },
-      );
-    else {
-      UserProfile userProfile = initStateProvider.userProfile;
-      _nameController.text = userProfile.name;
-      _emailController.text = userProfile.email;
-      _mobileController.text = userProfile.mobile;
+          },
+        );
+      else {
+        UserProfile userProfile = initStateProvider.userProfile;
+        _nameController.text = userProfile.name;
+        _emailController.text = userProfile.email;
+        _mobileController.text = userProfile.mobile;
 
-      List<String> name = userProfile.name?.split(' ');
-      if (name != null) {
-        if (name.length == 1) {
-          initStateProvider.setInitials(name[0][0].toUpperCase());
-        } else if (name.length > 1) {
-          initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+        List<String> name = userProfile.name?.split(' ');
+        if (name != null) {
+          if (name.length == 1) {
+            initStateProvider.setInitials(name[0][0].toUpperCase());
+          } else if (name.length > 1) {
+            initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+          }
         }
       }
-    }
+    });
   }
 
   @override
@@ -335,10 +336,19 @@ class _AccountState extends State<Account> with ValidationMixin {
                 ),
               ),
             ),
+            provider.isLoading ? Center(child: CircularProgressIndicator()) : Container(),
           ],
         ),
       ),
     );
+  }
+
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    provider.setLoading(false, willNotify: false);
   }
 
   ///shows a [SnackBar], displaying [message]

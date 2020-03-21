@@ -193,6 +193,7 @@ class _DashboardState extends State<Dashboard> {
   void deactivate() {
     super.deactivate();
 
+    provider.setLoading(false, willNotify: false);
     provider.setTransactionClicked(false, willNotify: false);
   }
 

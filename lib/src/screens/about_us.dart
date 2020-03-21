@@ -71,4 +71,11 @@ class _AboutUsState extends State<AboutUs> {
       ),
     );
   }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    provider.setLoading(false, willNotify: false);
+  }
 }

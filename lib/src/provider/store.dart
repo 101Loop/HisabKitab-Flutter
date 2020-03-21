@@ -43,6 +43,8 @@ class AppState extends ChangeNotifier {
   List<TransactionDetails> _transactionList = List();
   String _initials = '?';
 
+  bool _isIgnoring = false;
+
   bool get getOTPRequested => _otpRequested;
 
   String get transactionType => _transactionType;
@@ -107,9 +109,12 @@ class AppState extends ChangeNotifier {
 
   bool get isHideText1 => _isHideText1;
 
+  bool get isIgnoring => _isIgnoring;
+
   int get currentTab => _currentTab;
 
   String get dateTime => _dateTime;
+
   String get tempDateTime => _tempDateTime;
 
   String get initials => _initials;
@@ -120,6 +125,11 @@ class AppState extends ChangeNotifier {
 
   setLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
+    if (willNotify) notifyListeners();
+  }
+
+  setIgnoring(bool value, {bool willNotify = true}) {
+    _isIgnoring = value;
     if (willNotify) notifyListeners();
   }
 
