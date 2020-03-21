@@ -14,6 +14,8 @@ class AppState extends ChangeNotifier {
   String _category;
   bool _isEarning = false;
   bool _isSpending = false;
+  bool _isTempEarning = false;
+  bool _isTempSpending = false;
   String _searchQuery = '';
   String _dateQuery = '';
   double _minAmountQuery = -1;
@@ -22,6 +24,14 @@ class AppState extends ChangeNotifier {
   bool _isCardQuery = false;
   bool _isChequeQuery = false;
   bool _isAccountQuery = false;
+  String _tempSearchQuery = '';
+  String _tempDateQuery = '';
+  double _tempMinAmountQuery;
+  double _tempMaxAmountQuery;
+  bool _isTempCashQuery = false;
+  bool _isTempCardQuery = false;
+  bool _isTempChequeQuery = false;
+  bool _isTempAccountQuery = false;
   bool _isLoadingItems = false;
   bool _addTransactionClicked = false;
   bool _isHideText = true;
@@ -52,6 +62,10 @@ class AppState extends ChangeNotifier {
 
   bool get isSpending => _isSpending;
 
+  bool get isTempEarning => _isTempEarning;
+
+  bool get isTempSpending => _isTempSpending;
+
   String get searchQuery => _searchQuery;
 
   String get dateQuery => _dateQuery;
@@ -67,6 +81,22 @@ class AppState extends ChangeNotifier {
   bool get isChequeQuery => _isChequeQuery;
 
   bool get isAccountQuery => _isAccountQuery;
+
+  String get tempSearchQuery => _tempSearchQuery;
+
+  String get tempDateQuery => _tempDateQuery;
+
+  double get tempMinAmountQuery => _tempMinAmountQuery;
+
+  double get tempMaxAmountQuery => _tempMaxAmountQuery;
+
+  bool get isTempCashQuery => _isTempCashQuery;
+
+  bool get isTempCardQuery => _isTempCardQuery;
+
+  bool get isTempChequeQuery => _isTempChequeQuery;
+
+  bool get isTempAccountQuery => _isTempAccountQuery;
 
   bool get isLoadingItems => _isLoadingItems;
 
@@ -130,13 +160,33 @@ class AppState extends ChangeNotifier {
     if (willNotify) notifyListeners();
   }
 
+  setTempEarning(bool isEarning, {bool willNotify = true}) {
+    _isTempEarning = isEarning;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempSending(bool isSpending, {bool willNotify = true}) {
+    _isTempSpending = isSpending;
+    if (willNotify) notifyListeners();
+  }
+
   setSpending(bool isSpending, {bool willNotify = true}) {
     _isSpending = isSpending;
     if (willNotify) notifyListeners();
   }
 
+  setTempSpending(bool isSpending, {bool willNotify = true}) {
+    _isTempSpending = isSpending;
+    if (willNotify) notifyListeners();
+  }
+
   setSearchQuery(String query, {bool willNotify = true}) {
     _searchQuery = query;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempSearchQuery(String query, {bool willNotify = true}) {
+    _tempSearchQuery = query;
     if (willNotify) notifyListeners();
   }
 
@@ -172,6 +222,41 @@ class AppState extends ChangeNotifier {
 
   setAccountQuery(bool accountQuery, {bool willNotify = true}) {
     _isAccountQuery = accountQuery;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempDateQuery(String date, {bool willNotify = true}) {
+    _tempDateQuery = date;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempMinAmountQuery(double amount, {bool willNotify = true}) {
+    _tempMinAmountQuery = amount;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempMaxAmountQuery(double amount, {bool willNotify = true}) {
+    _tempMaxAmountQuery = amount;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempCashQuery(bool cashQuery, {bool willNotify = true}) {
+    _isTempCashQuery = cashQuery;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempCardQuery(bool cardQuery, {bool willNotify = true}) {
+    _isTempCardQuery = cardQuery;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempChequeQuery(bool chequeQuery, {bool willNotify = true}) {
+    _isTempChequeQuery = chequeQuery;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempAccountQuery(bool accountQuery, {bool willNotify = true}) {
+    _isTempAccountQuery = accountQuery;
     if (willNotify) notifyListeners();
   }
 
