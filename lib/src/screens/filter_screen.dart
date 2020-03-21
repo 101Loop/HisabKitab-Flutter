@@ -164,7 +164,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               onChanged: (value) {
                                 provider.setTempSpending(value);
                               },
-                              activeColor: primaryColor,
+                              activeColor: Constants.primaryColor,
                               title: HeaderWidget(headerText: 'Expenditures', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
