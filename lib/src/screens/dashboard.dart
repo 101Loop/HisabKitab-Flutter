@@ -93,8 +93,14 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    deviceHeight = MediaQuery.of(context).size.height;
-    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     provider = Provider.of<AppState>(context);
 
     return Scaffold(
@@ -176,7 +182,9 @@ class _DashboardState extends State<Dashboard> {
                     provider.setLoading(true, willNotify: false);
                   }
 
-                  return provider.isLoading ? Center(child: CircularProgressIndicator()) : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
+                  return provider.isLoading ? Center(child: CircularProgressIndicator()) : provider.transactionList != null && provider.transactionList.length > 0
+                      ? _listViewBuilder()
+                      : _nothingToShowWidget();
                 },
               ),
             ),
@@ -187,92 +195,99 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    provider.setTransactionClicked(false, willNotify: false);
+  }
+
   Future<bool> _onSortPressed() {
     return showDialog(
-            context: context,
-            builder: (context) {
-              provider = Provider.of<AppState>(context);
-              return AlertDialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('C');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'Earnings',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
+        context: context,
+        builder: (context) {
+          provider = Provider.of<AppState>(context);
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    provider.setTransactionType('C');
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'Earnings',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('D');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'Spendings',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('A');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'All Transactions',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => FilterScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Center(
-                          child: Text(
-                            'More Filter Option',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              );
-            }) ??
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    provider.setTransactionType('D');
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'Spendings',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    provider.setTransactionType('A');
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'All Transactions',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => FilterScreen(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    child: Center(
+                      child: Text(
+                        'More Filter Option',
+                        style: GoogleFonts.nunito(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }) ??
         false;
   }
 
@@ -397,7 +412,7 @@ class _DashboardState extends State<Dashboard> {
     provider.setLoadingItems(true, willNotify: false);
     if (_next?.isNotEmpty ?? false) {
       TransactionApiController.getTransaction(queryParams, next: _next).then(
-        (response) {
+            (response) {
           provider.setLoadingItems(false, willNotify: false);
 
           _next = response.next;
@@ -426,8 +441,14 @@ class GreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
-    double deviceHeight = MediaQuery.of(context).size.height;
+    double deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    double deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: deviceWidth,
@@ -512,8 +533,14 @@ class RedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double deviceHeight = MediaQuery.of(context).size.height;
-    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    double deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: deviceWidth,
@@ -601,8 +628,14 @@ class RedGreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
-    double deviceHeight = MediaQuery.of(context).size.height;
+    double deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    double deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: deviceWidth,
@@ -707,7 +740,10 @@ class ListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Container(
       margin: EdgeInsets.only(bottom: 7.0, top: 7.0),
       padding: EdgeInsets.all(10.0),

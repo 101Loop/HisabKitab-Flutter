@@ -193,7 +193,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Container(
-                                width: deviceWidth * 0.70,
+                                width: deviceWidth * 0.69,
                                 margin: EdgeInsets.only(left: 10),
                                 child: Text(
                                   provider.dateTime != null && provider.dateTime.isNotEmpty ? provider.dateTime : 'Search By Date',
@@ -203,12 +203,32 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Icon(
-                                  Icons.date_range,
-                                  color: Colors.black45,
-                                  size: 20.0,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      provider.dateTime?.isNotEmpty ?? false
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                provider.setTempDateQuery('', willNotify: false);
+                                                provider.setDateTime('');
+                                              },
+                                              child: Icon(
+                                                Icons.clear,
+                                                color: Colors.black45,
+                                                size: 20.0,
+                                              ),
+                                            )
+                                          : Container(),
+                                      Icon(
+                                        Icons.date_range,
+                                        color: Colors.black45,
+                                        size: 20.0,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -228,7 +248,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               initialValue: provider.minAmountQuery != -1 ? provider.minAmountQuery.toString() : '',
                               validator: validateNullableDoubleValue,
                               onSaved: (value) {
-                                if(value == null || value.isEmpty) return;
+                                if (value == null || value.isEmpty) return;
                                 provider.setTempMinAmountQuery(double.parse(value));
                               },
                               cursorColor: primaryColor,
@@ -262,7 +282,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               initialValue: provider.maxAmountQuery != -1 ? provider.maxAmountQuery : '',
                               validator: validateNullableDoubleValue,
                               onSaved: (value) {
-                                if(value == null || value.isEmpty) return;
+                                if (value == null || value.isEmpty) return;
                                 provider.setMaxAmountQuery(double.parse(value));
                               },
                               cursorColor: primaryColor,

@@ -78,6 +78,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       _comment = _transaction.comments ?? '';
     } else {
       initStateProvider.setCategory(widget.category, willNotify: false);
+      initStateProvider.setDateTime('', willNotify: false);
     }
   }
 
