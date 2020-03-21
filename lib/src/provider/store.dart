@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
+import 'package:hisabkitab/src/screens/dashboard.dart';
 
 class AppState extends ChangeNotifier {
   bool _otpRequested = false;
@@ -31,6 +32,7 @@ class AppState extends ChangeNotifier {
   UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
   String _initials = '?';
+  Widget _currentPage = Dashboard();
 
   bool get getOTPRequested => _otpRequested;
 
@@ -76,6 +78,8 @@ class AppState extends ChangeNotifier {
   bool get isHideText1 => _isHideText1;
 
   int get currentTab => _currentTab;
+
+  Widget get currentPage => _currentPage;
 
   String get dateTime => _dateTime;
 
@@ -180,7 +184,8 @@ class AppState extends ChangeNotifier {
     if (willNotify) notifyListeners();
   }
 
-  updateTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
+  updateTransactionList(List<TransactionDetails> list,
+      {bool willNotify = true}) {
     _transactionList.addAll(list);
     if (willNotify) notifyListeners();
   }
@@ -222,6 +227,11 @@ class AppState extends ChangeNotifier {
 
   setHideText1(bool isHideText, {bool willNotify = true}) {
     _isHideText1 = isHideText;
+    if (willNotify) notifyListeners();
+  }
+
+  setCurrentPage(Widget currentPage, {bool willNotify = true}) {
+    _currentPage = currentPage;
     if (willNotify) notifyListeners();
   }
 

@@ -6,7 +6,6 @@ import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
-import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
@@ -41,6 +40,7 @@ class _AccountState extends State<Account> with ValidationMixin {
     super.initState();
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
 
+    initStateProvider.setLoading(true);
     if (initStateProvider.userProfile == null)
       LoginAPIController.getUserProfile().then(
         (response) {
@@ -56,10 +56,12 @@ class _AccountState extends State<Account> with ValidationMixin {
               if (name.length == 1) {
                 initStateProvider.setInitials(name[0][0].toUpperCase());
               } else if (name.length > 1) {
-                initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+                initStateProvider
+                    .setInitials((name[0][0] + name[1][0]).toUpperCase());
               }
             }
           }
+          initStateProvider.setLoading(false);
         },
       );
     else {
@@ -73,9 +75,11 @@ class _AccountState extends State<Account> with ValidationMixin {
         if (name.length == 1) {
           initStateProvider.setInitials(name[0][0].toUpperCase());
         } else if (name.length > 1) {
-          initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+          initStateProvider
+              .setInitials((name[0][0] + name[1][0]).toUpperCase());
         }
       }
+      initStateProvider.setLoading(false);
     }
   }
 
@@ -100,39 +104,12 @@ class _AccountState extends State<Account> with ValidationMixin {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                color: Constants.lightGreen.withRed(210),
-                              ),
-                              height: 35.0,
-                              width: 35.0,
-                              child: Center(
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.arrow_back,
-                                    color: Constants.primaryColor,
-                                    size: 20,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 20.0),
-                            Text(
-                              'Profile',
-                              style: GoogleFonts.roboto(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          'Profile',
+                          style: GoogleFonts.roboto(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -144,7 +121,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                         fit: BoxFit.contain,
-                        image: AssetImage('assets/images/hisabkitabUIProfile.png'),
+                        image:
+                            AssetImage('assets/images/hisabkitabUIProfile.png'),
                       )),
                       child: CircleAvatar(
                         radius: 45.0,
@@ -191,7 +169,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'Name',
                                   alignLabelWithHint: true,
@@ -206,7 +185,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin:
+                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 controller: _mobileController,
@@ -218,7 +198,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'Mobile',
                                   alignLabelWithHint: true,
@@ -233,7 +214,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin:
+                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 controller: _emailController,
@@ -245,7 +227,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'Email-ID',
                                   alignLabelWithHint: true,
@@ -339,6 +322,14 @@ class _AccountState extends State<Account> with ValidationMixin {
                 ),
               ),
             ),
+            provider.isLoading
+                ? Center(
+                  child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                    ),
+                )
+                : Container(),
           ],
         ),
       ),
@@ -359,9 +350,12 @@ class _AccountState extends State<Account> with ValidationMixin {
     if (_formState.validate()) {
       _formState.save();
 
-      if ((_name != null && _name.isNotEmpty) || (_mobile != null && _mobile.isNotEmpty) || (_email != null && _email.isNotEmpty)) {
+      if ((_name != null && _name.isNotEmpty) ||
+          (_mobile != null && _mobile.isNotEmpty) ||
+          (_email != null && _email.isNotEmpty)) {
         provider.setLoading(true);
-        UserProfile userProfile = UserProfile(name: _name, mobile: _mobile, email: _email);
+        UserProfile userProfile =
+            UserProfile(name: _name, mobile: _mobile, email: _email);
 
         LoginAPIController.updateUserProfile(userProfile).then((response) {
           provider.setLoading(false);
@@ -373,9 +367,11 @@ class _AccountState extends State<Account> with ValidationMixin {
             List<String> name = response.name?.split(' ');
             if (name != null) {
               if (name.length == 1) {
-                provider.setInitials(name[0][0].toUpperCase(), willNotify: false);
+                provider.setInitials(name[0][0].toUpperCase(),
+                    willNotify: false);
               } else if (name.length > 1) {
-                provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);
+                provider.setInitials((name[0][0] + name[1][0]).toUpperCase(),
+                    willNotify: false);
               }
             }
 
