@@ -33,8 +33,27 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
       lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
-      provider.setDateQuery(DateFormat('dd-MM-yyyy').format(pickedDate).toString());
+      provider.setTempDateQuery(DateFormat('yyyy-MM-dd').format(pickedDate).toString(), willNotify: false);
+      provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+
+    initStateProvider.setTempEarning(initStateProvider.isEarning, willNotify: false);
+    initStateProvider.setTempSpending(initStateProvider.isSpending, willNotify: false);
+    initStateProvider.setTempSearchQuery(initStateProvider.searchQuery, willNotify: false);
+    initStateProvider.setTempDateQuery(initStateProvider.dateQuery, willNotify: false);
+    initStateProvider.setTempMinAmountQuery(initStateProvider.minAmountQuery, willNotify: false);
+    initStateProvider.setTempMaxAmountQuery(initStateProvider.maxAmountQuery, willNotify: false);
+    initStateProvider.setTempCashQuery(initStateProvider.isCashQuery, willNotify: false);
+    initStateProvider.setTempCardQuery(initStateProvider.isCardQuery, willNotify: false);
+    initStateProvider.setTempChequeQuery(initStateProvider.isChequeQuery, willNotify: false);
+    initStateProvider.setTempAccountQuery(initStateProvider.isAccountQuery, willNotify: false);
   }
 
   @override
@@ -105,9 +124,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             ),
                             child: CheckboxListTile(
                               controlAffinity: ListTileControlAffinity.leading,
-                              value: provider.isEarning,
+                              value: provider.isTempEarning,
                               onChanged: (value) {
-                                provider.setEarning(value);
+                                provider.setTempEarning(value);
                               },
                               activeColor: primaryColor,
                               title: HeaderWidget(headerText: 'Earnings', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
@@ -120,9 +139,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             ),
                             child: CheckboxListTile(
                               controlAffinity: ListTileControlAffinity.leading,
-                              value: provider.isSpending,
+                              value: provider.isTempSpending,
                               onChanged: (value) {
-                                provider.setSpending(value);
+                                provider.setTempSpending(value);
                               },
                               activeColor: primaryColor,
                               title: HeaderWidget(headerText: 'Spendings', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
@@ -134,8 +153,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                         margin: EdgeInsets.all(15.0),
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
+                          initialValue: provider.searchQuery ?? '',
                           onSaved: (value) {
-                            provider.setSearchQuery(value, willNotify: false);
+                            provider.setTempSearchQuery(value, willNotify: false);
                           },
                           cursorColor: primaryColor,
                           textAlign: TextAlign.left,
@@ -161,34 +181,57 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                       ),
                       GestureDetector(
                         onTap: () {
+                          FocusScope.of(context).unfocus();
                           selectDate(context);
                         },
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
-                          padding: EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            readOnly: true,
-                            initialValue: provider.dateQuery,
-                            cursorColor: primaryColor,
-                            textAlign: TextAlign.left,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.date_range,
-                                color: Colors.black45,
+                          margin: EdgeInsets.only(bottom: 15.0),
+                          width: deviceWidth * 0.87,
+                          height: 50,
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), border: Border.all(color: Colors.grey)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Container(
+                                width: deviceWidth * 0.69,
+                                margin: EdgeInsets.only(left: 10),
+                                child: Text(
+                                  provider.dateTime != null && provider.dateTime.isNotEmpty ? provider.dateTime : 'Search By Date',
+                                  style: GoogleFonts.nunito(
+                                    color: provider.dateTime != null && provider.dateTime.isNotEmpty ? Colors.black54 : Colors.grey.shade400,
+                                    fontSize: 14,
+                                  ),
+                                ),
                               ),
-                              contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                              fillColor: Colors.white,
-                              hintText: 'Search By Date',
-                              alignLabelWithHint: true,
-                              hintStyle: GoogleFonts.nunito(
-                                color: Colors.grey.shade400,
-                                fontSize: 14,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      provider.dateTime?.isNotEmpty ?? false
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                provider.setTempDateQuery('', willNotify: false);
+                                                provider.setDateTime('');
+                                              },
+                                              child: Icon(
+                                                Icons.clear,
+                                                color: Colors.black45,
+                                                size: 20.0,
+                                              ),
+                                            )
+                                          : Container(),
+                                      Icon(
+                                        Icons.date_range,
+                                        color: Colors.black45,
+                                        size: 20.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
@@ -202,22 +245,15 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             margin: EdgeInsets.fromLTRB(10.0, 0.0, 15.0, 0.0),
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
+                              initialValue: provider.minAmountQuery != -1 ? provider.minAmountQuery.toString() : '',
                               validator: validateNullableDoubleValue,
                               onSaved: (value) {
                                 if (value == null || value.isEmpty) return;
-
-                                double _value = 0;
-                                try {
-                                  _value = double.parse(value);
-                                } catch (e) {
-                                  print('Exception occurred while casting min value to double' + e.toString());
-                                }
-
-                                provider.setMinAmountQuery(_value);
+                                provider.setTempMinAmountQuery(double.parse(value));
                               },
                               cursorColor: primaryColor,
                               textAlign: TextAlign.left,
-                              keyboardType: TextInputType.text,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                 fillColor: Colors.white,
@@ -243,18 +279,11 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             margin: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
+                              initialValue: provider.maxAmountQuery != -1 ? provider.maxAmountQuery : '',
                               validator: validateNullableDoubleValue,
                               onSaved: (value) {
                                 if (value == null || value.isEmpty) return;
-
-                                double _value = 0;
-                                try {
-                                  _value = double.parse(value);
-                                } catch (e) {
-                                  print('Exception occurred while casting max value to double' + e.toString());
-                                }
-
-                                provider.setMaxAmountQuery(_value);
+                                provider.setMaxAmountQuery(double.parse(value));
                               },
                               cursorColor: primaryColor,
                               textAlign: TextAlign.left,
@@ -290,9 +319,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             ),
                             child: CheckboxListTile(
                               controlAffinity: ListTileControlAffinity.leading,
-                              value: provider.isCashQuery,
+                              value: provider.isTempCashQuery,
                               onChanged: (value) {
-                                provider.setCashQuery(value);
+                                provider.setTempCashQuery(value);
                               },
                               activeColor: primaryColor,
                               title: HeaderWidget(headerText: 'Cash', textColor: Colors.black54, maxFontSize: 16, minFontSize: 13),
@@ -305,9 +334,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             ),
                             child: CheckboxListTile(
                               controlAffinity: ListTileControlAffinity.leading,
-                              value: provider.isCardQuery,
+                              value: provider.isTempCardQuery,
                               onChanged: (value) {
-                                provider.setCardQuery(value);
+                                provider.setTempCardQuery(value);
                               },
                               activeColor: primaryColor,
                               title: HeaderWidget(headerText: 'Card', textColor: Colors.black54, maxFontSize: 16, minFontSize: 13),
@@ -324,9 +353,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             ),
                             child: CheckboxListTile(
                               controlAffinity: ListTileControlAffinity.leading,
-                              value: provider.isChequeQuery,
+                              value: provider.isTempChequeQuery,
                               onChanged: (value) {
-                                provider.setChequeQuery(value);
+                                provider.setTempChequeQuery(value);
                               },
                               activeColor: primaryColor,
                               title: HeaderWidget(headerText: 'Cheque', textColor: Colors.black54, maxFontSize: 16, minFontSize: 13),
@@ -339,9 +368,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             ),
                             child: CheckboxListTile(
                               controlAffinity: ListTileControlAffinity.leading,
-                              value: provider.isAccountQuery,
+                              value: provider.isTempAccountQuery,
                               onChanged: (value) {
-                                provider.setAccountQuery(value);
+                                provider.setTempAccountQuery(value);
                               },
                               activeColor: primaryColor,
                               title: HeaderWidget(headerText: 'Account Transfer', textColor: Colors.black54, maxFontSize: 16, minFontSize: 13),
@@ -389,11 +418,38 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    provider.setTempEarning(false, willNotify: false);
+    provider.setTempSpending(false, willNotify: false);
+    provider.setTempSearchQuery('', willNotify: false);
+    provider.setTempDateQuery('', willNotify: false);
+    provider.setTempMinAmountQuery(-1, willNotify: false);
+    provider.setTempMaxAmountQuery(-1, willNotify: false);
+    provider.setTempCashQuery(false, willNotify: false);
+    provider.setTempCardQuery(false, willNotify: false);
+    provider.setTempChequeQuery(false, willNotify: false);
+    provider.setTempAccountQuery(false, willNotify: false);
+  }
+
   void _submit() {
     final _formState = _formKey.currentState;
 
     if (_formState.validate()) {
       _formState.save();
+
+      provider.setEarning(provider.isTempEarning, willNotify: false);
+      provider.setSpending(provider.isTempSpending, willNotify: false);
+      provider.setSearchQuery(provider.tempSearchQuery, willNotify: false);
+      provider.setDateQuery(provider.tempDateQuery, willNotify: false);
+      provider.setMinAmountQuery(provider.tempMinAmountQuery, willNotify: false);
+      provider.setMaxAmountQuery(provider.tempMaxAmountQuery, willNotify: false);
+      provider.setCashQuery(provider.isTempCashQuery, willNotify: false);
+      provider.setCardQuery(provider.isTempCardQuery, willNotify: false);
+      provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
+      provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
 
       _goToMainScreen();
     }

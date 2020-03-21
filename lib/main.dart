@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
-    return ChangeNotifierProvider<AppState>.value(
-      value: AppState(),
+    return ChangeNotifierProvider<AppState>(
+      create: (_) => AppState(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: appName,

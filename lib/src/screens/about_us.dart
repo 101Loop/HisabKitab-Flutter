@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/utils/const.dart';
+import 'package:provider/provider.dart';
 
-class AboutUs extends StatelessWidget {
+class AboutUs extends StatefulWidget {
   AboutUs({Key key}) : super(key: key);
 
   @override
+  _AboutUsState createState() => _AboutUsState();
+}
+
+class _AboutUsState extends State<AboutUs> {
+  AppState provider;
+
+  @override
   Widget build(BuildContext context) {
+    provider = Provider.of<AppState>(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: profileBG,
@@ -38,9 +47,7 @@ class AboutUs extends StatelessWidget {
                                 size: 20,
                               ),
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
-                                );
+                                provider.setCurrentTab(0);
                               },
                             ),
                           ),

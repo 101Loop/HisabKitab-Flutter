@@ -78,6 +78,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       _comment = _transaction.comments ?? '';
     } else {
       initStateProvider.setCategory(widget.category, willNotify: false);
+      initStateProvider.setDateTime('', willNotify: false);
     }
   }
 
@@ -87,224 +88,77 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     deviceHeight = MediaQuery.of(context).size.height;
     provider = Provider.of<AppState>(context);
 
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        body: IgnorePointer(
-          ignoring: provider.isLoading,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.fromLTRB(20, 20, 0.0, 0.0),
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              color: Constant.lightGreen.withRed(210),
-                            ),
-                            height: 35.0,
-                            width: 35.0,
-                            child: Center(
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.arrow_back,
-                                  color: Constant.primaryColor,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            HeaderWidget(
-                              headerText: widget.transactionType,
-                              maxFontSize: 25,
-                              minFontSize: 25,
-                              textColor: Colors.black,
-                            ),
-                            Container(
-                              height: 140.0,
-                              width: 120.0,
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: Colors.white,
+          body: IgnorePointer(
+            ignoring: provider.isLoading,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.fromLTRB(20, 20, 0.0, 0.0),
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
                               decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: AssetImage('assets/images/addTransactionImage.png'),
+                                borderRadius: BorderRadius.circular(8.0),
+                                color: Constant.lightGreen.withRed(210),
+                              ),
+                              height: 35.0,
+                              width: 35.0,
+                              child: Center(
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                    color: Constant.primaryColor,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    _goToMainScreen();
+                                  },
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        HeaderWidget(
-                          headerText: 'Name *',
-                          maxFontSize: 18.0,
-                          minFontSize: 16.0,
-                          textColor: Colors.black,
-                        ),
-                        SizedBox(height: 10.0),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                          padding: EdgeInsets.all(15.0),
-                          width: deviceWidth,
-                          height: deviceHeight * 0.10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Color(0xffecf8f8).withRed(210),
                           ),
-                          child: Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
+                              HeaderWidget(
+                                headerText: widget.transactionType,
+                                maxFontSize: 25,
+                                minFontSize: 25,
+                                textColor: Colors.black,
+                              ),
                               Container(
-                                width: deviceWidth * 0.75,
-                                child: TextFormField(
-                                  initialValue: _contact,
-                                  validator: validateField,
-                                  onSaved: (value) {
-                                    _contact = value;
-                                  },
-                                  cursorColor: Constant.primaryColor,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    isDense: true,
-                                    contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
+                                height: 140.0,
+                                width: 120.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: AssetImage('assets/images/addTransactionImage.png'),
                                   ),
                                 ),
                               ),
-                              Icon(
-                                Icons.comment,
-                                color: Colors.black45,
-                                size: 20.0,
-                              ),
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        HeaderWidget(
-                          headerText: 'Amount *',
-                          maxFontSize: 18.0,
-                          minFontSize: 16.0,
-                          textColor: Colors.black,
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                          padding: EdgeInsets.all(15.0),
-                          width: deviceWidth,
-                          height: deviceHeight * 0.10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Color(0xffecf8f8).withRed(210),
+                          HeaderWidget(
+                            headerText: 'Name *',
+                            maxFontSize: 18.0,
+                            minFontSize: 16.0,
+                            textColor: Colors.black,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                width: deviceWidth * 0.75,
-                                child: TextFormField(
-                                  initialValue: _transaction?.amount?.toString() ?? '',
-                                  validator: validateDoubleValue,
-                                  onSaved: (value) {
-                                    _amount = value;
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  cursorColor: Constant.primaryColor,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                '₹',
-                                style: GoogleFonts.roboto(color: Colors.black45, fontSize: 20.0, fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 5.0),
-                        HeaderWidget(
-                          headerText: 'Category *',
-                          maxFontSize: 18.0,
-                          minFontSize: 16,
-                          textColor: Colors.black,
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                          padding: EdgeInsets.all(15.0),
-                          width: deviceWidth,
-                          height: deviceHeight * 0.10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Color(0xffecf8f8).withRed(210),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              IgnorePointer(
-                                ignoring: _transaction != null ? false : true,
-                                child: Container(
-                                  width: deviceWidth * 0.7,
-                                  child: DropdownButton(
-                                    iconSize: 0.0,
-                                    underline: Container(),
-                                    value: provider.category,
-                                    onChanged: (value) {
-                                      provider.setCategory(value);
-                                    },
-                                    items: Constant.categoryList.map((category) {
-                                      return DropdownMenuItem(
-                                        child: Text(category),
-                                        value: category,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black45,
-                                size: 30.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 5.0),
-                        HeaderWidget(
-                          headerText: 'Date *',
-                          maxFontSize: 18.0,
-                          minFontSize: 16.0,
-                          textColor: Colors.black,
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                            selectDate(context);
-                          },
-                          child: Container(
+                          SizedBox(height: 10.0),
+                          Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
                             padding: EdgeInsets.all(15.0),
                             width: deviceWidth,
@@ -317,153 +171,301 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Container(
-                                  width: deviceWidth * 0.70,
-                                  child: Text(
-                                    provider.dateTime ?? '',
+                                  width: deviceWidth * 0.75,
+                                  child: TextFormField(
+                                    initialValue: _contact,
+                                    validator: validateField,
+                                    onSaved: (value) {
+                                      _contact = value;
+                                    },
+                                    cursorColor: Constant.primaryColor,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
+                                    ),
                                   ),
                                 ),
                                 Icon(
-                                  Icons.date_range,
+                                  Icons.comment,
                                   color: Colors.black45,
                                   size: 20.0,
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        SizedBox(height: 10.0),
-                        HeaderWidget(
-                          headerText: 'Mode of payment *',
-                          maxFontSize: 18.0,
-                          minFontSize: 16,
-                          textColor: Colors.black,
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                          padding: EdgeInsets.all(15.0),
-                          width: deviceWidth,
-                          height: deviceHeight * 0.10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Color(0xffecf8f8).withRed(210),
+                          SizedBox(
+                            height: 10.0,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                width: deviceWidth * 0.7,
-                                child: DropdownButton(
-                                  iconSize: 0.0,
-                                  underline: Container(),
-                                  value: provider.mode,
-                                  onChanged: (value) {
-                                    provider.setMode(value);
-                                  },
-                                  items: Constant.paymentList.map((mode) {
-                                    return DropdownMenuItem(
-                                      child: Text(mode),
-                                      value: mode,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.black45,
-                                size: 30.0,
-                              ),
-                            ],
+                          HeaderWidget(
+                            headerText: 'Amount *',
+                            maxFontSize: 18.0,
+                            minFontSize: 16.0,
+                            textColor: Colors.black,
                           ),
-                        ),
-                        SizedBox(height: 10.0),
-                        HeaderWidget(
-                          headerText: 'Comment',
-                          maxFontSize: 18.0,
-                          minFontSize: 16.0,
-                          textColor: Colors.black,
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                          padding: EdgeInsets.all(15.0),
-                          width: deviceWidth,
-                          height: deviceHeight * 0.10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            color: Color(0xffecf8f8).withRed(210),
+                          SizedBox(
+                            height: 10.0,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                width: deviceWidth * 0.75,
-                                child: TextFormField(
-                                  initialValue: _comment,
-                                  maxLength: 40,
-                                  onSaved: (value) {
-                                    _comment = value;
-                                  },
-                                  cursorColor: Constant.primaryColor,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    isDense: true,
-                                    contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
-                                  ),
-                                ),
-                              ),
-                              Icon(
-                                Icons.comment,
-                                color: Colors.black45,
-                                size: 20.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            _submit();
-                          },
-                          child: Container(
+                          Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
                             padding: EdgeInsets.all(15.0),
                             width: deviceWidth,
-                            height: deviceHeight * 0.09,
+                            height: deviceHeight * 0.10,
                             decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Constant.buttonColor.withOpacity(0.5),
-                                  blurRadius: 6.0,
-                                  offset: Offset(2, 6),
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Color(0xffecf8f8).withRed(210),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  width: deviceWidth * 0.75,
+                                  child: TextFormField(
+                                    initialValue: _transaction?.amount?.toString() ?? '',
+                                    validator: validateDoubleValue,
+                                    onSaved: (value) {
+                                      _amount = value;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    cursorColor: Constant.primaryColor,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  '₹',
+                                  style: GoogleFonts.roboto(color: Colors.black45, fontSize: 20.0, fontWeight: FontWeight.w600),
                                 ),
                               ],
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: Constant.buttonColor,
                             ),
-                            child: Center(
-                              child: HeaderWidget(
-                                headerText: '+ Save ${widget.transactionType}',
-                                maxFontSize: 18.0,
-                                minFontSize: 18.0,
-                                textColor: Colors.white,
+                          ),
+                          SizedBox(height: 5.0),
+                          HeaderWidget(
+                            headerText: 'Category *',
+                            maxFontSize: 18.0,
+                            minFontSize: 16,
+                            textColor: Colors.black,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                            padding: EdgeInsets.all(15.0),
+                            width: deviceWidth,
+                            height: deviceHeight * 0.10,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Color(0xffecf8f8).withRed(210),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                IgnorePointer(
+                                  ignoring: _transaction != null ? false : true,
+                                  child: Container(
+                                    width: deviceWidth * 0.7,
+                                    child: DropdownButton(
+                                      iconSize: 0.0,
+                                      underline: Container(),
+                                      value: provider.category,
+                                      onChanged: (value) {
+                                        provider.setCategory(value);
+                                      },
+                                      items: Constant.categoryList.map((category) {
+                                        return DropdownMenuItem(
+                                          child: Text(category),
+                                          value: category,
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.black45,
+                                  size: 30.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 5.0),
+                          HeaderWidget(
+                            headerText: 'Date *',
+                            maxFontSize: 18.0,
+                            minFontSize: 16.0,
+                            textColor: Colors.black,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              selectDate(context);
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                              padding: EdgeInsets.all(15.0),
+                              width: deviceWidth,
+                              height: deviceHeight * 0.10,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: Color(0xffecf8f8).withRed(210),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                    width: deviceWidth * 0.70,
+                                    child: Text(
+                                      provider.dateTime ?? '',
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.date_range,
+                                    color: Colors.black45,
+                                    size: 20.0,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 10.0),
+                          HeaderWidget(
+                            headerText: 'Mode of payment *',
+                            maxFontSize: 18.0,
+                            minFontSize: 16,
+                            textColor: Colors.black,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                            padding: EdgeInsets.all(15.0),
+                            width: deviceWidth,
+                            height: deviceHeight * 0.10,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Color(0xffecf8f8).withRed(210),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  width: deviceWidth * 0.7,
+                                  child: DropdownButton(
+                                    iconSize: 0.0,
+                                    underline: Container(),
+                                    value: provider.mode,
+                                    onChanged: (value) {
+                                      provider.setMode(value);
+                                    },
+                                    items: Constant.paymentList.map((mode) {
+                                      return DropdownMenuItem(
+                                        child: Text(mode),
+                                        value: mode,
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.black45,
+                                  size: 30.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10.0),
+                          HeaderWidget(
+                            headerText: 'Comment',
+                            maxFontSize: 18.0,
+                            minFontSize: 16.0,
+                            textColor: Colors.black,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                            padding: EdgeInsets.all(15.0),
+                            width: deviceWidth,
+                            height: deviceHeight * 0.10,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Color(0xffecf8f8).withRed(210),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  width: deviceWidth * 0.75,
+                                  child: TextFormField(
+                                    initialValue: _comment,
+                                    maxLength: 40,
+                                    onSaved: (value) {
+                                      _comment = value;
+                                    },
+                                    cursorColor: Constant.primaryColor,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.comment,
+                                  color: Colors.black45,
+                                  size: 20.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              _submit();
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                              padding: EdgeInsets.all(15.0),
+                              width: deviceWidth,
+                              height: deviceHeight * 0.09,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Constant.buttonColor.withOpacity(0.5),
+                                    blurRadius: 6.0,
+                                    offset: Offset(2, 6),
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(20.0),
+                                color: Constant.buttonColor,
+                              ),
+                              child: Center(
+                                child: HeaderWidget(
+                                  headerText: '+ Save ${widget.transactionType}',
+                                  maxFontSize: 18.0,
+                                  minFontSize: 18.0,
+                                  textColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              provider.isLoading ? Center(child: CircularProgressIndicator()) : Container()
-            ],
+                provider.isLoading ? Center(child: CircularProgressIndicator()) : Container()
+              ],
+            ),
           ),
         ),
       ),
@@ -495,9 +497,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         if (response.statusCode == 200) {
           Future.delayed(Duration(seconds: 1), () {
             provider.setLoading(false, willNotify: false);
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
-            );
+            _goToMainScreen();
           });
         } else {
           provider.setLoading(false);
@@ -513,5 +513,17 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  ///navigates to main screen on pressing back button
+  ///always returns false, to prevent popping the screen
+  Future<bool> _onBackPressed() async {
+    _goToMainScreen();
+    return false;
+  }
+
+  ///navigates to main screen
+  void _goToMainScreen() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 }
