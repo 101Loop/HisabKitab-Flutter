@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart'
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';

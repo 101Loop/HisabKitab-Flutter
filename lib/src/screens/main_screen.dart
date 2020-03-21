@@ -18,8 +18,9 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget addExpense() {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushReplacement(
+      onTap: () async {
+        provider.setTransactionClicked(false, willNotify: false);
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add expense',
@@ -48,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
     return GestureDetector(
       onTap: () {
         provider.setTransactionClicked(false, willNotify: false);
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => AddTransaction(
               transactionType: 'Add earning',
@@ -76,6 +77,7 @@ class _MainScreenState extends State<MainScreen> {
   final Key dashboardKey = PageStorageKey('dashboard');
   final Key accountKey = PageStorageKey('account');
   final Key aboutUsKey = PageStorageKey('aboutUs');
+  
   Dashboard dashboard;
   Account account;
   AboutUs aboutUs;
@@ -111,125 +113,202 @@ class _MainScreenState extends State<MainScreen> {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
-      child: Scaffold(
-        floatingActionButton: Stack(
-          children: <Widget>[
-            Positioned(
-              right: 10.0,
-              bottom: 15.0,
-              child: provider.currentTab == 0
-                  ? GestureDetector(
-                      onTap: () {
-                        provider.setTransactionClicked(!provider.addTransactionClicked);
-                      },
-                      child: Container(
-                        height: 60,
-                        width: 60,
-                        child: !provider.addTransactionClicked
-                            ? Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 29,
-                              )
-                            : Icon(
-                                Icons.close,
-                                color: Colors.white,
-                              ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.0),
-                          color: buttonColor,
+      child: WillPopScope(
+        onWillPop: _onBackPressed,
+        child: Scaffold(
+          floatingActionButton: Stack(
+            children: <Widget>[
+              Positioned(
+                right: 10.0,
+                bottom: 15.0,
+                child: provider.currentTab == 0
+                    ? GestureDetector(
+                        onTap: () {
+                          provider.setTransactionClicked(
+                              !provider.addTransactionClicked);
+                        },
+                        child: Container(
+                          height: 60,
+                          width: 60,
+                          child: !provider.addTransactionClicked
+                              ? Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 29,
+                                )
+                              : Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: buttonColor,
+                          ),
                         ),
+                      )
+                    : GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: buttonColor,
+                          ),
+                        ),
+                      ),
+              ),
+              provider.addTransactionClicked
+                  ? Positioned(
+                      bottom: 100,
+                      right: 10,
+                      child: Column(
+                        children: <Widget>[
+                          addExpense(),
+                          SizedBox(height: 20.0),
+                          addEarning(),
+                        ],
                       ),
                     )
-                  : GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.0),
-                          color: buttonColor,
-                        ),
-                      ),
-                    ),
-            ),
-            provider.addTransactionClicked
-                ? Positioned(
-                    bottom: 100,
-                    right: 10,
-                    child: Column(
-                      children: <Widget>[
-                        addExpense(),
-                        SizedBox(height: 20.0),
-                        addEarning(),
-                      ],
-                    ),
-                  )
-                : Container(),
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        bottomNavigationBar: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0),
-          ),
-          child: BottomNavigationBar(
-            onTap: (int value) {
-              if (value == 3) {
-                return;
-              } else {
-                provider.setCurrentTab(value, willNotify: false);
-                provider.setTransactionClicked(false);
-              }
-            },
-            currentIndex: provider.currentTab,
-            type: BottomNavigationBarType.fixed,
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.attach_money),
-                title: Text(
-                  'Dashboard',
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
-                title: Text(
-                  'Account',
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.info_outline),
-                title: Text(
-                  'About Us',
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Container(),
-                title: Text(
-                  '',
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ),
+                  : Container(),
             ],
-            backgroundColor: primaryColor,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.black38,
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          bottomNavigationBar: ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+            child: BottomNavigationBar(
+              onTap: (int value) {
+                if (value == 3) {
+                  return;
+                } else {
+                  provider.setCurrentTab(value, willNotify: false);
+                  provider.setTransactionClicked(false);
+                }
+                provider.setCurrentPage(pages[value]);
+              },
+              currentIndex: provider.currentTab,
+              type: BottomNavigationBarType.fixed,
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.attach_money),
+                  title: Text(
+                    'Dashboard',
+                    style: TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline),
+                  title: Text(
+                    'Account',
+                    style: TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.info_outline),
+                  title: Text(
+                    'About Us',
+                    style: TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(),
+                  title: Text(
+                    '',
+                    style: TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+              backgroundColor: primaryColor,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.black38,
+            ),
+          ),
+          body: pages[provider.currentTab],
         ),
-        body: pages[provider.currentTab],
       ),
+    );
+  }
+
+  ///method, called on back pressed
+  Future<bool> _onBackPressed() async {
+    //exit the app if already on 1st tab
+    if (provider.currentPage == dashboard) {
+      _showAlertDialog(
+        'Confirm',
+        'Are you sure to exit the app?',
+        () {
+          Navigator.of(context).pop(true);
+        },
+      );
+    }
+
+    //switch to the 1st tab for other cases
+    else {
+      provider.setCurrentTab(0, willNotify: false);
+      provider.setCurrentPage(dashboard);
+    }
+
+    return false;
+  }
+
+  void _showAlertDialog(String title, String content, Function callback) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          title: title != null
+              ? Text(title)
+              : Container(
+                  height: 0,
+                ),
+          content: Text(content),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              color: Colors.red,
+              child: Text(
+                'CANCEL',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                callback();
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              color: primaryColor,
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
