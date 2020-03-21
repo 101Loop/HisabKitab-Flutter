@@ -103,6 +103,7 @@ class AppState extends ChangeNotifier {
   bool get addTransactionClicked => _addTransactionClicked;
 
   bool get isHideText => _isHideText;
+
   bool get isHideText1 => _isHideText1;
 
   int get currentTab => _currentTab;
@@ -312,5 +313,48 @@ class AppState extends ChangeNotifier {
 
   void initialState() {
     _autoValidate = false;
+  }
+
+  void clearData() {
+    _creditAmount = '0';
+    _debitAmount = '0';
+    _mode = null;
+    _category = null;
+    _tempSearchQuery = '';
+    _tempDateQuery = '';
+    _transactionType = 'Earnings';
+    _dateTime = '';
+    _searchQuery = '';
+    _dateQuery = '';
+    _initials = '?';
+
+    _minAmountQuery = -1;
+    _maxAmountQuery = -1;
+
+    _currentTab = 0;
+
+    _isLoading = false;
+    _otpRequested = false;
+    _autoValidate = false;
+    _isEarning = false;
+    _isSpending = false;
+    _isTempEarning = false;
+    _isTempSpending = false;
+    _isCashQuery = false;
+    _isCardQuery = false;
+    _isChequeQuery = false;
+    _isAccountQuery = false;
+    _isTempCashQuery = false;
+    _isTempCardQuery = false;
+    _isTempChequeQuery = false;
+    _isTempAccountQuery = false;
+    _isLoadingItems = false;
+    _addTransactionClicked = false;
+    _isHideText = true;
+    _isHideText1 = true;
+
+    _transactionList = List();
+
+    _userProfile = null;
   }
 }

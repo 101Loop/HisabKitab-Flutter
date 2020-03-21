@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
@@ -313,11 +314,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                           color: Constants.primaryColor,
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => WelcomeScreen(),
-                            ),
-                          );
+                          _logout();
                         },
                         child: HeaderWidget(
                           headerText: 'LOGOUT',
@@ -382,5 +379,17 @@ class _AccountState extends State<Account> with ValidationMixin {
         });
       }
     }
+  }
+
+  ///clears provider and preference's data
+  void _logout() {
+    provider.clearData();
+    prefs.clear();
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => WelcomeScreen(),
+      ),
+    );
   }
 }
