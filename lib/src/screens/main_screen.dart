@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/about_us.dart';
@@ -77,7 +78,7 @@ class _MainScreenState extends State<MainScreen> {
   final Key dashboardKey = PageStorageKey('dashboard');
   final Key accountKey = PageStorageKey('account');
   final Key aboutUsKey = PageStorageKey('aboutUs');
-  
+
   Dashboard dashboard;
   Account account;
   AboutUs aboutUs;
@@ -124,8 +125,7 @@ class _MainScreenState extends State<MainScreen> {
                 child: provider.currentTab == 0
                     ? GestureDetector(
                         onTap: () {
-                          provider.setTransactionClicked(
-                              !provider.addTransactionClicked);
+                          provider.setTransactionClicked(!provider.addTransactionClicked);
                         },
                         child: Container(
                           height: 60,
@@ -248,7 +248,7 @@ class _MainScreenState extends State<MainScreen> {
         'Confirm',
         'Are you sure to exit the app?',
         () {
-          Navigator.of(context).pop(true);
+          SystemNavigator.pop();
         },
       );
     }
@@ -268,8 +268,7 @@ class _MainScreenState extends State<MainScreen> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           title: title != null
               ? Text(title)
               : Container(
@@ -281,8 +280,7 @@ class _MainScreenState extends State<MainScreen> {
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               color: Colors.red,
               child: Text(
                 'CANCEL',
@@ -296,8 +294,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.of(context).pop(true);
                 callback();
               },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               color: primaryColor,
               child: Text(
                 'OK',
