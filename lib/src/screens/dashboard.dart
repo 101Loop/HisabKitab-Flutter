@@ -610,6 +610,11 @@ class RedGreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double _earning = double.parse(totalEarning);
+    final double _expense = double.parse(totalExpense);
+    final _end = _expense > _earning ? Alignment.center : Alignment.centerRight;
+    final _begin = _earning > _expense ? Alignment.center : Alignment.centerLeft;
+
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
     return ConstrainedBox(
@@ -623,6 +628,8 @@ class RedGreenCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           gradient: LinearGradient(
+            begin: _begin,
+            end: _end,
             colors: [Constants.primaryColor, Colors.red.shade400],
           ),
         ),
