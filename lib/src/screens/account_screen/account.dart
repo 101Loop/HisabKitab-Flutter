@@ -9,6 +9,7 @@ import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
+import 'package:hisabkitab/utils/utility.dart';
 import 'package:provider/provider.dart';
 
 class Account extends StatefulWidget {
@@ -39,49 +40,45 @@ class _AccountState extends State<Account> with ValidationMixin {
   @override
   void initState() {
     super.initState();
-    AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+      if (initStateProvider.userProfile == null)
+        LoginAPIController.getUserProfile().then(
+          (response) {
+            if (response != null) {
+              initStateProvider.setUserProfile(response, willNotify: false);
 
-    initStateProvider.setLoading(true);
-    if (initStateProvider.userProfile == null)
-      LoginAPIController.getUserProfile().then(
-        (response) {
-          if (response != null) {
-            initStateProvider.setUserProfile(response, willNotify: false);
+              _nameController.text = response.name;
+              _emailController.text = response.email;
+              _mobileController.text = response.mobile;
 
-            _nameController.text = response.name;
-            _emailController.text = response.email;
-            _mobileController.text = response.mobile;
-
-            List<String> name = response.name?.split(' ');
-            if (name != null) {
-              if (name.length == 1) {
-                initStateProvider.setInitials(name[0][0].toUpperCase());
-              } else if (name.length > 1) {
-                initStateProvider
-                    .setInitials((name[0][0] + name[1][0]).toUpperCase());
+              List<String> name = response.name?.split(' ');
+              if (name != null) {
+                if (name.length == 1) {
+                  initStateProvider.setInitials(name[0][0].toUpperCase());
+                } else if (name.length > 1) {
+                  initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+                }
               }
             }
-          }
-          initStateProvider.setLoading(false);
-        },
-      );
-    else {
-      UserProfile userProfile = initStateProvider.userProfile;
-      _nameController.text = userProfile.name;
-      _emailController.text = userProfile.email;
-      _mobileController.text = userProfile.mobile;
+          },
+        );
+      else {
+        UserProfile userProfile = initStateProvider.userProfile;
+        _nameController.text = userProfile.name;
+        _emailController.text = userProfile.email;
+        _mobileController.text = userProfile.mobile;
 
-      List<String> name = userProfile.name?.split(' ');
-      if (name != null) {
-        if (name.length == 1) {
-          initStateProvider.setInitials(name[0][0].toUpperCase());
-        } else if (name.length > 1) {
-          initStateProvider
-              .setInitials((name[0][0] + name[1][0]).toUpperCase());
+        List<String> name = userProfile.name?.split(' ');
+        if (name != null) {
+          if (name.length == 1) {
+            initStateProvider.setInitials(name[0][0].toUpperCase());
+          } else if (name.length > 1) {
+            initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+          }
         }
       }
-      initStateProvider.setLoading(false);
-    }
+    });
   }
 
   @override
@@ -358,6 +355,14 @@ class _AccountState extends State<Account> with ValidationMixin {
     );
   }
 
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    provider.setLoading(false, willNotify: false);
+  }
+
   ///shows a [SnackBar], displaying [message]
   void _showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(
@@ -407,6 +412,7 @@ class _AccountState extends State<Account> with ValidationMixin {
   ///clears provider and preference's data
   void _logout() {
     provider.clearData();
+    Utility.deleteToken();
     prefs.clear();
 
     Navigator.of(context).pushReplacement(

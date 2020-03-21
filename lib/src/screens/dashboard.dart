@@ -80,13 +80,12 @@ class _DashboardState extends State<Dashboard> {
         TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
-      List<TransactionDetails> transactionList =
-          list.map((item) => TransactionDetails.fromJson(item)).toList();
+      List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
 
       double creditAmount = 0;
       double debitAmount = 0;
 
-      transactionList.forEach((item) {
+      transactionList?.forEach((item) {
         if (item.category == 'C') {
           creditAmount += item.amount;
         } else {
@@ -228,6 +227,7 @@ class _DashboardState extends State<Dashboard> {
   void deactivate() {
     super.deactivate();
 
+    provider.setLoading(false, willNotify: false);
     provider.setTransactionClicked(false, willNotify: false);
   }
 
@@ -669,6 +669,11 @@ class RedGreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double _earning = double.parse(totalEarning);
+    final double _expense = double.parse(totalExpense);
+    final _end = _expense > _earning ? Alignment.center : Alignment.centerRight;
+    final _begin = _earning > _expense ? Alignment.center : Alignment.centerLeft;
+
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
     return ConstrainedBox(
@@ -682,6 +687,8 @@ class RedGreenCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           gradient: LinearGradient(
+            begin: _begin,
+            end: _end,
             colors: [Constants.primaryColor, Colors.red.shade400],
           ),
         ),

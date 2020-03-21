@@ -39,10 +39,13 @@ class AppState extends ChangeNotifier {
   bool _isHideText1 = true;
   int _currentTab = 0;
   String _dateTime = '';
+  String _tempDateTime = '';
   UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
   String _initials = '?';
   Widget _currentPage = Dashboard();
+
+  bool _isIgnoring = false;
 
   bool get getOTPRequested => _otpRequested;
 
@@ -108,11 +111,15 @@ class AppState extends ChangeNotifier {
 
   bool get isHideText1 => _isHideText1;
 
+  bool get isIgnoring => _isIgnoring;
+
   int get currentTab => _currentTab;
 
   Widget get currentPage => _currentPage;
 
   String get dateTime => _dateTime;
+
+  String get tempDateTime => _tempDateTime;
 
   String get initials => _initials;
 
@@ -122,6 +129,11 @@ class AppState extends ChangeNotifier {
 
   setLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
+    if (willNotify) notifyListeners();
+  }
+
+  setIgnoring(bool value, {bool willNotify = true}) {
+    _isIgnoring = value;
     if (willNotify) notifyListeners();
   }
 
@@ -303,6 +315,11 @@ class AppState extends ChangeNotifier {
 
   setDateTime(String dateTime, {bool willNotify = true}) {
     _dateTime = dateTime;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempDateTime(String dateTime, {bool willNotify = true}) {
+    _tempDateTime = dateTime;
     if (willNotify) notifyListeners();
   }
 
