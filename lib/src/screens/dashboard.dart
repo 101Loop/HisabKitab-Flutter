@@ -73,12 +73,12 @@ class _DashboardState extends State<Dashboard> {
     _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
-      List<TransactionDetails> transactionList = list.map((item) => TransactionDetails.fromJson(item)).toList();
+      List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
 
       double creditAmount = 0;
       double debitAmount = 0;
 
-      transactionList.forEach((item) {
+      transactionList?.forEach((item) {
         if (item.category == 'C') {
           creditAmount += item.amount;
         } else {

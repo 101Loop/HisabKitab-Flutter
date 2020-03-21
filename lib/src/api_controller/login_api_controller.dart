@@ -27,10 +27,6 @@ class LoginAPIController {
       String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
 
-      // String token = parsedResponse['token'];
-      // _saveToken(token
-      // print(token);
-
       User user = User.fromJson(parsedResponse);
       String _token = user.data.token;
       Utility.saveToken(_token);

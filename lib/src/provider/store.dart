@@ -38,6 +38,7 @@ class AppState extends ChangeNotifier {
   bool _isHideText1 = true;
   int _currentTab = 0;
   String _dateTime = '';
+  String _tempDateTime = '';
   UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
   String _initials = '?';
@@ -109,6 +110,7 @@ class AppState extends ChangeNotifier {
   int get currentTab => _currentTab;
 
   String get dateTime => _dateTime;
+  String get tempDateTime => _tempDateTime;
 
   String get initials => _initials;
 
@@ -298,6 +300,11 @@ class AppState extends ChangeNotifier {
 
   setDateTime(String dateTime, {bool willNotify = true}) {
     _dateTime = dateTime;
+    if (willNotify) notifyListeners();
+  }
+
+  setTempDateTime(String dateTime, {bool willNotify = true}) {
+    _tempDateTime = dateTime;
     if (willNotify) notifyListeners();
   }
 
