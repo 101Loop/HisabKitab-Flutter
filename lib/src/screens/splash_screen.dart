@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
@@ -46,7 +45,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Center(
                   child: Text(
                     'Hisab Kitab',
-                    style: GoogleFonts.yeonSung(
+                    style: TextStyle(
+                      fontFamily: 'YeonSung',
                       fontSize: 30.0,
                       color: Colors.black,
                     ),
@@ -58,7 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Center(
                   child: Text(
                     'हिसाब किताब',
-                    style: GoogleFonts.cambay(
+                    style: TextStyle(
+                      fontFamily: 'Cambay',
                       fontSize: 30.0,
                       color: Colors.black,
                     ),
