@@ -117,9 +117,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                     size: 20,
                                   ),
                                   onPressed: () {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
-                                    );
+                                    provider.setCurrentTab(0);
                                   },
                                 ),
                               ),
