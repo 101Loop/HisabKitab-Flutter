@@ -70,12 +70,15 @@ flutter:
        - asset: fonts/Earning.ttf
     - family:  Spending
       fonts:
-       - asset: fonts/Spending.ttf
-
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+       - asset: fonts/Spending.ttf  
+    - family: YeonSung
+      fonts:
+        - asset: fonts/YeonSung-Regular.ttf
+    - family: Cambay
+      fonts:
+        - asset: fonts/Cambay-Regular.ttf
+       
+          
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
