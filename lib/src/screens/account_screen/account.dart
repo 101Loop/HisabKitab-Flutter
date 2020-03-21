@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
@@ -104,12 +105,37 @@ class _AccountState extends State<Account> with ValidationMixin {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          'Profile',
-                          style: GoogleFonts.roboto(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                color: Constants.lightGreen.withRed(210),
+                              ),
+                              height: 35.0,
+                              width: 35.0,
+                              child: Center(
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                    color: Constants.primaryColor,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    provider.setCurrentTab(0);
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20.0),
+                            Text(
+                              'Profile',
+                              style: GoogleFonts.roboto(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -298,11 +324,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                           color: Constants.primaryColor,
                         ),
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => WelcomeScreen(),
-                            ),
-                          );
+                          _logout();
                         },
                         child: HeaderWidget(
                           headerText: 'LOGOUT',
@@ -380,5 +402,17 @@ class _AccountState extends State<Account> with ValidationMixin {
         });
       }
     }
+  }
+
+  ///clears provider and preference's data
+  void _logout() {
+    provider.clearData();
+    prefs.clear();
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => WelcomeScreen(),
+      ),
+    );
   }
 }

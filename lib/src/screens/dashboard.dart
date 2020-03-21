@@ -50,14 +50,10 @@ class _DashboardState extends State<Dashboard> {
     }
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
-    if (initStateProvider.searchQuery.isNotEmpty)
-      queryParams += 'search=${initStateProvider.searchQuery}&';
-    if (initStateProvider.dateQuery.isNotEmpty)
-      queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
-    if (initStateProvider.minAmountQuery > 0)
-      queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
-    if (initStateProvider.maxAmountQuery > 0)
-      queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
+    if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
+    if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
+    if (initStateProvider.minAmountQuery != null && initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
+    if (initStateProvider.maxAmountQuery != null && initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
     if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
     if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
     if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
@@ -98,10 +94,8 @@ class _DashboardState extends State<Dashboard> {
         }
       });
 
-      initStateProvider.setCreditAmount(creditAmount.toString(),
-          willNotify: false);
-      initStateProvider.setDebitAmount(debitAmount.toString(),
-          willNotify: false);
+      initStateProvider.setCreditAmount(creditAmount.toString(), willNotify: false);
+      initStateProvider.setDebitAmount(debitAmount.toString());
     });
   }
 
@@ -182,7 +176,7 @@ class _DashboardState extends State<Dashboard> {
                 builder: (BuildContext context,
                     AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    provider.transactionList.clear();
+                    provider.transactionList?.clear();
                     provider.setLoading(false, willNotify: false);
 
                     _next = snapshot.data.next;
@@ -195,11 +189,9 @@ class _DashboardState extends State<Dashboard> {
                         willNotify: false);
 
                     if (provider.transactionType == Constants.CREDIT) {
-                      provider.transactionList.removeWhere(
-                          (item) => item.category != Constants.CREDIT);
+                      provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
                     } else if (provider.transactionType == Constants.DEBIT) {
-                      provider.transactionList.removeWhere(
-                          (item) => item.category == Constants.CREDIT);
+                      provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
                     }
                   } else {
                     provider.setLoading(true, willNotify: false);
@@ -212,7 +204,7 @@ class _DashboardState extends State<Dashboard> {
                                 Constants.primaryColor),
                           ),
                         )
-                      : provider.transactionList.length > 0
+                      : provider.transactionList?.length > 0 ?? false
                           ? _listViewBuilder()
                           : _nothingToShowWidget();
                 },
@@ -230,6 +222,13 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    provider.setTransactionClicked(false, willNotify: false);
   }
 
   Future<bool> _onSortPressed() {
@@ -333,7 +332,7 @@ class _DashboardState extends State<Dashboard> {
       child: ListView.builder(
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
-        itemCount: provider.transactionList.length,
+        itemCount: provider.transactionList?.length,
         itemBuilder: (context, index) {
           TransactionDetails _currentTransaction =
               provider.transactionList?.elementAt(index);
