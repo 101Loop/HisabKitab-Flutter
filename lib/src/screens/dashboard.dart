@@ -26,10 +26,7 @@ class _DashboardState extends State<Dashboard> {
   double deviceHeight;
   double deviceWidth;
 
-  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
-      .map((SortingItems val) =>
-          PopupMenuItem<SortingItems>(child: Text(val.name), value: val))
-      .toList();
+  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems.map((SortingItems val) => PopupMenuItem<SortingItems>(child: Text(val.name), value: val)).toList();
   AppState provider;
 
   Future<PaginatedResponse> _futureTransactionDetails;
@@ -61,23 +58,19 @@ class _DashboardState extends State<Dashboard> {
 
     if (initStateProvider.isEarning) {
       if (initStateProvider.isSpending) {
-        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS,
-            willNotify: false);
+        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
       } else {
         queryParams += 'category=C&';
-        initStateProvider.setTransactionType(Constants.CREDIT,
-            willNotify: false);
+        initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
       }
     } else {
       if (initStateProvider.isSpending) {
         queryParams += 'category=D&';
-        initStateProvider.setTransactionType(Constants.DEBIT,
-            willNotify: false);
+        initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
       }
     }
 
-    _futureTransactionDetails =
-        TransactionApiController.getTransaction(queryParams);
+    _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
       List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
@@ -152,18 +145,10 @@ class _DashboardState extends State<Dashboard> {
             SizedBox(height: 20.0),
             provider.transactionType == Constants.CREDIT
                 ? GreenCard(totalBalance: provider.creditAmount)
-                : provider.transactionType == Constants.DEBIT
-                    ? RedCard(totalBalance: provider.debitAmount)
-                    : RedGreenCard(
-                        totalEarning: provider.creditAmount,
-                        totalExpense: provider.debitAmount),
+                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT
-                  ? 'Earnings'
-                  : provider.transactionType == Constants.DEBIT
-                      ? 'Expenditures'
-                      : 'All Transactions',
+              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Expenditures' : 'All Transactions',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -172,8 +157,7 @@ class _DashboardState extends State<Dashboard> {
             Expanded(
               child: FutureBuilder(
                 future: _futureTransactionDetails,
-                builder: (BuildContext context,
-                    AsyncSnapshot<PaginatedResponse> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     provider.transactionList?.clear();
                     provider.setLoading(false, willNotify: false);
@@ -181,11 +165,7 @@ class _DashboardState extends State<Dashboard> {
                     _next = snapshot.data.next;
 
                     var list = snapshot.data.results as List;
-                    provider.setTransactionList(
-                        list
-                            ?.map((item) => TransactionDetails.fromJson(item))
-                            ?.toList(),
-                        willNotify: false);
+                    provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
 
                     if (provider.transactionType == Constants.CREDIT) {
                       provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
@@ -199,21 +179,17 @@ class _DashboardState extends State<Dashboard> {
                   return provider.isLoading
                       ? Center(
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Constants.primaryColor),
+                            valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                           ),
                         )
-                      : provider.transactionList?.length > 0 ?? false
-                          ? _listViewBuilder()
-                          : _nothingToShowWidget();
+                      : provider.transactionList?.length ?? 0 > 0 ? _listViewBuilder() : _nothingToShowWidget();
                 },
               ),
             ),
             provider.isLoadingItems
                 ? Center(
                     child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                     ),
                   )
                 : Container()
@@ -237,8 +213,7 @@ class _DashboardState extends State<Dashboard> {
             builder: (context) {
               provider = Provider.of<AppState>(context);
               return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -334,16 +309,13 @@ class _DashboardState extends State<Dashboard> {
         physics: BouncingScrollPhysics(),
         itemCount: provider.transactionList?.length,
         itemBuilder: (context, index) {
-          TransactionDetails _currentTransaction =
-              provider.transactionList?.elementAt(index);
+          TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
 
           return GestureDetector(
             onTap: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (BuildContext context) => AddTransaction(
-                      transactionType: 'Edit Transacition',
-                      transaction: _currentTransaction),
+                  builder: (BuildContext context) => AddTransaction(transactionType: 'Edit Transacition', transaction: _currentTransaction),
                 ),
               );
             },
@@ -372,8 +344,7 @@ class _DashboardState extends State<Dashboard> {
                           onPressed: () {
                             print(_currentTransaction.id);
                             print(_currentTransaction.amount);
-                            TransactionApiController.deleteTransaction(
-                                _currentTransaction.id);
+                            TransactionApiController.deleteTransaction(_currentTransaction.id);
                             Navigator.of(context).pop(true);
 
                             provider.transactionList.removeAt(index);
@@ -390,9 +361,7 @@ class _DashboardState extends State<Dashboard> {
                 );
               },
               child: ListCard(
-                icon: _currentTransaction.category == Constants.CREDIT
-                    ? Earning.earning
-                    : Spending.spending,
+                icon: _currentTransaction.category == Constants.CREDIT ? Earning.earning : Spending.spending,
                 name: _currentTransaction.contact.name,
                 amount: _currentTransaction.amount.toString(),
                 transactionType: _currentTransaction.category,
@@ -429,22 +398,16 @@ class _DashboardState extends State<Dashboard> {
 
     switch (sortScheme) {
       case 0: //name ascending
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction1.contact?.name
-                ?.compareTo(transaction2.contact?.name ?? ''));
+        provider.transactionList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
         break;
       case 1: //name descending
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction2.contact?.name
-                ?.compareTo(transaction1.contact?.name ?? ''));
+        provider.transactionList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
         break;
       case 2: //amount high to low
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        provider.transactionList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
         break;
       case 3: //amount low to high
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        provider.transactionList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
         break;
     }
   }
@@ -460,15 +423,12 @@ class _DashboardState extends State<Dashboard> {
           _next = response.next;
 
           var list = response.results as List;
-          provider.updateTransactionList(
-              list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          provider.updateTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
 
           if (provider.transactionType == Constants.CREDIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category != Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
           } else if (provider.transactionType == Constants.DEBIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category == Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
           }
         },
       );
@@ -551,11 +511,7 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: totalBalance,
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -642,11 +598,7 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: totalBalance,
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -729,16 +681,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: totalEarning,
-                            maxFontSize: 28,
-                            minFontSize: 25,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -750,16 +697,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: totalExpense,
-                            maxFontSize: 28,
-                            minFontSize: 25,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -798,9 +740,7 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: transactionType == Constants.DEBIT
-            ? Colors.red.shade100
-            : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -876,9 +816,7 @@ class ListCard extends StatelessWidget {
                   maxFontSize: 14,
                   maxLines: 1,
                   style: GoogleFonts.nunito(
-                    color: transactionType != Constants.CREDIT
-                        ? Colors.red.shade300
-                        : Constants.primaryColor,
+                    color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
                     fontWeight: FontWeight.w800,
                   ),
                 ),

@@ -24,6 +24,7 @@ dependencies:
   intl: ^0.16.1
   auto_size_text: ^2.1.0
   shared_preferences:
+  sentry: ^3.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -47,7 +48,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/images/
+    - assets/images/
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -67,18 +68,18 @@ flutter:
         - asset: fonts/RupeeIcon.ttf
     - family:  Earning
       fonts:
-       - asset: fonts/Earning.ttf
+        - asset: fonts/Earning.ttf
     - family:  Spending
       fonts:
-       - asset: fonts/Spending.ttf  
+        - asset: fonts/Spending.ttf
     - family: YeonSung
       fonts:
         - asset: fonts/YeonSung-Regular.ttf
     - family: Cambay
       fonts:
         - asset: fonts/Cambay-Regular.ttf
-       
-          
+
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
