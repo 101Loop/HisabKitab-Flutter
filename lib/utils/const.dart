@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 ///urls
+const String sentryDsn = 'https://06e738a025b54c5ca1de346d01f9db5d@sentry.101loop.com/28';
 const String BASE_URL = 'https://admin.hisabkitab.in/api/';
 const String USERS_URL = BASE_URL + 'users/';
 const String LOGIN_URL = USERS_URL + 'login/';

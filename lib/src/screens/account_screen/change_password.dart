@@ -163,6 +163,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
     );
   }
 
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    provider.setAutoValidate(false, willNotify: false);
+  }
+
   ///submits the data and performs API call, if everything's fine
   void _submit() {
     provider.setAutoValidate(true);
@@ -174,16 +181,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
       _formState.save();
 
       if (_password == _confirmedPassword) {
-        LoginAPIController.updatePassword(_password).then((response){
+        LoginAPIController.updatePassword(_password).then((response) {
           provider.setLoading(false, willNotify: false);
 
-          if(response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
+          if (response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
             _showSnackBar(response.data ?? 'Password updated successfully');
 
-            Future.delayed(Duration(milliseconds: 300), (){
+            Future.delayed(Duration(milliseconds: 300), () {
               Navigator.of(context).pop();
             });
-          }else{
+          } else {
             provider.setLoading(false);
             _showSnackBar(response.data ?? Constants.serverError);
           }

@@ -1,16 +1,33 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hisabkitab/app.dart';
+import 'package:hisabkitab/app.dart' as App;
 import 'package:hisabkitab/src/provider/store.dart';
-import 'package:hisabkitab/utils/const.dart';
+import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
+import 'package:sentry/sentry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SharedPreferences prefs;
+final SentryClient sentry = SentryClient(dsn: Constants.sentryDsn, environmentAttributes: Event(environment: Constants.sentryDsn));
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
-  return runApp(MyApp());
+
+  runZoned(() => runApp(MyApp()), onError: (error, stackTrace) {
+    FlutterError.onError = (details, {bool forceReport = false}) {
+      try {
+        sentry.captureException(exception: error, stackTrace: stackTrace);
+        print('something went wrong, check sentry');
+      } catch (e) {
+        print('error: $e');
+      } finally {
+        FlutterError.dumpErrorToConsole(details, forceReport: forceReport);
+      }
+    };
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -24,11 +41,11 @@ class MyApp extends StatelessWidget {
       create: (_) => AppState(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: appName,
+        title: Constants.appName,
         theme: ThemeData(
-          primarySwatch: primarySwatch,
+          primarySwatch: Constants.primarySwatch,
         ),
-        home: App(),
+        home: App.App(),
       ),
     );
   }

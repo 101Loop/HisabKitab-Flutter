@@ -22,23 +22,26 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
   double deviceHeight;
   double deviceWidth;
 
-  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
-      .map((SortingItems val) =>
-          PopupMenuItem<SortingItems>(child: Text(val.name), value: val))
-      .toList();
+  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems.map((SortingItems val) => PopupMenuItem<SortingItems>(child: Text(val.name), value: val)).toList();
   AppState provider;
 
   Future<PaginatedResponse> _futureTransactionDetails;
 
   String queryParams = '?';
 
-  Map<dynamic, int> _sortScheme = Map();
+  Map<dynamic, int> _sortSchemeMap = Map();
+
+  int _sortScheme = 0;
 
   String _next;
+
+  bool _isLoadingItems = false;
+
+  bool _fetchedList = false;
 
   @override
   void initState() {
@@ -46,7 +49,7 @@ class _DashboardState extends State<Dashboard> {
 
     //sets sort scheme
     for (int i = 0; i < sortingItems.length; i++) {
-      _sortScheme.putIfAbsent(sortingItems[i].name, () => i);
+      _sortSchemeMap.putIfAbsent(sortingItems[i].name, () => i);
     }
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
@@ -61,23 +64,19 @@ class _DashboardState extends State<Dashboard> {
 
     if (initStateProvider.isEarning) {
       if (initStateProvider.isSpending) {
-        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS,
-            willNotify: false);
+        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
       } else {
         queryParams += 'category=C&';
-        initStateProvider.setTransactionType(Constants.CREDIT,
-            willNotify: false);
+        initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
       }
     } else {
       if (initStateProvider.isSpending) {
         queryParams += 'category=D&';
-        initStateProvider.setTransactionType(Constants.DEBIT,
-            willNotify: false);
+        initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
       }
     }
 
-    _futureTransactionDetails =
-        TransactionApiController.getTransaction(queryParams);
+    _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
       List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
@@ -100,6 +99,8 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
@@ -152,18 +153,10 @@ class _DashboardState extends State<Dashboard> {
             SizedBox(height: 20.0),
             provider.transactionType == Constants.CREDIT
                 ? GreenCard(totalBalance: provider.creditAmount)
-                : provider.transactionType == Constants.DEBIT
-                    ? RedCard(totalBalance: provider.debitAmount)
-                    : RedGreenCard(
-                        totalEarning: provider.creditAmount,
-                        totalExpense: provider.debitAmount),
+                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT
-                  ? 'Earnings'
-                  : provider.transactionType == Constants.DEBIT
-                      ? 'Expenditures'
-                      : 'All Transactions',
+              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Expenditures' : 'All Transactions',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -172,25 +165,25 @@ class _DashboardState extends State<Dashboard> {
             Expanded(
               child: FutureBuilder(
                 future: _futureTransactionDetails,
-                builder: (BuildContext context,
-                    AsyncSnapshot<PaginatedResponse> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    provider.transactionList?.clear();
-                    provider.setLoading(false, willNotify: false);
+                    if (!_fetchedList && snapshot.hasData) {
+                      _fetchedList = true;
+                      _next = snapshot.data.next;
 
-                    _next = snapshot.data.next;
+                      provider.transactionList?.clear();
+                      provider.setLoading(false, willNotify: false);
 
-                    var list = snapshot.data.results as List;
-                    provider.setTransactionList(
-                        list
-                            ?.map((item) => TransactionDetails.fromJson(item))
-                            ?.toList(),
-                        willNotify: false);
+                      var list = snapshot.data.results as List;
+                      provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
 
-                    if (provider.transactionType == Constants.CREDIT) {
-                      provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
-                    } else if (provider.transactionType == Constants.DEBIT) {
-                      provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
+                      if (provider.transactionType == Constants.CREDIT) {
+                        provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
+                      } else if (provider.transactionType == Constants.DEBIT) {
+                        provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
+                      }
+                    }else{
+                      provider.setLoading(false, willNotify: false);
                     }
                   } else {
                     provider.setLoading(true, willNotify: false);
@@ -199,21 +192,23 @@ class _DashboardState extends State<Dashboard> {
                   return provider.isLoading
                       ? Center(
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Constants.primaryColor),
+                            valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                           ),
                         )
-                      : provider.transactionList?.length > 0 ?? false
-                          ? _listViewBuilder()
-                          : _nothingToShowWidget();
+                      : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
                 },
               ),
             ),
             provider.isLoadingItems
                 ? Center(
-                    child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                    child: Column(
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                        ),
+                        SizedBox(height: 5),
+                        Text('Please wait...'),
+                      ],
                     ),
                   )
                 : Container()
@@ -237,8 +232,7 @@ class _DashboardState extends State<Dashboard> {
             builder: (context) {
               provider = Provider.of<AppState>(context);
               return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -324,7 +318,8 @@ class _DashboardState extends State<Dashboard> {
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent && !provider.isLoadingItems && _next != null && !_isLoadingItems) {
+          _isLoadingItems = true;
           _loadMore();
         }
         return true;
@@ -334,16 +329,13 @@ class _DashboardState extends State<Dashboard> {
         physics: BouncingScrollPhysics(),
         itemCount: provider.transactionList?.length,
         itemBuilder: (context, index) {
-          TransactionDetails _currentTransaction =
-              provider.transactionList?.elementAt(index);
+          TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
 
           return GestureDetector(
             onTap: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (BuildContext context) => AddTransaction(
-                      transactionType: 'Edit Transacition',
-                      transaction: _currentTransaction),
+                  builder: (BuildContext context) => AddTransaction(transactionType: 'Edit Transacition', transaction: _currentTransaction),
                 ),
               );
             },
@@ -372,8 +364,7 @@ class _DashboardState extends State<Dashboard> {
                           onPressed: () {
                             print(_currentTransaction.id);
                             print(_currentTransaction.amount);
-                            TransactionApiController.deleteTransaction(
-                                _currentTransaction.id);
+                            TransactionApiController.deleteTransaction(_currentTransaction.id);
                             Navigator.of(context).pop(true);
 
                             provider.transactionList.removeAt(index);
@@ -390,9 +381,7 @@ class _DashboardState extends State<Dashboard> {
                 );
               },
               child: ListCard(
-                icon: _currentTransaction.category == Constants.CREDIT
-                    ? Earning.earning
-                    : Spending.spending,
+                icon: _currentTransaction.category == Constants.CREDIT ? Earning.earning : Spending.spending,
                 name: _currentTransaction.contact.name,
                 amount: _currentTransaction.amount.toString(),
                 transactionType: _currentTransaction.category,
@@ -424,56 +413,61 @@ class _DashboardState extends State<Dashboard> {
   }
 
   ///sorts the transaction list, according to [value] received
-  void _sortTransactionList(SortingItems value) {
-    int sortScheme = _sortScheme[value.name];
+  ///[value] is a nullable field, make it null to sort it by the previous scheme, if there's no previous scheme
+  void _sortTransactionList([SortingItems value]) {
+    int sortScheme = value != null ? _sortSchemeMap[value.name] : _sortScheme;
+    _sortScheme = sortScheme;
+
+    List<TransactionDetails> _tempList = List.from(provider.transactionList);
 
     switch (sortScheme) {
       case 0: //name ascending
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction1.contact?.name
-                ?.compareTo(transaction2.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
+        provider.setTransactionList(_tempList);
         break;
       case 1: //name descending
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction2.contact?.name
-                ?.compareTo(transaction1.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
+        provider.setTransactionList(_tempList);
         break;
       case 2: //amount high to low
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        provider.setTransactionList(_tempList);
         break;
       case 3: //amount low to high
-        provider.transactionList.sort((transaction1, transaction2) =>
-            transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        provider.setTransactionList(_tempList);
         break;
     }
   }
 
   ///loads more items on scrolling
   void _loadMore() {
-    provider.setLoadingItems(true, willNotify: false);
     if (_next?.isNotEmpty ?? false) {
+      List<TransactionDetails> _tempList = List.from(provider.transactionList);
+      provider.setLoadingItems(true);
       TransactionApiController.getTransaction(queryParams, next: _next).then(
         (response) {
-          provider.setLoadingItems(false, willNotify: false);
-
           _next = response.next;
+          print('$_next should be fetched next');
 
           var list = response.results as List;
-          provider.updateTransactionList(
-              list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          _tempList.addAll(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          provider.setTransactionList(_tempList, willNotify: false);
 
           if (provider.transactionType == Constants.CREDIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category != Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
           } else if (provider.transactionType == Constants.DEBIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category == Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
           }
+          _isLoadingItems = false;
+          provider.setLoadingItems(false);
         },
       );
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class GreenCard extends StatelessWidget {
@@ -551,11 +545,7 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: totalBalance,
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -642,11 +632,7 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: totalBalance,
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -729,16 +715,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: totalEarning,
-                            maxFontSize: 28,
-                            minFontSize: 25,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -750,16 +731,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: totalExpense,
-                            maxFontSize: 28,
-                            minFontSize: 25,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -798,9 +774,7 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: transactionType == Constants.DEBIT
-            ? Colors.red.shade100
-            : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -876,9 +850,7 @@ class ListCard extends StatelessWidget {
                   maxFontSize: 14,
                   maxLines: 1,
                   style: GoogleFonts.nunito(
-                    color: transactionType != Constants.CREDIT
-                        ? Colors.red.shade300
-                        : Constants.primaryColor,
+                    color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
