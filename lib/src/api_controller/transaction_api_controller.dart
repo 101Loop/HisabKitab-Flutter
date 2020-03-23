@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/models/paginated_response.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;

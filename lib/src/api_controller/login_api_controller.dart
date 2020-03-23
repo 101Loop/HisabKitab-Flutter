@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/models/password_response.dart';
 import 'package:hisabkitab/src/models/user.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
