@@ -282,8 +282,7 @@ class AppState extends ChangeNotifier {
     if (willNotify) notifyListeners();
   }
 
-  updateTransactionList(List<TransactionDetails> list,
-      {bool willNotify = true}) {
+  updateTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
     _transactionList.addAll(list);
     if (willNotify) notifyListeners();
   }

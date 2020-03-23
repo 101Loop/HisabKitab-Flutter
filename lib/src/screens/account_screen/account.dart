@@ -355,12 +355,12 @@ class _AccountState extends State<Account> with ValidationMixin {
     );
   }
 
-
   @override
   void deactivate() {
     super.deactivate();
 
     provider.setLoading(false, willNotify: false);
+    _scaffoldKey.currentState.hideCurrentSnackBar();
   }
 
   ///shows a [SnackBar], displaying [message]
