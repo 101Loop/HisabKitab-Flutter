@@ -14,6 +14,16 @@ import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/common_widgets/sorting_items.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
+String compactCurrency(String amount) {
+  return NumberFormat.compactCurrency(
+    decimalDigits: 1,
+    symbol: '',
+  ).format(
+    double.parse(amount),
+  );
+}
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key key}) : super(key: key);
@@ -46,17 +56,28 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   @override
   void initState() {
     super.initState();
-
+    print(
+      NumberFormat.compactCurrency(
+        decimalDigits: 1,
+        symbol: '₹',
+      ).format(987654321078965432),
+    );
     //sets sort scheme
     for (int i = 0; i < sortingItems.length; i++) {
       _sortSchemeMap.putIfAbsent(sortingItems[i].name, () => i);
     }
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
-    if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
-    if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
-    if (initStateProvider.minAmountQuery != null && initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
-    if (initStateProvider.maxAmountQuery != null && initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
+    if (initStateProvider.searchQuery.isNotEmpty)
+      queryParams += 'search=${initStateProvider.searchQuery}&';
+    if (initStateProvider.dateQuery.isNotEmpty)
+      queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
+    if (initStateProvider.minAmountQuery != null &&
+        initStateProvider.minAmountQuery > 0)
+      queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
+    if (initStateProvider.maxAmountQuery != null &&
+        initStateProvider.maxAmountQuery > 0)
+      queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
     if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
     if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
     if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
@@ -79,7 +100,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
-      List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
+      List<TransactionDetails> transactionList =
+          list?.map((item) => TransactionDetails.fromJson(item))?.toList();
 
       double creditAmount = 0;
       double debitAmount = 0;
@@ -92,7 +114,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
         }
       });
 
-      initStateProvider.setCreditAmount(creditAmount.toString(), willNotify: false);
+      initStateProvider.setCreditAmount(creditAmount.toString(),
+          willNotify: false);
       initStateProvider.setDebitAmount(debitAmount.toString());
     });
   }
@@ -545,7 +568,11 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
+                  HeaderWidget(
+                      headerText: compactCurrency(totalBalance),
+                      maxFontSize: 30,
+                      minFontSize: 28,
+                      textColor: Colors.white),
                 ],
               ),
             ),
@@ -632,7 +659,11 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(headerText: totalBalance, maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
+                  HeaderWidget(
+                      headerText: compactCurrency(totalBalance),
+                      maxFontSize: 30,
+                      minFontSize: 28,
+                      textColor: Colors.white),
                 ],
               ),
             ),
@@ -658,7 +689,8 @@ class RedGreenCard extends StatelessWidget {
     final double _earning = double.parse(totalEarning);
     final double _expense = double.parse(totalExpense);
     final _end = _expense > _earning ? Alignment.center : Alignment.centerRight;
-    final _begin = _earning > _expense ? Alignment.center : Alignment.centerLeft;
+    final _begin =
+        _earning > _expense ? Alignment.center : Alignment.centerLeft;
 
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
@@ -719,7 +751,11 @@ class RedGreenCard extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(headerText: totalEarning, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                        HeaderWidget(
+                            headerText: compactCurrency(totalEarning),
+                            maxFontSize: 28,
+                            minFontSize: 25,
+                            textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -735,7 +771,11 @@ class RedGreenCard extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(headerText: totalExpense, maxFontSize: 28, minFontSize: 25, textColor: Colors.white),
+                        HeaderWidget(
+                            headerText: compactCurrency(totalExpense),
+                            maxFontSize: 28,
+                            minFontSize: 25,
+                            textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -843,12 +883,14 @@ class ListCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
+                alignment: Alignment.center,
                 width: deviceWidth * 0.19,
                 child: AutoSizeText(
-                  '₹ ' + amount,
-                  minFontSize: 10,
+                  '₹ ' + compactCurrency(amount),
+                  minFontSize: 9,
                   maxFontSize: 14,
                   maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.nunito(
                     color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
                     fontWeight: FontWeight.w800,

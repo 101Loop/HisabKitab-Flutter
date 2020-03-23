@@ -463,7 +463,9 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                     ),
                   ),
                 ),
-                provider.isLoading ? Center(child: CircularProgressIndicator()) : Container()
+                provider.isLoading ? Center(child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Constant.primaryColor),
+                )) : Container()
               ],
             ),
           ),

@@ -12,7 +12,8 @@ class ChangePasswordScreen extends StatefulWidget {
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> with ValidationMixin {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen>
+    with ValidationMixin {
   double deviceHeight;
   double deviceWidth;
   AppState provider;
@@ -82,7 +83,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'New password',
                                   alignLabelWithHint: true,
@@ -97,7 +99,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin:
+                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 onSaved: (value) {
@@ -110,7 +113,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'Confirm password',
                                   alignLabelWithHint: true,
@@ -156,7 +160,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                 ),
               ),
             ),
-            provider.isLoading ? Center(child: CircularProgressIndicator()) : Container(),
+            provider.isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                  ))
+                : Container(),
           ],
         ),
       ),
@@ -183,7 +193,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
       if (_password == _confirmedPassword) {
         LoginAPIController.updatePassword(_password).then((response) {
           provider.setLoading(false, willNotify: false);
-
           if (response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
             _showSnackBar(response.data ?? 'Password updated successfully');
 
