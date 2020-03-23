@@ -22,7 +22,7 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
   double deviceHeight;
   double deviceWidth;
 
@@ -36,6 +36,10 @@ class _DashboardState extends State<Dashboard> {
   Map<dynamic, int> _sortScheme = Map();
 
   String _next;
+
+  bool _isLoadingItems = false;
+
+  bool _fetchedList = false;
 
   @override
   void initState() {
@@ -93,6 +97,8 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
@@ -159,18 +165,23 @@ class _DashboardState extends State<Dashboard> {
                 future: _futureTransactionDetails,
                 builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    provider.transactionList?.clear();
-                    provider.setLoading(false, willNotify: false);
+                    if (!_fetchedList && snapshot.hasData) {
+                      _fetchedList = true;
+                      _next = snapshot.data.next;
 
-                    _next = snapshot.data.next;
+                      provider.transactionList?.clear();
+                      provider.setLoading(false, willNotify: false);
 
-                    var list = snapshot.data.results as List;
-                    provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
+                      var list = snapshot.data.results as List;
+                      provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
 
-                    if (provider.transactionType == Constants.CREDIT) {
-                      provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
-                    } else if (provider.transactionType == Constants.DEBIT) {
-                      provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
+                      if (provider.transactionType == Constants.CREDIT) {
+                        provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
+                      } else if (provider.transactionType == Constants.DEBIT) {
+                        provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
+                      }
+                    }else{
+                      provider.setLoading(false, willNotify: false);
                     }
                   } else {
                     provider.setLoading(true, willNotify: false);
@@ -182,14 +193,20 @@ class _DashboardState extends State<Dashboard> {
                             valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                           ),
                         )
-                      : provider.transactionList?.length ?? 0 > 0 ? _listViewBuilder() : _nothingToShowWidget();
+                      : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
                 },
               ),
             ),
             provider.isLoadingItems
                 ? Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                    child: Column(
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                        ),
+                        SizedBox(height: 5),
+                        Text('Please wait...'),
+                      ],
                     ),
                   )
                 : Container()
@@ -299,7 +316,8 @@ class _DashboardState extends State<Dashboard> {
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent && !provider.isLoadingItems && _next != null && !_isLoadingItems) {
+          _isLoadingItems = true;
           _loadMore();
         }
         return true;
@@ -414,26 +432,32 @@ class _DashboardState extends State<Dashboard> {
 
   ///loads more items on scrolling
   void _loadMore() {
-    provider.setLoadingItems(true, willNotify: false);
     if (_next?.isNotEmpty ?? false) {
+      List<TransactionDetails> _tempList = List.from(provider.transactionList);
+      provider.setLoadingItems(true);
       TransactionApiController.getTransaction(queryParams, next: _next).then(
         (response) {
-          provider.setLoadingItems(false, willNotify: false);
-
           _next = response.next;
+          print('$_next should be fetched next');
 
           var list = response.results as List;
-          provider.updateTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          _tempList.addAll(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          provider.setTransactionList(_tempList, willNotify: false);
 
           if (provider.transactionType == Constants.CREDIT) {
             provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
           } else if (provider.transactionType == Constants.DEBIT) {
             provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
           }
+          _isLoadingItems = false;
+          provider.setLoadingItems(false);
         },
       );
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class GreenCard extends StatelessWidget {

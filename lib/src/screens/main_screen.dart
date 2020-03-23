@@ -92,7 +92,6 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     dashboard = Dashboard(
-      key: dashboardKey,
     );
     account = Account(
       key: accountKey,
