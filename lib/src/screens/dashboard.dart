@@ -33,7 +33,9 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
   String queryParams = '?';
 
-  Map<dynamic, int> _sortScheme = Map();
+  Map<dynamic, int> _sortSchemeMap = Map();
+
+  int _sortScheme = 0;
 
   String _next;
 
@@ -47,7 +49,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
     //sets sort scheme
     for (int i = 0; i < sortingItems.length; i++) {
-      _sortScheme.putIfAbsent(sortingItems[i].name, () => i);
+      _sortSchemeMap.putIfAbsent(sortingItems[i].name, () => i);
     }
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
@@ -411,21 +413,29 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   }
 
   ///sorts the transaction list, according to [value] received
-  void _sortTransactionList(SortingItems value) {
-    int sortScheme = _sortScheme[value.name];
+  ///[value] is a nullable field, make it null to sort it by the previous scheme, if there's no previous scheme
+  void _sortTransactionList([SortingItems value]) {
+    int sortScheme = value != null ? _sortSchemeMap[value.name] : _sortScheme;
+    _sortScheme = sortScheme;
+
+    List<TransactionDetails> _tempList = List.from(provider.transactionList);
 
     switch (sortScheme) {
       case 0: //name ascending
-        provider.transactionList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
+        provider.setTransactionList(_tempList);
         break;
       case 1: //name descending
-        provider.transactionList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
+        provider.setTransactionList(_tempList);
         break;
       case 2: //amount high to low
-        provider.transactionList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        provider.setTransactionList(_tempList);
         break;
       case 3: //amount low to high
-        provider.transactionList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        provider.setTransactionList(_tempList);
         break;
     }
   }
