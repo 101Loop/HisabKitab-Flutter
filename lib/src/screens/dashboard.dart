@@ -8,6 +8,7 @@ import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/filter_screen.dart';
+import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/baked_icons/earning_icons.dart';
 import 'package:hisabkitab/utils/baked_icons/spending_icons.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
@@ -32,11 +33,15 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
-class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
+class _DashboardState extends State<Dashboard>
+    with AutomaticKeepAliveClientMixin {
   double deviceHeight;
   double deviceWidth;
 
-  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems.map((SortingItems val) => PopupMenuItem<SortingItems>(child: Text(val.name), value: val)).toList();
+  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
+      .map((SortingItems val) =>
+          PopupMenuItem<SortingItems>(child: Text(val.name), value: val))
+      .toList();
   AppState provider;
 
   Future<PaginatedResponse> _futureTransactionDetails;
@@ -56,12 +61,6 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   @override
   void initState() {
     super.initState();
-    print(
-      NumberFormat.compactCurrency(
-        decimalDigits: 1,
-        symbol: '₹',
-      ).format(987654321078965432),
-    );
     //sets sort scheme
     for (int i = 0; i < sortingItems.length; i++) {
       _sortSchemeMap.putIfAbsent(sortingItems[i].name, () => i);
@@ -85,19 +84,23 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
     if (initStateProvider.isEarning) {
       if (initStateProvider.isSpending) {
-        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
+        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS,
+            willNotify: false);
       } else {
         queryParams += 'category=C&';
-        initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
+        initStateProvider.setTransactionType(Constants.CREDIT,
+            willNotify: false);
       }
     } else {
       if (initStateProvider.isSpending) {
         queryParams += 'category=D&';
-        initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
+        initStateProvider.setTransactionType(Constants.DEBIT,
+            willNotify: false);
       }
     }
 
-    _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
+    _futureTransactionDetails =
+        TransactionApiController.getTransaction(queryParams);
     _futureTransactionDetails.then((response) {
       var list = response.results as List;
       List<TransactionDetails> transactionList =
@@ -150,6 +153,21 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                 ),
                 Row(
                   children: <Widget>[
+                    _haveFilters()
+                        ? FlatButton(
+                            onPressed: () async {
+                              _submit();
+                              _clearFilter();
+                              provider.setTransactionType('A');
+                            },
+                            color: Constants.lightGreen.withRed(210),
+                            padding: EdgeInsets.all(0),
+                            child: Text(
+                              'Clear Filters',
+                              style: TextStyle(color: Constants.primaryColor),
+                            ),
+                          )
+                        : Container(),
                     IconButton(
                       icon: Icon(Icons.sort),
                       color: Constants.primaryColor,
@@ -176,10 +194,18 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             SizedBox(height: 20.0),
             provider.transactionType == Constants.CREDIT
                 ? GreenCard(totalBalance: provider.creditAmount)
-                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
+                : provider.transactionType == Constants.DEBIT
+                    ? RedCard(totalBalance: provider.debitAmount)
+                    : RedGreenCard(
+                        totalEarning: provider.creditAmount,
+                        totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Expenditures' : 'All Transactions',
+              headerText: provider.transactionType == Constants.CREDIT
+                  ? 'Earnings'
+                  : provider.transactionType == Constants.DEBIT
+                      ? 'Expenditures'
+                      : 'All Transactions',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -188,7 +214,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             Expanded(
               child: FutureBuilder(
                 future: _futureTransactionDetails,
-                builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<PaginatedResponse> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (!_fetchedList && snapshot.hasData) {
                       _fetchedList = true;
@@ -198,14 +225,20 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                       provider.setLoading(false, willNotify: false);
 
                       var list = snapshot.data.results as List;
-                      provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
+                      provider.setTransactionList(
+                          list
+                              ?.map((item) => TransactionDetails.fromJson(item))
+                              ?.toList(),
+                          willNotify: false);
 
                       if (provider.transactionType == Constants.CREDIT) {
-                        provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
+                        provider.transactionList?.removeWhere(
+                            (item) => item.category != Constants.CREDIT);
                       } else if (provider.transactionType == Constants.DEBIT) {
-                        provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
+                        provider.transactionList?.removeWhere(
+                            (item) => item.category == Constants.CREDIT);
                       }
-                    }else{
+                    } else {
                       provider.setLoading(false, willNotify: false);
                     }
                   } else {
@@ -215,10 +248,14 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                   return provider.isLoading
                       ? Center(
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Constants.primaryColor),
                           ),
                         )
-                      : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
+                      : provider.transactionList != null &&
+                              provider.transactionList.length > 0
+                          ? _listViewBuilder()
+                          : _nothingToShowWidget();
                 },
               ),
             ),
@@ -227,7 +264,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                     child: Column(
                       children: <Widget>[
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Constants.primaryColor),
                         ),
                         SizedBox(height: 5),
                         Text('Please wait...'),
@@ -249,13 +287,32 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setTransactionClicked(false, willNotify: false);
   }
 
+  void _clearFilter() {
+    searchController.text = '';
+    minTextController.text = '';
+    maxTextController.text = '';
+
+    provider.setEarning(false, willNotify: false);
+    provider.setSpending(false, willNotify: false);
+    provider.setSearchQuery('', willNotify: false);
+    provider.setDateTime('', willNotify: false);
+    provider.setDateQuery('', willNotify: false);
+    provider.setMinAmountQuery(-1, willNotify: false);
+    provider.setMaxAmountQuery(-1, willNotify: false);
+    provider.setCashQuery(false, willNotify: false);
+    provider.setCardQuery(false, willNotify: false);
+    provider.setChequeQuery(false, willNotify: false);
+    provider.setAccountQuery(false);
+  }
+
   Future<bool> _onSortPressed() {
     return showDialog(
             context: context,
             builder: (context) {
               provider = Provider.of<AppState>(context);
               return AlertDialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -263,6 +320,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('C');
+                        setState(() {});
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -280,6 +338,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('D');
+                        setState(() {});
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -297,6 +356,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('A');
+                        setState(() {});
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -341,7 +401,10 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent && !provider.isLoadingItems && _next != null && !_isLoadingItems) {
+        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+            !provider.isLoadingItems &&
+            _next != null &&
+            !_isLoadingItems) {
           _isLoadingItems = true;
           _loadMore();
         }
@@ -352,13 +415,16 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
         physics: BouncingScrollPhysics(),
         itemCount: provider.transactionList?.length,
         itemBuilder: (context, index) {
-          TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
+          TransactionDetails _currentTransaction =
+              provider.transactionList?.elementAt(index);
 
           return GestureDetector(
             onTap: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (BuildContext context) => AddTransaction(transactionType: 'Edit Transacition', transaction: _currentTransaction),
+                  builder: (BuildContext context) => AddTransaction(
+                      transactionType: 'Edit Transaction',
+                      transaction: _currentTransaction),
                 ),
               );
             },
@@ -387,7 +453,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                           onPressed: () {
                             print(_currentTransaction.id);
                             print(_currentTransaction.amount);
-                            TransactionApiController.deleteTransaction(_currentTransaction.id);
+                            TransactionApiController.deleteTransaction(
+                                _currentTransaction.id);
                             Navigator.of(context).pop(true);
 
                             provider.transactionList.removeAt(index);
@@ -404,7 +471,9 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                 );
               },
               child: ListCard(
-                icon: _currentTransaction.category == Constants.CREDIT ? Earning.earning : Spending.spending,
+                icon: _currentTransaction.category == Constants.CREDIT
+                    ? Earning.earning
+                    : Spending.spending,
                 name: _currentTransaction.contact.name,
                 amount: _currentTransaction.amount.toString(),
                 transactionType: _currentTransaction.category,
@@ -445,19 +514,25 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
     switch (sortScheme) {
       case 0: //name ascending
-        _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction1
+            .contact?.name
+            ?.compareTo(transaction2.contact?.name ?? ''));
         provider.setTransactionList(_tempList);
         break;
       case 1: //name descending
-        _tempList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction2
+            .contact?.name
+            ?.compareTo(transaction1.contact?.name ?? ''));
         provider.setTransactionList(_tempList);
         break;
       case 2: //amount high to low
-        _tempList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) =>
+            transaction2.amount?.compareTo(transaction1.amount ?? 0));
         provider.setTransactionList(_tempList);
         break;
       case 3: //amount low to high
-        _tempList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) =>
+            transaction1.amount?.compareTo(transaction2.amount ?? 0));
         provider.setTransactionList(_tempList);
         break;
     }
@@ -474,13 +549,16 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
           print('$_next should be fetched next');
 
           var list = response.results as List;
-          _tempList.addAll(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          _tempList.addAll(
+              list?.map((item) => TransactionDetails.fromJson(item))?.toList());
           provider.setTransactionList(_tempList, willNotify: false);
 
           if (provider.transactionType == Constants.CREDIT) {
-            provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
+            provider.transactionList
+                .removeWhere((item) => item.category != Constants.CREDIT);
           } else if (provider.transactionType == Constants.DEBIT) {
-            provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
+            provider.transactionList
+                .removeWhere((item) => item.category == Constants.CREDIT);
           }
           _isLoadingItems = false;
           provider.setLoadingItems(false);
@@ -491,6 +569,37 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
   @override
   bool get wantKeepAlive => true;
+
+  void _submit() {
+    provider.setEarning(provider.isTempEarning, willNotify: false);
+    provider.setSpending(provider.isTempSpending, willNotify: false);
+    provider.setSearchQuery(provider.tempSearchQuery, willNotify: false);
+    provider.setDateQuery(provider.tempDateTime, willNotify: false);
+    provider.setMinAmountQuery(provider.tempMinAmountQuery, willNotify: false);
+    provider.setMaxAmountQuery(provider.tempMaxAmountQuery, willNotify: false);
+    provider.setCashQuery(provider.isTempCashQuery, willNotify: false);
+    provider.setCardQuery(provider.isTempCardQuery, willNotify: false);
+    provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
+    provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+  }
+
+  bool _haveFilters() {
+    if (provider.isEarning != true &&
+        provider.isSpending != true &&
+        provider.searchQuery == '' &&
+        provider.dateQuery == '' &&
+        provider.minAmountQuery == -1 &&
+        provider.maxAmountQuery == -1 &&
+        provider.isCashQuery != true &&
+        provider.isCardQuery != true &&
+        provider.isChequeQuery != true &&
+        provider.isAccountQuery != true)
+      return false;
+    else
+      return true;
+  }
 }
 
 class GreenCard extends StatelessWidget {
@@ -747,7 +856,8 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
@@ -767,7 +877,8 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style: TextStyle(color: Colors.white, fontSize: 16.0),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
@@ -814,7 +925,9 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT
+            ? Colors.red.shade100
+            : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -892,7 +1005,9 @@ class ListCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.nunito(
-                    color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
+                    color: transactionType != Constants.CREDIT
+                        ? Colors.red.shade300
+                        : Constants.primaryColor,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
