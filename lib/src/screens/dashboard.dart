@@ -80,7 +80,7 @@ class _DashboardState extends State<Dashboard>
     if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
     if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
     if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
-    if (initStateProvider.isAccountQuery) queryParams += 'mode=3';
+    if (initStateProvider.isAccountQuery) queryParams += 'mode=3&';
 
     if (initStateProvider.isEarning) {
       if (initStateProvider.isSpending) {
@@ -430,7 +430,9 @@ class _DashboardState extends State<Dashboard>
             },
             child: Dismissible(
               key: Key(_currentTransaction.id.toString()),
-              onDismissed: (value) {
+              onDismissed: (value) async {
+                Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Transaction deleted successfully'),
