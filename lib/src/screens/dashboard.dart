@@ -430,7 +430,7 @@ class _DashboardState extends State<Dashboard>
             },
             child: Dismissible(
               key: Key(_currentTransaction.id.toString()),
-              onDismissed: (value) async {
+              onDismissed: (_) async {
                 Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
                 Scaffold.of(context).showSnackBar(
