@@ -193,10 +193,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
       if (_password == _confirmedPassword) {
         LoginAPIController.updatePassword(_password).then((response) {
           provider.setLoading(false, willNotify: false);
-          if (response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
+          if (response.statusCode == Constants.HTTP_202_ACCEPTED ||
+              response.statusCode == Constants.HTTP_200_OK) {
             _showSnackBar(response.data ?? 'Password updated successfully');
 
-            Future.delayed(Duration(milliseconds: 300), () {
+            Future.delayed(Duration(seconds: 2), () {
               Navigator.of(context).pop();
             });
           } else {

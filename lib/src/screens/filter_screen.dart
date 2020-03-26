@@ -311,6 +311,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                     EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                 fillColor: Colors.white,
                                 hintText: 'Minimum',
+                                errorMaxLines: 2,
                                 alignLabelWithHint: true,
                                 hintStyle: GoogleFonts.nunito(
                                   color: Colors.grey.shade400,
@@ -343,6 +344,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               textAlign: TextAlign.left,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
+                                errorMaxLines: 2,
                                 contentPadding:
                                     EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                 fillColor: Colors.white,
