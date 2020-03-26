@@ -319,7 +319,7 @@ class _DashboardState extends State<Dashboard>
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('C');
+                        provider.setTransactionType('C',willNotify: false);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
@@ -338,7 +338,7 @@ class _DashboardState extends State<Dashboard>
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('D');
+                        provider.setTransactionType('D',willNotify: false);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
@@ -357,7 +357,7 @@ class _DashboardState extends State<Dashboard>
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('A');
+                        provider.setTransactionType('A',willNotify: false);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
