@@ -293,11 +293,13 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                         children: <Widget>[
                           Container(
                             width: deviceWidth * 0.4,
+                            height: 100,
                             margin: EdgeInsets.fromLTRB(10.0, 0.0, 15.0, 0.0),
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
                               validator: validateNullableDoubleValue,
                               controller: minTextController,
+                              maxLength: 20,
                               onSaved: (value) {
                                 if (value == null || value.isEmpty) return;
                                 provider
@@ -330,11 +332,13 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                           ),
                           Container(
                             width: deviceWidth * 0.4,
+                            height: 100,
                             margin: EdgeInsets.fromLTRB(0.0, 0.0, 15.0, 0.0),
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
                               controller: maxTextController,
                               validator: validateNullableDoubleValue,
+                              maxLength: 20,
                               onSaved: (value) {
                                 if (value == null || value.isEmpty) return;
                                 provider

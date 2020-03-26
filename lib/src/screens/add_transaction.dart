@@ -54,7 +54,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
-      provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
+      provider
+          .setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
   }
 
@@ -72,7 +73,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         initStateProvider.setCategory('Debit', willNotify: false);
       }
 
-      initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
+      initStateProvider.setDateTime(_transaction.transactionDate,
+          willNotify: false);
       initStateProvider.setMode(_transaction.mode?.mode, willNotify: false);
       _contact = _transaction.contact?.name ?? '';
       _comment = _transaction.comments ?? '';
@@ -145,7 +147,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: AssetImage('assets/images/addTransactionImage.png'),
+                                    image: AssetImage(
+                                        'assets/images/addTransactionImage.png'),
                                   ),
                                 ),
                               ),
@@ -182,7 +185,11 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       isDense: true,
-                                      contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
+                                      contentPadding: EdgeInsets.only(
+                                          bottom: 2.0,
+                                          left: 0.0,
+                                          top: 0.0,
+                                          right: 0.0),
                                     ),
                                   ),
                                 ),
@@ -221,7 +228,9 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 Container(
                                   width: deviceWidth * 0.75,
                                   child: TextFormField(
-                                    initialValue: _transaction?.amount?.toString() ?? '',
+                                    maxLength: 20,
+                                    initialValue:
+                                        _transaction?.amount?.toString() ?? '',
                                     validator: validateDoubleValue,
                                     onSaved: (value) {
                                       _amount = value;
@@ -230,12 +239,17 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     cursorColor: Constant.primaryColor,
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.all(0.0),
                                     ),
                                   ),
                                 ),
                                 Text(
                                   '₹',
-                                  style: GoogleFonts.roboto(color: Colors.black45, fontSize: 20.0, fontWeight: FontWeight.w600),
+                                  style: GoogleFonts.roboto(
+                                      color: Colors.black45,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ],
                             ),
@@ -273,7 +287,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                       onChanged: (value) {
                                         provider.setCategory(value);
                                       },
-                                      items: Constant.categoryList.map((category) {
+                                      items:
+                                          Constant.categoryList.map((category) {
                                         return DropdownMenuItem(
                                           child: Text(category),
                                           value: category,
@@ -306,7 +321,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               selectDate(context);
                             },
                             child: Container(
-                              margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                              margin:
+                                  EdgeInsets.only(bottom: 15.0, right: 15.0),
                               padding: EdgeInsets.all(15.0),
                               width: deviceWidth,
                               height: deviceHeight * 0.10,
@@ -315,7 +331,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 color: Color(0xffecf8f8).withRed(210),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Container(
                                     width: deviceWidth * 0.70,
@@ -413,7 +430,11 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       isDense: true,
-                                      contentPadding: EdgeInsets.only(bottom: 2.0, left: 0.0, top: 0.0, right: 0.0),
+                                      contentPadding: EdgeInsets.only(
+                                          bottom: 2.0,
+                                          left: 0.0,
+                                          top: 0.0,
+                                          right: 0.0),
                                     ),
                                   ),
                                 ),
@@ -433,14 +454,16 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               _submit();
                             },
                             child: Container(
-                              margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                              margin:
+                                  EdgeInsets.only(bottom: 15.0, right: 15.0),
                               padding: EdgeInsets.all(15.0),
                               width: deviceWidth,
                               height: deviceHeight * 0.09,
                               decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Constant.buttonColor.withOpacity(0.5),
+                                    color:
+                                        Constant.buttonColor.withOpacity(0.5),
                                     blurRadius: 6.0,
                                     offset: Offset(2, 6),
                                   ),
@@ -450,7 +473,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               ),
                               child: Center(
                                 child: HeaderWidget(
-                                  headerText: '+ Save ${widget.transactionType}',
+                                  headerText:
+                                      '+ Save ${widget.transactionType}',
                                   maxFontSize: 18.0,
                                   minFontSize: 18.0,
                                   textColor: Colors.white,
@@ -463,9 +487,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                     ),
                   ),
                 ),
-                provider.isLoading ? Center(child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Constant.primaryColor),
-                )) : Container()
+                provider.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Constant.primaryColor),
+                      ))
+                    : Container()
               ],
             ),
           ),
@@ -485,14 +513,23 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   void _submit() {
     final _formState = _formKey.currentState;
 
-    if (_formState.validate() && (provider.dateTime.isNotEmpty ?? false) && (provider.mode.isNotEmpty ?? false)) {
+    if (_formState.validate() &&
+        (provider.dateTime.isNotEmpty ?? false) &&
+        (provider.mode.isNotEmpty ?? false)) {
       provider.setLoading(true);
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
+          amount: double.parse(_amount),
+          category: provider.category[0],
+          transactionDate: provider.dateTime,
+          mode: Constant.paymentMap[provider.mode],
+          contact: _contact,
+          comments: _comment);
 
-      TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
+      TransactionApiController.addUpdateTransaction(
+              transactionDetails, _transaction?.id ?? -1)
+          .then((response) {
         _showSnackBar(response.message);
 
         //if the response is ok, then pop with a delay of 1 sec, otherwise instantly
@@ -526,6 +563,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   ///navigates to main screen
   void _goToMainScreen() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 }

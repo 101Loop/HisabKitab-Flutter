@@ -320,7 +320,8 @@ class _DashboardState extends State<Dashboard>
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('C');
-                        setState(() {});
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (BuildContext context) => MainScreen()));
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -338,7 +339,8 @@ class _DashboardState extends State<Dashboard>
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('D');
-                        setState(() {});
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (BuildContext context) => MainScreen()));
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -356,7 +358,8 @@ class _DashboardState extends State<Dashboard>
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('A');
-                        setState(() {});
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (BuildContext context) => MainScreen()));
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -431,8 +434,8 @@ class _DashboardState extends State<Dashboard>
             child: Dismissible(
               key: Key(_currentTransaction.id.toString()),
               onDismissed: (_) async {
-                Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (BuildContext context) => MainScreen()));
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Transaction deleted successfully'),
@@ -865,8 +868,8 @@ class RedGreenCard extends StatelessWidget {
                         SizedBox(width: 5.0),
                         HeaderWidget(
                             headerText: compactCurrency(totalEarning),
-                            maxFontSize: 28,
-                            minFontSize: 25,
+                            maxFontSize: 26,
+                            minFontSize: 23,
                             textColor: Colors.white),
                       ],
                     ),
@@ -886,8 +889,8 @@ class RedGreenCard extends StatelessWidget {
                         SizedBox(width: 5.0),
                         HeaderWidget(
                             headerText: compactCurrency(totalExpense),
-                            maxFontSize: 28,
-                            minFontSize: 25,
+                            maxFontSize: 26,
+                            minFontSize: 23,
                             textColor: Colors.white),
                       ],
                     ),
