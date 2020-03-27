@@ -479,7 +479,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               child: Center(
                                 child: HeaderWidget(
                                   headerText:
-                                      '+ Save ${widget.transactionType}',
+                                      '+ Save ${changeTransactionName(widget.transactionType)}',
                                   maxFontSize: 18.0,
                                   minFontSize: 18.0,
                                   textColor: Colors.white,
@@ -551,6 +551,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     } else {
       _showSnackBar('Please provide all the required information');
     }
+  }
+
+  String changeTransactionName(String name) {
+    if (name == 'Edit Transaction')
+      return 'Transaction';
+    else
+      return name.split(' ')[1];
   }
 
   ///shows a toast with message [message]
