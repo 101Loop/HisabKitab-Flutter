@@ -32,10 +32,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Hero(
                   tag: 'Logo',
                   child: Container(
-                    height: 120.0,
+                    height: 150.0,
                     width: 150.0,
                     decoration: BoxDecoration(
-                      image: DecorationImage(fit: BoxFit.fill, image: AssetImage('assets/images/hisab_kitab_logo.png')),
+                      image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image:
+                              AssetImage('assets/images/hisab_kitab_logo.png')),
                     ),
                   ),
                 ),

@@ -91,8 +91,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    dashboard = Dashboard(
-    );
+    dashboard = Dashboard();
     account = Account(
       key: accountKey,
     );
@@ -124,7 +123,8 @@ class _MainScreenState extends State<MainScreen> {
                 child: provider.currentTab == 0
                     ? GestureDetector(
                         onTap: () {
-                          provider.setTransactionClicked(!provider.addTransactionClicked);
+                          provider.setTransactionClicked(
+                              !provider.addTransactionClicked);
                         },
                         child: Container(
                           height: 60,
@@ -152,7 +152,11 @@ class _MainScreenState extends State<MainScreen> {
                           width: 60,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15.0),
-                            color: buttonColor,
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage(
+                                  'assets/images/hisab_kitab_logo.png'),
+                            ),
                           ),
                         ),
                       ),
@@ -267,7 +271,8 @@ class _MainScreenState extends State<MainScreen> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           title: title != null
               ? Text(title)
               : Container(
@@ -279,7 +284,8 @@ class _MainScreenState extends State<MainScreen> {
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               color: Colors.red,
               child: Text(
                 'CANCEL',
@@ -293,7 +299,8 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.of(context).pop(true);
                 callback();
               },
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               color: primaryColor,
               child: Text(
                 'OK',

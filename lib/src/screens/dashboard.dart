@@ -145,7 +145,10 @@ class _DashboardState extends State<Dashboard>
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
-                      color: Constants.lightGreen.withRed(210),
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage('assets/images/hisab_kitab_logo.png'),
+                      ),
                     ),
                     height: 50.0,
                     width: 50.0,
@@ -319,7 +322,7 @@ class _DashboardState extends State<Dashboard>
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('C',willNotify: false);
+                        provider.setTransactionType('C', willNotify: false);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
@@ -338,7 +341,7 @@ class _DashboardState extends State<Dashboard>
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('D',willNotify: false);
+                        provider.setTransactionType('D', willNotify: false);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
@@ -357,7 +360,7 @@ class _DashboardState extends State<Dashboard>
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        provider.setTransactionType('A',willNotify: false);
+                        provider.setTransactionType('A', willNotify: false);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
