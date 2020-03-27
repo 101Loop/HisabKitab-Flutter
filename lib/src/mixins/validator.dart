@@ -5,7 +5,7 @@ class ValidationMixin {
   static String isValidMobileMessage = 'Please enter a valid mobile number';
   static String isValidValue = 'Please enter a valid value';
   static String isEmpty = 'This field can\'t be empty';
-  static String isLargeValue = 'Please enter a value below 9,999';
+  static String isLargeValue = 'Maximum 20 digits allowed.';
   static String isSmallValue = 'Please enter a value above 0';
 
   ///method to validate passwords
@@ -152,6 +152,7 @@ class ValidationMixin {
       double _value = double.parse(value);
 
       if (_value < 0) return isSmallValue;
+      else if(_value.toString().length>20) return isLargeValue;
     } on FormatException catch (_) {
       return isValidValue;
     }

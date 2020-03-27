@@ -41,7 +41,8 @@ class _AccountState extends State<Account> with ValidationMixin {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+      AppState initStateProvider =
+          Provider.of<AppState>(context, listen: false);
       if (initStateProvider.userProfile == null)
         LoginAPIController.getUserProfile().then(
           (response) {
@@ -57,7 +58,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                 if (name.length == 1) {
                   initStateProvider.setInitials(name[0][0].toUpperCase());
                 } else if (name.length > 1) {
-                  initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+                  initStateProvider
+                      .setInitials((name[0][0] + name[1][0]).toUpperCase());
                 }
               }
             }
@@ -74,7 +76,8 @@ class _AccountState extends State<Account> with ValidationMixin {
           if (name.length == 1) {
             initStateProvider.setInitials(name[0][0].toUpperCase());
           } else if (name.length > 1) {
-            initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+            initStateProvider
+                .setInitials((name[0][0] + name[1][0]).toUpperCase());
           }
         }
       }
@@ -102,37 +105,12 @@ class _AccountState extends State<Account> with ValidationMixin {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                color: Constants.lightGreen.withRed(210),
-                              ),
-                              height: 35.0,
-                              width: 35.0,
-                              child: Center(
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.arrow_back,
-                                    color: Constants.primaryColor,
-                                    size: 20,
-                                  ),
-                                  onPressed: () {
-                                    provider.setCurrentTab(0);
-                                  },
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 20.0),
-                            Text(
-                              'Profile',
-                              style: GoogleFonts.roboto(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          'Profile',
+                          style: GoogleFonts.roboto(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -343,11 +321,11 @@ class _AccountState extends State<Account> with ValidationMixin {
             ),
             provider.isLoading
                 ? Center(
-                  child: CircularProgressIndicator(
+                    child: CircularProgressIndicator(
                       valueColor:
                           AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                     ),
-                )
+                  )
                 : Container(),
           ],
         ),
