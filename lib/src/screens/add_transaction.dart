@@ -516,7 +516,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   }
 
   void _submit() {
-    provider.setAutoValidate(true, willNotify: true);
+    provider.setAutoValidate(true);
     final _formState = _formKey.currentState;
 
     if (_formState.validate() &&
