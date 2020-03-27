@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/api_controller/transaction_api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
@@ -66,6 +67,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     _transaction = widget.transaction;
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+    initStateProvider.initialState();
     if (_transaction != null) {
       if (_transaction.category == 'C') {
         initStateProvider.setCategory('Credit', willNotify: false);
@@ -228,13 +230,16 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 Container(
                                   width: deviceWidth * 0.75,
                                   child: TextFormField(
-                                    maxLength: 20,
                                     initialValue:
                                         _transaction?.amount?.toString() ?? '',
                                     validator: validateDoubleValue,
+                                    autovalidate: provider.autoValidate,
                                     onSaved: (value) {
                                       _amount = value;
                                     },
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(20),
+                                    ],
                                     keyboardType: TextInputType.number,
                                     cursorColor: Constant.primaryColor,
                                     decoration: InputDecoration(
@@ -474,7 +479,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               child: Center(
                                 child: HeaderWidget(
                                   headerText:
-                                      '+ Save ${widget.transactionType}',
+                                      '+ Save ${changeTransactionName(widget.transactionType)}',
                                   maxFontSize: 18.0,
                                   minFontSize: 18.0,
                                   textColor: Colors.white,
@@ -511,6 +516,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   }
 
   void _submit() {
+    provider.setAutoValidate(true);
     final _formState = _formKey.currentState;
 
     if (_formState.validate() &&
@@ -545,6 +551,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     } else {
       _showSnackBar('Please provide all the required information');
     }
+  }
+
+  String changeTransactionName(String name) {
+    if (name == 'Edit Transaction')
+      return 'Transaction';
+    else
+      return name.split(' ')[1];
   }
 
   ///shows a toast with message [message]

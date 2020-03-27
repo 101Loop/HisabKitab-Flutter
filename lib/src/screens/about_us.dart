@@ -30,37 +30,12 @@ class _AboutUsState extends State<AboutUs> {
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            color: lightGreen.withRed(210),
-                          ),
-                          height: 35.0,
-                          width: 35.0,
-                          child: Center(
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: primaryColor,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                provider.setCurrentTab(0);
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 20.0),
-                        Text(
-                          'Hisab Kitab (हिसाब किताब)',
-                          style: GoogleFonts.roboto(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      'About Us',
+                      style: GoogleFonts.roboto(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
