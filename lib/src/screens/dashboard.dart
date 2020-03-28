@@ -489,6 +489,7 @@ class _DashboardState extends State<Dashboard>
                 amount: _currentTransaction.amount.toString(),
                 transactionType: _currentTransaction.category,
                 transactionDate: _currentTransaction.transactionDate,
+                comment: _currentTransaction.comments,
               ),
               direction: DismissDirection.endToStart,
               background: Container(
@@ -992,11 +993,17 @@ class ListCard extends StatelessWidget {
                   SizedBox(
                     height: 5.0,
                   ),
-                  Text(
-                    comment ?? '',
-                    style: GoogleFonts.nunito(
-                      color: Colors.black45,
-                      fontWeight: FontWeight.w300,
+                  Container(
+                    width: deviceWidth * 0.5,
+                    child: AutoSizeText(
+                      comment ?? '',
+                      maxFontSize: 13,
+                      minFontSize: 10,
+                      maxLines: 2,
+                      style: GoogleFonts.nunito(
+                        color: Colors.black45,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ),
                 ],
@@ -1012,7 +1019,7 @@ class ListCard extends StatelessWidget {
                 child: AutoSizeText(
                   '₹ ' + compactCurrency(amount),
                   minFontSize: 9,
-                  maxFontSize: 14,
+                  maxFontSize: 13,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.nunito(
