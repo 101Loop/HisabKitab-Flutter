@@ -427,7 +427,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   width: deviceWidth * 0.75,
                                   child: TextFormField(
                                     initialValue: _comment,
-                                    maxLength: 40,
+                                    maxLength: 30,
                                     onSaved: (value) {
                                       _comment = value;
                                     },
