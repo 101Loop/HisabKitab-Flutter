@@ -323,6 +323,7 @@ class _DashboardState extends State<Dashboard>
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('C', willNotify: false);
+                        _clearFilter();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
@@ -342,6 +343,7 @@ class _DashboardState extends State<Dashboard>
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('D', willNotify: false);
+                        _clearFilter();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },
@@ -361,6 +363,7 @@ class _DashboardState extends State<Dashboard>
                       onTap: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('A', willNotify: false);
+                        _clearFilter();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (BuildContext context) => MainScreen()));
                       },

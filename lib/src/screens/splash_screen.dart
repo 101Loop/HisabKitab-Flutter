@@ -43,27 +43,29 @@ class _SplashScreenState extends State<SplashScreen> {
             alignment: Alignment.center,
             children: <Widget>[
               Positioned(
-                bottom: deviceHeight * 0.5,
+                bottom: deviceHeight * 0.41,
                 child: Center(
                   child: Text(
                     'Hisab Kitab',
                     style: TextStyle(
                       fontFamily: 'YeonSung',
-                      fontSize: 30.0,
+                      fontSize: 33.0,
                       color: Colors.black,
                     ),
                   ),
                 ),
               ),
               Positioned(
-                bottom: deviceHeight * 0.44,
+                bottom: deviceHeight * 0.5,
                 child: Center(
-                  child: Text(
-                    'हिसाब किताब',
-                    style: TextStyle(
-                      fontFamily: 'Cambay',
-                      fontSize: 30.0,
-                      color: Colors.black,
+                  child: Container(
+                    width: deviceWidth * 0.385,
+                    height: deviceHeight * 0.11,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage('assets/images/logo.png'),
+                      ),
                     ),
                   ),
                 ),
