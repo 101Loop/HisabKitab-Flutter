@@ -100,7 +100,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                             child: Column(
                               children: <Widget>[
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(
+                                      15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     cursorColor: primaryColor,
@@ -110,7 +111,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     controller: _name,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Name',
                                       alignLabelWithHint: true,
@@ -119,13 +121,15 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(
+                                      15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     cursorColor: primaryColor,
@@ -135,7 +139,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     controller: _email,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Email',
                                       alignLabelWithHint: true,
@@ -144,13 +149,15 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(
+                                      15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     cursorColor: primaryColor,
@@ -160,7 +167,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     controller: _mobile,
                                     keyboardType: TextInputType.phone,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Mobile',
                                       alignLabelWithHint: true,
@@ -169,13 +177,15 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(
+                                      15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     obscureText: provider.isHideText,
@@ -186,8 +196,10 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     controller: _password,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
+                                      errorMaxLines: 3,
                                       hintText: 'Password',
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
@@ -195,7 +207,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: provider.isHideText
@@ -208,14 +221,16 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                                 color: Colors.grey.shade400,
                                               ),
                                         onPressed: () {
-                                          provider.setHideText(!provider.isHideText);
+                                          provider.setHideText(
+                                              !provider.isHideText);
                                         },
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(
+                                      15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     obscureText: provider.isHideText1,
@@ -231,7 +246,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     controller: _confirmPass,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(
+                                          10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Confirm Password',
                                       alignLabelWithHint: true,
@@ -240,7 +256,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: provider.isHideText1
@@ -253,7 +270,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                                 color: Colors.grey.shade400,
                                               ),
                                         onPressed: () {
-                                          provider.setHideText1(!provider.isHideText1);
+                                          provider.setHideText1(
+                                              !provider.isHideText1);
                                         },
                                       ),
                                     ),
@@ -364,7 +382,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
         provider.setLoading(false);
         if (response.error != null) {
           showSnackBar(response.error);
-        } else if (response.data.email != null && response.data.mobile != null) {
+        } else if (response.data.email != null &&
+            response.data.mobile != null) {
           showSnackBar('SignUp Sucessfully');
           Future.delayed(
             Duration(seconds: 2),

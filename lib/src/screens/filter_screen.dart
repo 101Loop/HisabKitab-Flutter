@@ -94,7 +94,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
         child: Scaffold(
           backgroundColor: Constants.profileBG,
           body: Container(
-            margin: EdgeInsets.fromLTRB(10, 10, 0.0, 0.0),
+            margin: EdgeInsets.fromLTRB(10, 5.0, 5.0, 10.0),
             child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
                 child: Form(
