@@ -83,6 +83,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
+                                  errorMaxLines: 3,
                                   contentPadding:
                                       EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
