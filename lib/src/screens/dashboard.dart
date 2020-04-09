@@ -203,6 +203,14 @@ class _DashboardState extends State<Dashboard>
                         totalEarning: provider.creditAmount,
                         totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
+            (provider.transactionType != Constants.CREDIT &&
+                    provider.transactionType != Constants.DEBIT)
+                ? DataAnnotation(
+                    earning: provider.creditAmount,
+                    expense: provider.debitAmount,
+                  )
+                : Container(),
+            SizedBox(height: 10.0),
             HeaderWidget(
               headerText: provider.transactionType == Constants.CREDIT
                   ? 'Earnings'
@@ -611,6 +619,93 @@ class _DashboardState extends State<Dashboard>
       return false;
     else
       return true;
+  }
+}
+
+class DataAnnotation extends StatelessWidget {
+  DataAnnotation({Key key, @required this.earning, @required this.expense})
+      : super(key: key);
+
+  final String earning;
+  final String expense;
+
+  String earningPercentage(String earning, String expense) {
+    double earningDouble = double.parse(earning);
+    double expenseDouble = double.parse(expense);
+    double percentage = (earningDouble / (earningDouble + expenseDouble)) * 100;
+    return percentage.toStringAsFixed(2);
+  }
+
+  String expensePercentage(String earning, String expense) {
+    double earningDouble = double.parse(earning);
+    double expenseDouble = double.parse(expense);
+    double percentage = (expenseDouble / (earningDouble + expenseDouble)) * 100;
+    return percentage.toStringAsFixed(2);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Container(
+                  height: 10,
+                  width: 10,
+                  color: Constants.primaryColor,
+                ),
+                SizedBox(width: 20),
+                Text(
+                  'Earnings',
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ],
+            ),
+            Text(
+              earningPercentage(earning, expense) == 'NaN'
+                  ? '0 %'
+                  : earningPercentage(earning, expense) + ' %',
+              style: TextStyle(
+                  fontSize: 13.0,
+                  color: Constants.primaryColor,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        SizedBox(height: 15.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Container(
+                  height: 10,
+                  width: 10,
+                  color: Colors.red.shade400,
+                ),
+                SizedBox(width: 20),
+                Text(
+                  'Expenditures',
+                  style: TextStyle(fontSize: 12.0),
+                ),
+              ],
+            ),
+            Text(
+              expensePercentage(earning, expense) == 'NaN'
+                  ? '0 %'
+                  : expensePercentage(earning, expense) + ' %',
+              style: TextStyle(
+                  fontSize: 13.0,
+                  color: Colors.red.shade400,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 

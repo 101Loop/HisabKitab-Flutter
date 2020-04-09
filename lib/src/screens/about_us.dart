@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/provider/store.dart';
+import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutUs extends StatefulWidget {
   AboutUs({Key key}) : super(key: key);
@@ -13,15 +15,25 @@ class AboutUs extends StatefulWidget {
 
 class _AboutUsState extends State<AboutUs> {
   AppState provider;
+  double deviceWidth;
+
+  void customLaunch(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print('unable to launch $command');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: profileBG,
+        backgroundColor: Colors.white,
         body: Container(
-          padding: EdgeInsets.all(10.0),
+          padding: EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Column(
@@ -37,6 +49,108 @@ class _AboutUsState extends State<AboutUs> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    HeaderWidget(
+                      headerText: 'Hisab Kitab',
+                      maxFontSize: 25,
+                      minFontSize: 25,
+                      textColor: Colors.black,
+                    ),
+                    Container(
+                      height: 140.0,
+                      width: 120.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage(
+                              'assets/images/addTransactionImage.png'),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  margin: EdgeInsets.only(right: 10.0),
+                  child: HeaderWidget(
+                    headerText:
+                        'The easiest way to track your money flow, convienent in budget management, expenditure control and money management. Useful for individual, family, business or corporate.',
+                    maxFontSize: 15,
+                    minFontSize: 15,
+                    textColor: Colors.black,
+                  ),
+                ),
+                SizedBox(height: 60.0),
+                Container(
+                  width: deviceWidth * 0.75,
+                  height: 50.0,
+                  margin: EdgeInsets.only(right: 10.0),
+                  child: OutlineButton(
+                    borderSide: BorderSide(
+                      color: primaryColor,
+                    ),
+                    onPressed: () {
+                      customLaunch(
+                          'mailto:help@vithartha.com?subject=Regarding%20HisabKitab');
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.mail,
+                          color: primaryColor,
+                        ),
+                        SizedBox(width: 10.0),
+                        HeaderWidget(
+                          headerText: 'Email Us',
+                          maxFontSize: 20,
+                          minFontSize: 18,
+                          textColor: primaryColor,
+                        ),
+                      ],
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    splashColor: lightGreen.withRed(210),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  width: deviceWidth * 0.75,
+                  height: 50.0,
+                  margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
+                  child: OutlineButton(
+                    borderSide: BorderSide(
+                      color: primaryColor,
+                    ),
+                    onPressed: () {
+                      customLaunch('tel: +911204545647');
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.phone,
+                          color: primaryColor,
+                        ),
+                        SizedBox(width: 10.0),
+                        HeaderWidget(
+                          headerText: 'Call Us',
+                          maxFontSize: 20,
+                          minFontSize: 18,
+                          textColor: primaryColor,
+                        ),
+                      ],
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    splashColor: lightGreen.withRed(210),
                   ),
                 ),
               ],
