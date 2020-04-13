@@ -14,7 +14,8 @@ class LoginAPIController {
     var response;
 
     try {
-      response = await http.post(Constants.LOGIN_URL, headers: headers, body: json.encode(user.toMap()));
+      response = await http.post(Constants.LOGIN_URL,
+          headers: headers, body: json.encode(user.toMap()));
     } catch (_) {
       return User(error: Constants.serverError);
     }
@@ -59,7 +60,10 @@ class LoginAPIController {
 
   /// api call to get user profile
   static Future<UserProfile> getUserProfile() async {
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": Utility.token
+    };
 
     var response;
 
@@ -110,19 +114,24 @@ class LoginAPIController {
 
   /// api call to update user profile
   static Future<UserProfile> updateUserProfile(UserProfile data) async {
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": Utility.token
+    };
 
     var response;
 
     try {
-      response = await http.patch(Constants.UPDATE_PROFILE_URL, headers: headers, body: json.encode(data.toMap()));
+      response = await http.patch(Constants.UPDATE_PROFILE_URL,
+          headers: headers, body: json.encode(data.toMap()));
     } catch (_) {
       return UserProfile(error: Constants.serverError);
     }
 
     int statusCode = response.statusCode;
 
-    if (statusCode == Constants.HTTP_200_OK || statusCode == Constants.HTTP_202_ACCEPTED) {
+    if (statusCode == Constants.HTTP_200_OK ||
+        statusCode == Constants.HTTP_202_ACCEPTED) {
       String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
       return UserProfile.fromJson(parsedResponse['data']);
@@ -161,12 +170,16 @@ class LoginAPIController {
 
   /// api call to update password
   static Future<PasswordResponse> updatePassword(String password) async {
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": Utility.token
+    };
 
     var response;
 
     try {
-      response = await http.patch(Constants.UPDATE_PASSWORD_URL, headers: headers, body: json.encode({"new_password": password}));
+      response = await http.patch(Constants.UPDATE_PASSWORD_URL,
+          headers: headers, body: json.encode({"new_password": password}));
     } catch (_) {
       return PasswordResponse(data: 'Something went wrong', statusCode: -1);
     }
@@ -174,7 +187,8 @@ class LoginAPIController {
     int statusCode = response.statusCode;
 
     if (statusCode == Constants.HTTP_202_ACCEPTED) {
-      return PasswordResponse(data: 'Password updated successfully', statusCode: statusCode);
+      return PasswordResponse(
+          data: 'Password updated successfully', statusCode: statusCode);
     } else {
       String errorMessage = response.body.toString();
       if (errorMessage != null) {
@@ -183,7 +197,8 @@ class LoginAPIController {
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
-            return PasswordResponse(data: detail.toString(), statusCode: statusCode);
+            return PasswordResponse(
+                data: detail.toString(), statusCode: statusCode);
           } else if (errorResponse['data'] != null) {
             var data = errorResponse['data'];
             var dataObject = json.encode(data);
@@ -194,19 +209,84 @@ class LoginAPIController {
               String message = nonFieldErrors[0];
               return PasswordResponse(data: message, statusCode: statusCode);
             } else if (error != null) {
-              return PasswordResponse(data: error[0].toString(), statusCode: statusCode);
+              return PasswordResponse(
+                  data: error[0].toString(), statusCode: statusCode);
             } else {
-              return PasswordResponse(data: errorResponse.toString(), statusCode: statusCode);
+              return PasswordResponse(
+                  data: errorResponse.toString(), statusCode: statusCode);
             }
           } else {
-            return PasswordResponse(data: errorResponse.toString(), statusCode: statusCode);
+            return PasswordResponse(
+                data: errorResponse.toString(), statusCode: statusCode);
           }
         } catch (e) {
           return PasswordResponse(data: e.toString(), statusCode: statusCode);
         }
       } else {
-        return PasswordResponse(data: Constants.serverError, statusCode: statusCode);
+        return PasswordResponse(
+            data: Constants.serverError, statusCode: statusCode);
       }
+    }
+  }
+
+  ///api call to verify user
+  static Future<PasswordResponse> getOtp(String email, {int otp}) async {
+    final Map<String, String> headers = {"Content-Type": "application/json"};
+    final Map<String, String> emailBody = {"value": email};
+    final Map<String, String> otpBody = {"value": email, "otp": '$otp'};
+
+    PasswordResponse apiResponse;
+
+    var response;
+    try {
+      response = await http.post(Constants.LOGIN_OTP_URL,
+          headers: headers,
+          body: otp != null ? json.encode(otpBody) : json.encode(emailBody));
+    } catch (_) {
+      print('yaay! caught an exception while verifying OTP');
+      return PasswordResponse(data: Constants.serverError, statusCode: -1);
+    }
+
+    final int statusCode = response.statusCode;
+
+    if (statusCode == Constants.HTTP_201_CREATED ||
+        statusCode == Constants.HTTP_202_ACCEPTED) {
+      var parsedResponse = json.decode(response.body);
+      apiResponse = PasswordResponse(
+          data: parsedResponse['data']['message'], statusCode: statusCode);
+      return apiResponse;
+    } else if (statusCode == Constants.HTTP_200_OK) {
+      var parsedResponse = json.decode(response.body);
+      apiResponse = PasswordResponse(
+          data: parsedResponse['data']['token'], statusCode: statusCode);
+      return apiResponse;
+    } else {
+      String errorMessage = response.body.toString();
+      if (errorMessage != null) {
+        try {
+          var errorResponse = json.decode(errorMessage);
+
+          if (errorResponse['detail'] != null) {
+            var detail = errorResponse['detail'];
+            return PasswordResponse(
+                data: detail.toString(), statusCode: statusCode);
+          } else if (errorResponse['data'] != null) {
+            var data = errorResponse['data'];
+            var dataObject = json.encode(data);
+            var parsedData = json.decode(dataObject);
+            var message = parsedData['message'];
+            if (message != null) {
+              return PasswordResponse(data: message, statusCode: statusCode);
+            } else {
+              var otpMessage = parsedData['OTP'];
+              return PasswordResponse(data: otpMessage, statusCode: statusCode);
+            }
+          }
+        } catch (e) {
+          return PasswordResponse(data: e.toString(), statusCode: statusCode);
+        }
+      }
+      return PasswordResponse(data: errorMessage, statusCode: statusCode);
     }
   }
 }
