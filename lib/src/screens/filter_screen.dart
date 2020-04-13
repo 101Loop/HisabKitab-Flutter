@@ -301,9 +301,11 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               controller: minTextController,
                               maxLength: 20,
                               onSaved: (value) {
-                                if (value == null || value.isEmpty) return;
-                                provider
-                                    .setTempMinAmountQuery(double.parse(value));
+                                if (value == null || value.isEmpty)
+                                  provider.setTempMinAmountQuery(-1);
+                                else
+                                  provider.setTempMinAmountQuery(
+                                      double.parse(value));
                               },
                               cursorColor: Constants.primaryColor,
                               textAlign: TextAlign.left,
@@ -340,9 +342,11 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               validator: validateNullableDoubleValue,
                               maxLength: 20,
                               onSaved: (value) {
-                                if (value == null || value.isEmpty) return;
-                                provider
-                                    .setTempMaxAmountQuery(double.parse(value));
+                                if (value == null || value.isEmpty)
+                                  provider.setTempMaxAmountQuery(-1);
+                                else
+                                  provider.setTempMaxAmountQuery(
+                                      double.parse(value));
                               },
                               cursorColor: Constants.primaryColor,
                               textAlign: TextAlign.left,

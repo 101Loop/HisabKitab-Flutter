@@ -194,7 +194,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 onSaved: (value) {
                                   _mobile = value;
                                 },
-                                validator: validateNullableMobile,
+                                validator: validateMobile,
                                 cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.phone,
@@ -223,7 +223,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 onSaved: (value) {
                                   _email = value;
                                 },
-                                validator: validateNullableEmail,
+                                validator: validateEmail,
                                 cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.emailAddress,
@@ -350,6 +350,7 @@ class _AccountState extends State<Account> with ValidationMixin {
 
   ///validate form and submit the response
   void _submit() {
+    FocusScope.of(context).unfocus();
     final _formState = _formKey.currentState;
 
     if (_formState.validate()) {
@@ -365,7 +366,13 @@ class _AccountState extends State<Account> with ValidationMixin {
         LoginAPIController.updateUserProfile(userProfile).then((response) {
           provider.setLoading(false);
           if (response.error?.isNotEmpty ?? false) {
-            _showSnackBar('Entered Mobile or email already exists with some other account');
+            if (response.error
+                .contains('This mobile number is already registered')) {
+              _showSnackBar(
+                  'Entered Mobile or Email already exists with some other account');
+            } else {
+              _showSnackBar(response?.error);
+            }
           } else {
             _showSnackBar('Profile updated successfully');
 

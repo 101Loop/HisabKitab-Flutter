@@ -139,7 +139,7 @@ class LoginAPIController {
       String errorMessage = response.body.toString();
       if (errorMessage != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json?.decode(errorMessage);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -158,6 +158,8 @@ class LoginAPIController {
           } else {
             UserProfile(error: errorResponse);
           }
+        } on TypeError catch (_) {
+          return UserProfile(error: errorMessage);
         } catch (e) {
           return UserProfile(error: e.toString());
         }
