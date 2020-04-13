@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/api_controller/transaction_api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/baked_icons/rupee_icon_icons.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constant;
 import 'package:intl/intl.dart';
@@ -165,42 +165,37 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           SizedBox(height: 10.0),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.all(15.0),
+                            padding: EdgeInsets.only(
+                                left: 15, bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: deviceHeight * 0.10,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Container(
-                                  width: deviceWidth * 0.75,
-                                  child: TextFormField(
-                                    initialValue: _contact,
-                                    validator: validateField,
-                                    onSaved: (value) {
-                                      _contact = value;
-                                    },
-                                    cursorColor: Constant.primaryColor,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.only(
-                                          bottom: 2.0,
-                                          left: 0.0,
-                                          top: 0.0,
-                                          right: 0.0),
-                                    ),
+                            child: Container(
+                              child: TextFormField(
+                                initialValue: _contact,
+                                validator: validateField,
+                                onSaved: (value) {
+                                  _contact = value;
+                                },
+                                cursorColor: Constant.primaryColor,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                    Icons.comment,
+                                    color: Colors.black45,
+                                    size: 20.0,
                                   ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.only(
+                                      bottom: 0.0,
+                                      left: 0.0,
+                                      top: 14.0,
+                                      right: 0.0),
                                 ),
-                                Icon(
-                                  Icons.comment,
-                                  color: Colors.black45,
-                                  size: 20.0,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -217,46 +212,43 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.all(15.0),
+                            padding: EdgeInsets.only(
+                                left: 15, bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: deviceHeight * 0.10,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Container(
-                                  width: deviceWidth * 0.75,
-                                  child: TextFormField(
-                                    initialValue:
-                                        _transaction?.amount?.toString() ?? '',
-                                    validator: validateDoubleValue,
-                                    autovalidate: provider.autoValidate,
-                                    onSaved: (value) {
-                                      _amount = value;
-                                    },
-                                    inputFormatters: [
-                                      LengthLimitingTextInputFormatter(20),
-                                    ],
-                                    keyboardType: TextInputType.number,
-                                    cursorColor: Constant.primaryColor,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.all(0.0),
-                                    ),
+                            child: Container(
+                              child: TextFormField(
+                                initialValue:
+                                    _transaction?.amount?.toString() ?? '',
+                                validator: validateDoubleValue,
+                                autovalidate: provider.autoValidate,
+                                onSaved: (value) {
+                                  _amount = value;
+                                },
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(20),
+                                ],
+                                keyboardType: TextInputType.number,
+                                cursorColor: Constant.primaryColor,
+                                decoration: InputDecoration(
+                                  suffixIcon: Icon(
+                                    RupeeIcon.rupee_icon,
+                                    color: Colors.black45,
+                                    size: 16.0,
                                   ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.only(
+                                      bottom: 0.0,
+                                      left: 0.0,
+                                      top: 14.0,
+                                      right: 0.0),
                                 ),
-                                Text(
-                                  '₹',
-                                  style: GoogleFonts.roboto(
-                                      color: Colors.black45,
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 5.0),
@@ -271,43 +263,43 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.all(15.0),
+                            padding:
+                                EdgeInsets.only(bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: deviceHeight * 0.10,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                IgnorePointer(
-                                  ignoring: _transaction != null ? false : true,
-                                  child: Container(
-                                    width: deviceWidth * 0.7,
-                                    child: DropdownButton(
-                                      iconSize: 0.0,
-                                      underline: Container(),
-                                      value: provider.category,
-                                      onChanged: (value) {
-                                        provider.setCategory(value);
-                                      },
-                                      items:
-                                          Constant.categoryList.map((category) {
-                                        return DropdownMenuItem(
-                                          child: Text(category),
-                                          value: category,
-                                        );
-                                      }).toList(),
+                            child: IgnorePointer(
+                              ignoring: _transaction != null ? false : true,
+                              child: SizedBox(
+                                child: ButtonTheme(
+                                  alignedDropdown: true,
+                                  child: DropdownButton(
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.black45,
+                                      size: 30.0,
                                     ),
+                                    isExpanded: true,
+                                    underline: Container(),
+                                    value: provider.category,
+                                    onChanged: (value) {
+                                      FocusScope.of(context)
+                                          .requestFocus(FocusNode());
+                                      provider.setCategory(value);
+                                    },
+                                    items:
+                                        Constant.categoryList.map((category) {
+                                      return DropdownMenuItem(
+                                        child: Text(category),
+                                        value: category,
+                                      );
+                                    }).toList(),
                                   ),
                                 ),
-                                Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Colors.black45,
-                                  size: 30.0,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 5.0),
@@ -366,39 +358,39 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.all(15.0),
+                            padding:
+                                EdgeInsets.only(bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: deviceHeight * 0.10,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Container(
-                                  width: deviceWidth * 0.7,
-                                  child: DropdownButton(
-                                    iconSize: 0.0,
-                                    underline: Container(),
-                                    value: provider.mode,
-                                    onChanged: (value) {
-                                      provider.setMode(value);
-                                    },
-                                    items: Constant.paymentList.map((mode) {
-                                      return DropdownMenuItem(
-                                        child: Text(mode),
-                                        value: mode,
-                                      );
-                                    }).toList(),
+                            child: Container(
+                              child: ButtonTheme(
+                                alignedDropdown: true,
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 30,
+                                    color: Colors.black45,
                                   ),
+                                  underline: Container(),
+                                  value: provider.mode,
+                                  onChanged: (value) {
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                    provider.setMode(value);
+                                  },
+                                  items: Constant.paymentList.map((mode) {
+                                    return DropdownMenuItem(
+                                      child: Text(mode),
+                                      value: mode,
+                                    );
+                                  }).toList(),
                                 ),
-                                Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Colors.black45,
-                                  size: 30.0,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 10.0),
@@ -413,7 +405,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.all(15.0),
+                            padding: EdgeInsets.only(
+                                left: 15, bottom: 8.0, right: 15.0, top: 8.0),
                             width: deviceWidth,
                             height: deviceHeight * 0.10,
                             decoration: BoxDecoration(
@@ -433,10 +426,11 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     },
                                     cursorColor: Constant.primaryColor,
                                     decoration: InputDecoration(
+                                      counterStyle: TextStyle(fontSize: 10),
                                       border: InputBorder.none,
                                       isDense: true,
                                       contentPadding: EdgeInsets.only(
-                                          bottom: 2.0,
+                                          bottom: 0.0,
                                           left: 0.0,
                                           top: 0.0,
                                           right: 0.0),

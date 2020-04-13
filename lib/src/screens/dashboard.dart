@@ -327,8 +327,9 @@ class _DashboardState extends State<Dashboard>
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
+                    FlatButton(
+                      splashColor: Constants.primaryColor,
+                      onPressed: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('C', willNotify: false);
                         _clearFilter();
@@ -347,8 +348,9 @@ class _DashboardState extends State<Dashboard>
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
+                    FlatButton(
+                      splashColor: Constants.primaryColor,
+                      onPressed: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('D', willNotify: false);
                         _clearFilter();
@@ -367,8 +369,9 @@ class _DashboardState extends State<Dashboard>
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
+                    FlatButton(
+                      splashColor: Constants.primaryColor,
+                      onPressed: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('A', willNotify: false);
                         _clearFilter();
@@ -387,8 +390,9 @@ class _DashboardState extends State<Dashboard>
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () async {
+                    FlatButton(
+                      splashColor: Constants.primaryColor,
+                      onPressed: () async {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
