@@ -59,8 +59,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 bottom: deviceHeight * 0.5,
                 child: Center(
                   child: Container(
-                    width: deviceWidth * 0.385,
-                    height: deviceHeight * 0.11,
+                    width: 135,
+                    height: 70,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
