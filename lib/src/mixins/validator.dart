@@ -7,6 +7,7 @@ class ValidationMixin {
   static String isEmpty = 'This field can\'t be empty';
   static String isLargeValue = 'Maximum 18 digits allowed.';
   static String isSmallValue = 'Please enter a value above 0';
+  static String isValidOTPLength = 'Enter valid OTP';
 
   ///method to validate passwords
   String validatePassword(String value) {
@@ -73,6 +74,18 @@ class ValidationMixin {
 
     if (value.length < 1) {
       return isEmpty;
+    } else {
+      return null;
+    }
+  }
+
+  /// method to validate OTP length
+  String validateOTPLength(String value) {
+    String result = validateNonEmoji(value);
+    if (result != null) return result;
+
+    if (value.length < 7) {
+      return isValidOTPLength;
     } else {
       return null;
     }
@@ -151,8 +164,9 @@ class ValidationMixin {
     try {
       double _value = double.parse(value);
 
-      if (_value < 0) return isSmallValue;
-      else if(_value.toString().length>20) return isLargeValue;
+      if (_value < 0)
+        return isSmallValue;
+      else if (_value.toString().length > 20) return isLargeValue;
     } on FormatException catch (_) {
       return isValidValue;
     }

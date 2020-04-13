@@ -365,7 +365,7 @@ class _AccountState extends State<Account> with ValidationMixin {
         LoginAPIController.updateUserProfile(userProfile).then((response) {
           provider.setLoading(false);
           if (response.error?.isNotEmpty ?? false) {
-            _showSnackBar('Mobile or Email already linked with other account');
+            _showSnackBar('Entered Mobile or email already exists with some other account');
           } else {
             _showSnackBar('Profile updated successfully');
 
