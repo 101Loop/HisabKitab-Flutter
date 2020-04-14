@@ -168,7 +168,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             padding: EdgeInsets.only(
                                 left: 15, bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
-                            height: deviceHeight * 0.10,
+                            height: 67,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
@@ -215,7 +215,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             padding: EdgeInsets.only(
                                 left: 15, bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
-                            height: deviceHeight * 0.10,
+                            height: 67,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
@@ -266,7 +266,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             padding:
                                 EdgeInsets.only(bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
-                            height: deviceHeight * 0.10,
+                            height: 67,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
@@ -322,7 +322,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   EdgeInsets.only(bottom: 15.0, right: 15.0),
                               padding: EdgeInsets.all(15.0),
                               width: deviceWidth,
-                              height: deviceHeight * 0.10,
+                              height: 67,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20.0),
                                 color: Color(0xffecf8f8).withRed(210),
@@ -361,7 +361,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             padding:
                                 EdgeInsets.only(bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
-                            height: deviceHeight * 0.10,
+                            height: 67,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
@@ -406,43 +406,41 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
                             padding: EdgeInsets.only(
-                                left: 15, bottom: 8.0, right: 15.0, top: 8.0),
+                                left: 15, bottom: 5.0, right: 8.0, top: 5.0),
                             width: deviceWidth,
-                            height: deviceHeight * 0.10,
+                            height: 67,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               color: Color(0xffecf8f8).withRed(210),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Container(
-                                  width: deviceWidth * 0.75,
-                                  child: TextFormField(
-                                    initialValue: _comment,
-                                    maxLength: 30,
-                                    onSaved: (value) {
-                                      _comment = value;
-                                    },
-                                    cursorColor: Constant.primaryColor,
-                                    decoration: InputDecoration(
-                                      counterStyle: TextStyle(fontSize: 10),
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.only(
-                                          bottom: 0.0,
-                                          left: 0.0,
-                                          top: 0.0,
-                                          right: 0.0),
+                            child: Container(
+                              width: deviceWidth * 0.763,
+                              child: TextFormField(
+                                initialValue: _comment,
+                                maxLength: 30,
+                                onSaved: (value) {
+                                  _comment = value;
+                                },
+                                cursorColor: Constant.primaryColor,
+                                decoration: InputDecoration(
+                                  suffixIcon: Padding(
+                                    padding: const EdgeInsets.only(top: 12),
+                                    child: Icon(
+                                      Icons.comment,
+                                      color: Colors.black45,
+                                      size: 20.0,
                                     ),
                                   ),
+                                  counterStyle: TextStyle(fontSize: 10),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.only(
+                                      bottom: 0.0,
+                                      left: 0.0,
+                                      top: 22.0,
+                                      right: 0.0),
                                 ),
-                                Icon(
-                                  Icons.comment,
-                                  color: Colors.black45,
-                                  size: 20.0,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -457,7 +455,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   EdgeInsets.only(bottom: 15.0, right: 15.0),
                               padding: EdgeInsets.all(15.0),
                               width: deviceWidth,
-                              height: deviceHeight * 0.09,
+                              height: 65,
                               decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(

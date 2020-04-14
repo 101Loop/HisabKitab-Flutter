@@ -18,7 +18,7 @@ class ValidationMixin {
     String result = validateNonEmoji(value);
     if (result != null) return result;
 
-    String pattern = r'^(?=[^\d_].*?\d)\w(\w|[!@#$%]){7,20}$';
+    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
     RegExp regExp = RegExp(pattern);
     if (!regExp.hasMatch(value)) {
       return invalidPasswordMessage;
