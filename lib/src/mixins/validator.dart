@@ -1,6 +1,6 @@
 class ValidationMixin {
   static String invalidPasswordMessage =
-      'Password must have minimum 8 characters, at least one letter, one special character(!@#\$%) and one number';
+      'Password must have minimum 8 characters, at least one capital letter, one special character(!@#\$%) and one number';
   static String isEmojiMessage = 'Please Enter a valid text';
   static String isValidMobileMessage = 'Please enter a valid mobile number';
   static String isValidValue = 'Please enter a valid value';

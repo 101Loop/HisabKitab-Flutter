@@ -277,11 +277,17 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 child: ButtonTheme(
                                   alignedDropdown: true,
                                   child: DropdownButton(
-                                    icon: Icon(
-                                      Icons.arrow_drop_down,
-                                      color: Colors.black45,
-                                      size: 30.0,
-                                    ),
+                                    icon: _transaction != null
+                                        ? Icon(
+                                            Icons.arrow_drop_down,
+                                            color: Colors.black45,
+                                            size: 30.0,
+                                          )
+                                        : Icon(
+                                            Icons.list,
+                                            color: Colors.black45,
+                                            size: 28.0,
+                                          ),
                                     isExpanded: true,
                                     underline: Container(),
                                     value: provider.category,
