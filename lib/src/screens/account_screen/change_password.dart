@@ -24,6 +24,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   String _confirmedPassword;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  
+  @override
+  void initState() {
+    super.initState();
+    var _provider = Provider.of<AppState>(context, listen: false);
+    _provider.initialState();
+  }
 
   @override
   Widget build(BuildContext context) {
