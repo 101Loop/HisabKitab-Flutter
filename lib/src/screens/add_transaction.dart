@@ -177,6 +177,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               child: TextFormField(
                                 initialValue: _contact,
                                 validator: validateField,
+                                autovalidate: provider.autoValidate,
                                 onSaved: (value) {
                                   _contact = value;
                                 },
@@ -518,8 +519,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     final _formState = _formKey.currentState;
 
     if (_formState.validate() &&
-        (provider.dateTime.isNotEmpty ?? false) &&
-        (provider.mode.isNotEmpty ?? false)) {
+        (provider?.dateTime?.isNotEmpty ?? false) &&
+        (provider?.mode?.isNotEmpty ?? false)) {
       provider.setLoading(true);
       _formState.save();
 
