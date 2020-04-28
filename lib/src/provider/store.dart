@@ -5,6 +5,7 @@ import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
 
 class AppState extends ChangeNotifier {
+  int _sortScheme = -1;
   bool _otpRequested = false;
   String _transactionType = 'Earnings';
   bool _autoValidate = false;
@@ -46,6 +47,8 @@ class AppState extends ChangeNotifier {
   Widget _currentPage = Dashboard();
 
   bool _isIgnoring = false;
+
+  int get sortScheme => _sortScheme;
 
   bool get getOTPRequested => _otpRequested;
 
@@ -334,6 +337,11 @@ class AppState extends ChangeNotifier {
 
   setCurrentPage(Widget currentPage, {bool willNotify = true}) {
     _currentPage = currentPage;
+    if (willNotify) notifyListeners();
+  }
+
+  setSortScheme(int sortSceme, {bool willNotify = true}) {
+    _sortScheme = sortSceme;
     if (willNotify) notifyListeners();
   }
 
