@@ -6,6 +6,7 @@ import 'package:hisabkitab/src/screens/about_us.dart';
 import 'package:hisabkitab/src/screens/account_screen/account.dart';
 import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
+import 'package:hisabkitab/utils/baked_icons/rupee_icon_icons.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';
 
@@ -196,7 +197,7 @@ class _MainScreenState extends State<MainScreen> {
               type: BottomNavigationBarType.fixed,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.attach_money),
+                  icon: Icon(RupeeIcon.rupee_icon, size: 21),
                   title: Text(
                     'Dashboard',
                     style: TextStyle(
