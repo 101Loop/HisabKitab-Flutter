@@ -463,6 +463,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
     if (_formState.validate()) {
       _formState.save();
 
+      provider.setSortScheme(-1, willNotify: false);
       provider.setEarning(provider.isTempEarning, willNotify: false);
       provider.setSpending(provider.isTempSpending, willNotify: false);
       provider.setSearchQuery(provider.tempSearchQuery, willNotify: false);

@@ -259,6 +259,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     minTextController.text = '';
     maxTextController.text = '';
 
+    provider.setSortScheme(-1, willNotify: false);
     provider.setEarning(false, willNotify: false);
     provider.setSpending(false, willNotify: false);
     provider.setSearchQuery('', willNotify: false);
