@@ -11,6 +11,7 @@ import 'package:hisabkitab/src/screens/filter_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/baked_icons/earning_icons.dart';
 import 'package:hisabkitab/utils/baked_icons/spending_icons.dart';
+import 'package:hisabkitab/utils/common_widgets/non_animated_page_route.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/common_widgets/sorting_items.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
@@ -284,11 +285,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                     FlatButton(
                       splashColor: Constants.primaryColor,
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('C', willNotify: false);
-                        provider.setNeedsUpdate(true, willNotify: false);
-                        _clearFilter();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+                        _handleQuickFilterPressed('C');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -303,10 +300,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                     FlatButton(
                       splashColor: Constants.primaryColor,
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('D', willNotify: false);
-                        _clearFilter();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+                        _handleQuickFilterPressed('D');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -321,10 +315,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                     FlatButton(
                       splashColor: Constants.primaryColor,
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('A', willNotify: false);
-                        _clearFilter();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+                        _handleQuickFilterPressed('A');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
@@ -392,7 +383,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             child: Dismissible(
               key: Key(_currentTransaction.id.toString()),
               onDismissed: (_) async {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+                _refreshScreen();
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Transaction deleted successfully'),
@@ -561,7 +552,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
     provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
     provider.setNeedsUpdate(true, willNotify: false);
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+
+    _refreshScreen();
   }
 
   bool _haveFilters() {
@@ -599,6 +591,20 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             ),
           )
         : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
+  }
+
+  ///navigates the user to the same screen to update the views
+  void _refreshScreen() {
+    Navigator.of(context).pushReplacement(NonAnimatedPageRoute(builder: (BuildContext context) => MainScreen()));
+  }
+
+  /// [transactionType] - the type of the transaction to be selected
+  /// method basically sets the type of transaction, clears the filter and refreshes the screen with new values
+  void _handleQuickFilterPressed(String transactionType) {
+    Navigator.of(context).pop();
+    provider.setTransactionType(transactionType, willNotify: false);
+    _clearFilter();
+    _refreshScreen();
   }
 }
 
