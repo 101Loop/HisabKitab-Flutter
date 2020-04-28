@@ -14,6 +14,7 @@ class AppState extends ChangeNotifier {
   String _debitAmount = '0';
   String _mode;
   String _category;
+  String _next;
   bool _isEarning = false;
   bool _isSpending = false;
   bool _isTempEarning = false;
@@ -38,6 +39,7 @@ class AppState extends ChangeNotifier {
   bool _addTransactionClicked = false;
   bool _isHideText = true;
   bool _isHideText1 = true;
+  bool _needsUpdate = true;
   int _currentTab = 0;
   String _dateTime = '';
   String _tempDateTime = '';
@@ -56,8 +58,10 @@ class AppState extends ChangeNotifier {
   String get transactionType => _transactionType;
 
   String get creditAmount => _creditAmount;
+  String get next => _next;
 
   bool get isLoading => _isLoading;
+  bool get needsUpdate => _needsUpdate;
 
   String get debitAmount => _debitAmount;
 
@@ -350,6 +354,16 @@ class AppState extends ChangeNotifier {
 
   setSortScheme(int sortSceme, {bool willNotify = true}) {
     _sortScheme = sortSceme;
+    if (willNotify) notifyListeners();
+  }
+
+  setNeedsUpdate(bool needsUpdate, {bool willNotify = true}) {
+    _needsUpdate = needsUpdate;
+    if (willNotify) notifyListeners();
+  }
+
+  setNext(String next, {bool willNotify = true}) {
+    _next = next;
     if (willNotify) notifyListeners();
   }
 

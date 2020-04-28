@@ -37,11 +37,8 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
       lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
-      provider.setTempDateQuery(
-          DateFormat('yyyy-MM-dd').format(pickedDate).toString(),
-          willNotify: false);
-      provider.setTempDateTime(
-          DateFormat('yyyy-MM-dd').format(pickedDate).toString());
+      provider.setTempDateQuery(DateFormat('yyyy-MM-dd').format(pickedDate).toString(), willNotify: false);
+      provider.setTempDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
   }
 
@@ -51,34 +48,20 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
 
-    initStateProvider.setTempEarning(initStateProvider.isEarning,
-        willNotify: false);
-    initStateProvider.setTempSpending(initStateProvider.isSpending,
-        willNotify: false);
-    initStateProvider.setTempSearchQuery(initStateProvider.searchQuery,
-        willNotify: false);
-    initStateProvider.setTempDateTime(initStateProvider.dateQuery,
-        willNotify: false);
-    initStateProvider.setTempMinAmountQuery(initStateProvider.minAmountQuery,
-        willNotify: false);
-    initStateProvider.setTempMaxAmountQuery(initStateProvider.maxAmountQuery,
-        willNotify: false);
-    initStateProvider.setTempCashQuery(initStateProvider.isCashQuery,
-        willNotify: false);
-    initStateProvider.setTempCardQuery(initStateProvider.isCardQuery,
-        willNotify: false);
-    initStateProvider.setTempChequeQuery(initStateProvider.isChequeQuery,
-        willNotify: false);
-    initStateProvider.setTempAccountQuery(initStateProvider.isAccountQuery,
-        willNotify: false);
+    initStateProvider.setTempEarning(initStateProvider.isEarning, willNotify: false);
+    initStateProvider.setTempSpending(initStateProvider.isSpending, willNotify: false);
+    initStateProvider.setTempSearchQuery(initStateProvider.searchQuery, willNotify: false);
+    initStateProvider.setTempDateTime(initStateProvider.dateQuery, willNotify: false);
+    initStateProvider.setTempMinAmountQuery(initStateProvider.minAmountQuery, willNotify: false);
+    initStateProvider.setTempMaxAmountQuery(initStateProvider.maxAmountQuery, willNotify: false);
+    initStateProvider.setTempCashQuery(initStateProvider.isCashQuery, willNotify: false);
+    initStateProvider.setTempCardQuery(initStateProvider.isCardQuery, willNotify: false);
+    initStateProvider.setTempChequeQuery(initStateProvider.isChequeQuery, willNotify: false);
+    initStateProvider.setTempAccountQuery(initStateProvider.isAccountQuery, willNotify: false);
 
     searchController.text = initStateProvider.searchQuery ?? '';
-    minTextController.text = initStateProvider.minAmountQuery != -1
-        ? initStateProvider.minAmountQuery.toString()
-        : '';
-    maxTextController.text = initStateProvider.maxAmountQuery != -1
-        ? initStateProvider.maxAmountQuery.toString()
-        : '';
+    minTextController.text = initStateProvider.minAmountQuery != -1 ? initStateProvider.minAmountQuery.toString() : '';
+    maxTextController.text = initStateProvider.maxAmountQuery != -1 ? initStateProvider.maxAmountQuery.toString() : '';
   }
 
   @override
@@ -159,11 +142,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempEarning(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(
-                                  headerText: 'Earnings',
-                                  textColor: Colors.black54,
-                                  maxFontSize: 14,
-                                  minFontSize: 11),
+                              title: HeaderWidget(headerText: 'Earnings', textColor: Colors.black54, maxFontSize: 14, minFontSize: 11),
                             ),
                           ),
                           ConstrainedBox(
@@ -178,11 +157,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempSpending(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(
-                                  headerText: 'Expenditures',
-                                  textColor: Colors.black54,
-                                  maxFontSize: 13,
-                                  minFontSize: 10),
+                              title: HeaderWidget(headerText: 'Expenditures', textColor: Colors.black54, maxFontSize: 13, minFontSize: 10),
                             ),
                           ),
                         ],
@@ -193,8 +168,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                         child: TextFormField(
                           controller: searchController,
                           onSaved: (value) {
-                            provider.setTempSearchQuery(value,
-                                willNotify: false);
+                            provider.setTempSearchQuery(value, willNotify: false);
                           },
                           cursorColor: Constants.primaryColor,
                           textAlign: TextAlign.left,
@@ -204,8 +178,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               Icons.search,
                               color: Colors.black45,
                             ),
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                            contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
                             hintText: 'Search By Name',
                             alignLabelWithHint: true,
@@ -228,9 +201,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                           margin: EdgeInsets.only(bottom: 15.0),
                           width: deviceWidth * 0.87,
                           height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              border: Border.all(color: Colors.grey)),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), border: Border.all(color: Colors.grey)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -238,14 +209,9 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 width: deviceWidth * 0.69,
                                 margin: EdgeInsets.only(left: 10),
                                 child: Text(
-                                  provider.tempDateTime?.isNotEmpty ?? false
-                                      ? provider.tempDateTime
-                                      : 'Search By Date',
+                                  provider.tempDateTime?.isNotEmpty ?? false ? provider.tempDateTime : 'Search By Date',
                                   style: GoogleFonts.nunito(
-                                    color: provider.tempDateTime?.isNotEmpty ??
-                                            false
-                                        ? Colors.black54
-                                        : Colors.grey.shade400,
+                                    color: provider.tempDateTime?.isNotEmpty ?? false ? Colors.black54 : Colors.grey.shade400,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -254,8 +220,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 12.0),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       provider.tempDateTime?.isNotEmpty ?? false
                                           ? GestureDetector(
@@ -282,11 +247,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                           ),
                         ),
                       ),
-                      HeaderWidget(
-                          headerText: 'Search by Range',
-                          textColor: Colors.black26,
-                          maxFontSize: 18,
-                          minFontSize: 15),
+                      HeaderWidget(headerText: 'Search by Range', textColor: Colors.black26, maxFontSize: 18, minFontSize: 15),
                       SizedBox(height: 10.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -304,15 +265,13 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 if (value == null || value.isEmpty)
                                   provider.setTempMinAmountQuery(-1);
                                 else
-                                  provider.setTempMinAmountQuery(
-                                      double.parse(value));
+                                  provider.setTempMinAmountQuery(double.parse(value));
                               },
                               cursorColor: Constants.primaryColor,
                               textAlign: TextAlign.left,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                 fillColor: Colors.white,
                                 hintText: 'Minimum',
                                 errorMaxLines: 2,
@@ -345,16 +304,14 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 if (value == null || value.isEmpty)
                                   provider.setTempMaxAmountQuery(-1);
                                 else
-                                  provider.setTempMaxAmountQuery(
-                                      double.parse(value));
+                                  provider.setTempMaxAmountQuery(double.parse(value));
                               },
                               cursorColor: Constants.primaryColor,
                               textAlign: TextAlign.left,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 errorMaxLines: 2,
-                                contentPadding:
-                                    EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                 fillColor: Colors.white,
                                 hintText: 'Maximum',
                                 alignLabelWithHint: true,
@@ -390,11 +347,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempCashQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(
-                                  headerText: 'Cash',
-                                  textColor: Colors.black54,
-                                  maxFontSize: 15,
-                                  minFontSize: 12),
+                              title: HeaderWidget(headerText: 'Cash', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                           ConstrainedBox(
@@ -409,11 +362,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempCardQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(
-                                  headerText: 'Card',
-                                  textColor: Colors.black54,
-                                  maxFontSize: 15,
-                                  minFontSize: 12),
+                              title: HeaderWidget(headerText: 'Card', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                         ],
@@ -432,11 +381,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempChequeQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(
-                                  headerText: 'Cheque',
-                                  textColor: Colors.black54,
-                                  maxFontSize: 15,
-                                  minFontSize: 12),
+                              title: HeaderWidget(headerText: 'Cheque', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                           ConstrainedBox(
@@ -451,11 +396,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempAccountQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(
-                                  headerText: 'Account Transfer',
-                                  textColor: Colors.black54,
-                                  maxFontSize: 15,
-                                  minFontSize: 12),
+                              title: HeaderWidget(headerText: 'Account Transfer', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                         ],
@@ -526,15 +467,13 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
       provider.setSpending(provider.isTempSpending, willNotify: false);
       provider.setSearchQuery(provider.tempSearchQuery, willNotify: false);
       provider.setDateQuery(provider.tempDateTime, willNotify: false);
-      provider.setMinAmountQuery(provider.tempMinAmountQuery,
-          willNotify: false);
-      provider.setMaxAmountQuery(provider.tempMaxAmountQuery,
-          willNotify: false);
+      provider.setMinAmountQuery(provider.tempMinAmountQuery, willNotify: false);
+      provider.setMaxAmountQuery(provider.tempMaxAmountQuery, willNotify: false);
       provider.setCashQuery(provider.isTempCashQuery, willNotify: false);
       provider.setCardQuery(provider.isTempCardQuery, willNotify: false);
       provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
       provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
-
+      provider.setNeedsUpdate(true, willNotify: false);
       _goToMainScreen();
     }
   }
@@ -545,7 +484,6 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
   }
 
   void _goToMainScreen() {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 }

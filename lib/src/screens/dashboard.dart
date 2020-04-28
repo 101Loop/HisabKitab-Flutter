@@ -54,48 +54,52 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     super.initState();
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
-    if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
-    if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
-    if (initStateProvider.minAmountQuery != null && initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
-    if (initStateProvider.maxAmountQuery != null && initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
-    if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
-    if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
-    if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
-    if (initStateProvider.isAccountQuery) queryParams += 'mode=3&';
 
-    if (initStateProvider.isEarning) {
-      if (initStateProvider.isSpending) {
-        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
-      } else {
-        queryParams += 'category=C&';
-        initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
-      }
-    } else {
-      if (initStateProvider.isSpending) {
-        queryParams += 'category=D&';
-        initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
-      }
-    }
+    if (initStateProvider.needsUpdate)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
+        if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
+        if (initStateProvider.minAmountQuery != null && initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
+        if (initStateProvider.maxAmountQuery != null && initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
+        if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
+        if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
+        if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
+        if (initStateProvider.isAccountQuery) queryParams += 'mode=3&';
 
-    _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
-    _futureTransactionDetails.then((response) {
-      var list = response.results as List;
-      List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
-
-      double creditAmount = 0;
-      double debitAmount = 0;
-
-      transactionList?.forEach((item) {
-        if (item.category == 'C') {
-          creditAmount += item.amount;
+        if (initStateProvider.isEarning) {
+          if (initStateProvider.isSpending) {
+            initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
+          } else {
+            queryParams += 'category=C&';
+            initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
+          }
         } else {
-          debitAmount += item.amount;
+          if (initStateProvider.isSpending) {
+            queryParams += 'category=D&';
+            initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
+          }
         }
-      });
 
-      initStateProvider.setCreditAmount(creditAmount.toString(), willNotify: false);
-      initStateProvider.setDebitAmount(debitAmount.toString());
-    });
+        _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
+        _futureTransactionDetails.then((response) {
+          var list = response.results as List;
+          List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
+
+          double creditAmount = 0;
+          double debitAmount = 0;
+
+          transactionList?.forEach((item) {
+            if (item.category == 'C') {
+              creditAmount += item.amount;
+            } else {
+              debitAmount += item.amount;
+            }
+          });
+
+          initStateProvider.setCreditAmount(creditAmount.toString(), willNotify: false);
+          initStateProvider.setDebitAmount(debitAmount.toString());
+        });
+      });
   }
 
   @override
@@ -135,9 +139,9 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                     _haveFilters()
                         ? FlatButton(
                             onPressed: () async {
-                              _submit();
-                              _clearFilter();
                               provider.setTransactionType('A', willNotify: false);
+                              _clearFilter();
+                              _submit();
                             },
                             color: Constants.lightGreen.withRed(210),
                             padding: EdgeInsets.all(0),
@@ -151,7 +155,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                       icon: Icon(Icons.sort),
                       color: Constants.primaryColor,
                       onPressed: () {
-                        _onSortPressed();
+                        _onQuickFilterPressed();
                       },
                     ),
                     PopupMenuButton(
@@ -188,42 +192,38 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             ),
             SizedBox(height: 10.0),
             Expanded(
-              child: FutureBuilder(
-                future: _futureTransactionDetails,
-                builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (!_fetchedList && snapshot.hasData) {
-                      _fetchedList = true;
-                      _next = snapshot.data.next;
+              child: provider.needsUpdate
+                  ? FutureBuilder(
+                      future: _futureTransactionDetails,
+                      builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (!_fetchedList && snapshot.hasData) {
+                            _fetchedList = true;
+                            _next = snapshot.data.next;
 
-                      provider.transactionList?.clear();
-                      provider.setLoading(false, willNotify: false);
+                            provider.transactionList?.clear();
+                            provider.setLoading(false, willNotify: false);
 
-                      var list = snapshot.data.results as List;
-                      provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
-                      provider.setInitialTransactionList(provider.transactionList, willNotify: false);
+                            var list = snapshot.data.results as List;
+                            provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
+                            provider.setInitialTransactionList(provider.transactionList, willNotify: false);
 
-                      if (provider.transactionType == Constants.CREDIT) {
-                        provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
-                      } else if (provider.transactionType == Constants.DEBIT) {
-                        provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
-                      }
-                    } else {
-                      provider.setLoading(false, willNotify: false);
-                    }
-                  } else {
-                    provider.setLoading(true, willNotify: false);
-                  }
+                            if (provider.transactionType == Constants.CREDIT) {
+                              provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
+                            } else if (provider.transactionType == Constants.DEBIT) {
+                              provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
+                            }
+                          } else {
+                            provider.setLoading(false, willNotify: false);
+                          }
+                        } else {
+                          provider.setLoading(true, willNotify: false);
+                        }
 
-                  return provider.isLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
-                          ),
-                        )
-                      : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
-                },
-              ),
+                        return _transactionListView();
+                      },
+                    )
+                  : _transactionListView(),
             ),
             provider.isLoadingItems
                 ? Center(
@@ -250,6 +250,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
     provider.setLoading(false, willNotify: false);
     provider.setTransactionClicked(false, willNotify: false);
+    provider.setNext(_next, willNotify: false);
   }
 
   void _clearFilter() {
@@ -270,7 +271,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setAccountQuery(false, willNotify: false);
   }
 
-  Future<bool> _onSortPressed() {
+  Future<bool> _onQuickFilterPressed() {
     return showDialog(
             context: context,
             builder: (context) {
@@ -285,6 +286,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                       onPressed: () {
                         Navigator.of(context).pop();
                         provider.setTransactionType('C', willNotify: false);
+                        provider.setNeedsUpdate(true, willNotify: false);
                         _clearFilter();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
                       },
@@ -366,7 +368,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 10 && !provider.isLoadingItems && _next != null && !_isLoadingItems) {
+        if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 10 && !provider.isLoadingItems && !_isLoadingItems && (_next != null || provider.next != null)) {
           _isLoadingItems = true;
           _loadMore();
         }
@@ -501,12 +503,15 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
   ///loads more items on scrolling
   void _loadMore() {
-    if (_next?.isNotEmpty ?? false) {
+    String next = !provider.needsUpdate ? provider.next : _next;
+
+    if (next?.isNotEmpty ?? false) {
       List<TransactionDetails> _tempList = List.from(provider.transactionList);
       provider.setLoadingItems(true);
-      TransactionApiController.getTransaction(queryParams, next: _next).then(
+      TransactionApiController.getTransaction(queryParams, next: next).then(
         (response) {
           _next = response.next;
+          provider.setNext(_next, willNotify: false);
           print('$_next should be fetched next');
 
           var list = response.results as List;
@@ -540,6 +545,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setCardQuery(provider.isTempCardQuery, willNotify: false);
     provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
     provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
+    provider.setNeedsUpdate(true, willNotify: false);
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 
@@ -568,6 +574,16 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             ),
             value: val))
         .toList();
+  }
+
+  Widget _transactionListView() {
+    return provider.isLoading
+        ? Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+            ),
+          )
+        : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
   }
 }
 

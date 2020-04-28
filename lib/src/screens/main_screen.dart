@@ -92,7 +92,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    dashboard = Dashboard();
+    dashboard = Dashboard(
+      key: dashboardKey,
+    );
     account = Account(
       key: accountKey,
     );
@@ -183,13 +185,13 @@ class _MainScreenState extends State<MainScreen> {
             ),
             child: BottomNavigationBar(
               onTap: (int value) {
-                if (value == 3) {
-                  return;
-                } else {
+                if (value != 3) {
+                  provider.setLoading(false, willNotify: false);
                   provider.setCurrentTab(value, willNotify: false);
-                  provider.setTransactionClicked(false);
+                  provider.setTransactionClicked(false, willNotify: false);
+                  provider.setNeedsUpdate(false, willNotify: false);
+                  provider.setCurrentPage(pages[value]);
                 }
-                provider.setCurrentPage(pages[value]);
               },
               currentIndex: provider.currentTab,
               type: BottomNavigationBarType.fixed,
