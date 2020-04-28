@@ -343,6 +343,7 @@ class _DashboardState extends State<Dashboard>
                             'Earnings',
                             style: GoogleFonts.nunito(
                               fontSize: 16.0,
+                              fontWeight: provider.transactionType == 'C' ? FontWeight.bold : FontWeight.normal
                             ),
                           ),
                         ),
@@ -364,6 +365,7 @@ class _DashboardState extends State<Dashboard>
                             'Expenditures',
                             style: GoogleFonts.nunito(
                               fontSize: 16.0,
+                                fontWeight: provider.transactionType == 'D' ? FontWeight.bold : FontWeight.normal
                             ),
                           ),
                         ),
@@ -385,6 +387,7 @@ class _DashboardState extends State<Dashboard>
                             'All Transactions',
                             style: GoogleFonts.nunito(
                               fontSize: 16.0,
+                                fontWeight: provider.transactionType == 'A' ? FontWeight.bold : FontWeight.normal
                             ),
                           ),
                         ),
