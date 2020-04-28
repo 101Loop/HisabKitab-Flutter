@@ -366,10 +366,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        print('metric pixels: ${scrollInfo.metrics.pixels}');
         if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 10 && !provider.isLoadingItems && _next != null && !_isLoadingItems) {
-          print('metric pixels: ${scrollInfo.metrics.pixels}');
-          print('max extent: ${scrollInfo.metrics.maxScrollExtent}');
           _isLoadingItems = true;
           _loadMore();
         }
@@ -515,6 +512,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
           var list = response.results as List;
           _tempList.addAll(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
           provider.setTransactionList(_tempList, willNotify: false);
+          provider.setInitialTransactionList(_tempList, willNotify: false);
 
           if (provider.transactionType == Constants.CREDIT) {
             provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
