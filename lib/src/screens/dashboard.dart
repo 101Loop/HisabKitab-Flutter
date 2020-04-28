@@ -524,6 +524,21 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
           } else if (provider.transactionType == Constants.DEBIT) {
             provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
           }
+
+          double creditAmount = 0;
+          double debitAmount = 0;
+
+          _tempList?.forEach((item) {
+            if (item.category == 'C') {
+              creditAmount += item.amount;
+            } else {
+              debitAmount += item.amount;
+            }
+          });
+
+          provider.setCreditAmount(creditAmount.toString(), willNotify: false);
+          provider.setDebitAmount(debitAmount.toString(), willNotify: false);
+
           _isLoadingItems = false;
           provider.setLoadingItems(false);
         },
