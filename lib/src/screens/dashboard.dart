@@ -200,6 +200,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
                       var list = snapshot.data.results as List;
                       provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
+                      provider.setInitialTransactionList(provider.transactionList, willNotify: false);
 
                       if (provider.transactionType == Constants.CREDIT) {
                         provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
@@ -468,31 +469,30 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     //if value is null or user selected the previously selected sort scheme
     //sort the list by name, and make the sorting items unselected
     if (value == null || provider.sortScheme == value.sortScheme) {
-      _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
       provider.setSortScheme(-1, willNotify: false);
-      provider.setTransactionList(_tempList);
+      provider.setTransactionList(provider.initialTransactionList);
       return;
     }
 
     switch (value.sortScheme) {
       case 0: //name ascending
         _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
-        provider.sortScheme != value.sortScheme ? provider.setSortScheme(value.sortScheme, willNotify: false) : provider.setSortScheme(-1, willNotify: false);
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
       case 1: //name descending
         _tempList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
-        provider.sortScheme != value.sortScheme ? provider.setSortScheme(value.sortScheme, willNotify: false) : provider.setSortScheme(-1, willNotify: false);
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
       case 2: //amount high to low
         _tempList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
-        provider.sortScheme != value.sortScheme ? provider.setSortScheme(value.sortScheme, willNotify: false) : provider.setSortScheme(-1, willNotify: false);
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
       case 3: //amount low to high
         _tempList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
-        provider.sortScheme != value.sortScheme ? provider.setSortScheme(value.sortScheme, willNotify: false) : provider.setSortScheme(-1, willNotify: false);
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
     }

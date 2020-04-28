@@ -43,6 +43,7 @@ class AppState extends ChangeNotifier {
   String _tempDateTime = '';
   UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
+  List<TransactionDetails> _initialTransactionList = List();
   String _initials = '?';
   Widget _currentPage = Dashboard();
 
@@ -129,6 +130,8 @@ class AppState extends ChangeNotifier {
   UserProfile get userProfile => _userProfile;
 
   List<TransactionDetails> get transactionList => _transactionList;
+
+  List<TransactionDetails> get initialTransactionList => _initialTransactionList;
 
   setLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
@@ -282,6 +285,11 @@ class AppState extends ChangeNotifier {
 
   setTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
     _transactionList = list;
+    if (willNotify) notifyListeners();
+  }
+
+  setInitialTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
+    _initialTransactionList = list;
     if (willNotify) notifyListeners();
   }
 
