@@ -102,6 +102,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
 
+    print('built dashboard screen');
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
@@ -136,7 +137,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                             onPressed: () async {
                               _submit();
                               _clearFilter();
-                              provider.setTransactionType('A');
+                              provider.setTransactionType('A', willNotify: false);
                             },
                             color: Constants.lightGreen.withRed(210),
                             padding: EdgeInsets.all(0),
@@ -266,7 +267,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setCashQuery(false, willNotify: false);
     provider.setCardQuery(false, willNotify: false);
     provider.setChequeQuery(false, willNotify: false);
-    provider.setAccountQuery(false);
+    provider.setAccountQuery(false, willNotify: false);
   }
 
   Future<bool> _onSortPressed() {
@@ -365,7 +366,10 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent && !provider.isLoadingItems && _next != null && !_isLoadingItems) {
+        print('metric pixels: ${scrollInfo.metrics.pixels}');
+        if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 10 && !provider.isLoadingItems && _next != null && !_isLoadingItems) {
+          print('metric pixels: ${scrollInfo.metrics.pixels}');
+          print('max extent: ${scrollInfo.metrics.maxScrollExtent}');
           _isLoadingItems = true;
           _loadMore();
         }
