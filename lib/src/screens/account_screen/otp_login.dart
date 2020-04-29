@@ -98,7 +98,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 validator: validateEmail,
                                 autovalidate: provider.autoValidate,
-                                keyboardType: TextInputType.text,
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   contentPadding:
                                       EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),

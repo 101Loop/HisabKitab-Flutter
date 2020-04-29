@@ -100,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     validator: validateField,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    keyboardType: TextInputType.text,
+                                    keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 0.0, 0.0, 0.0),
@@ -129,7 +129,6 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     controller: passwordController,
                                     autovalidate: provider.autoValidate,
                                     validator: validateField,
-                                    keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 0.0, 0.0, 0.0),
