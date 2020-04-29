@@ -366,8 +366,9 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
         if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 10 && !provider.isLoadingItems && !_isLoadingItems && (_next != null || provider.next != null)) {
           _isLoadingItems = true;
           _loadMore();
+          return true;
         }
-        return true;
+        return false;
       },
       child: ListView.builder(
         shrinkWrap: true,
@@ -515,6 +516,9 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
       provider.setLoadingItems(true);
       TransactionApiController.getTransaction(queryParams, next: next).then(
         (response) {
+          _isLoadingItems = false;
+          provider.setLoadingItems(false, willNotify: false);
+
           _next = response.next;
           provider.setNext(_next, willNotify: false);
           print('$_next should be fetched next');
@@ -546,10 +550,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
           });
 
           provider.setCreditAmount(creditAmount.toString(), willNotify: false);
-          provider.setDebitAmount(debitAmount.toString(), willNotify: false);
-
-          _isLoadingItems = false;
-          provider.setLoadingItems(false);
+          provider.setDebitAmount(debitAmount.toString());
         },
       );
     }
