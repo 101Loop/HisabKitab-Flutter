@@ -408,23 +408,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
                             provider.transactionList.removeAt(index);
 
-                            if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
-                              _loadMore();
-                            } else {
-                              double creditAmount = 0;
-                              double debitAmount = 0;
-
-                              provider.transactionList?.forEach((item) {
-                                if (item.category == 'C') {
-                                  creditAmount += item.amount;
-                                } else {
-                                  debitAmount += item.amount;
-                                }
-                              });
-
-                              provider.setCreditAmount(creditAmount.toString(), willNotify: false);
-                              provider.setDebitAmount(debitAmount.toString());
-                            }
+                            _refreshScreen();
                           },
                           child: Text('DELETE'),
                         ),
@@ -613,6 +597,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
   ///navigates the user to the same screen to update the views
   void _refreshScreen() {
+    provider.setNeedsUpdate(true, willNotify: false);
     Navigator.of(context).pushReplacement(NonAnimatedPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 
