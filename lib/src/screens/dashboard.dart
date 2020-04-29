@@ -11,8 +11,8 @@ import 'package:hisabkitab/src/screens/filter_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/baked_icons/earning_icons.dart';
 import 'package:hisabkitab/utils/baked_icons/spending_icons.dart';
-import 'package:hisabkitab/utils/common_widgets/non_animated_page_route.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
+import 'package:hisabkitab/utils/common_widgets/non_animated_page_route.dart';
 import 'package:hisabkitab/utils/common_widgets/sorting_items.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:intl/intl.dart';
@@ -298,7 +298,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         child: Center(
                           child: Text(
                             'Earnings',
-                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: provider.transactionType == 'C' ? FontWeight.bold : FontWeight.normal),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'C' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -313,7 +313,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         child: Center(
                           child: Text(
                             'Expenditures',
-                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: provider.transactionType == 'D' ? FontWeight.bold : FontWeight.normal),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'D' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -328,7 +328,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         child: Center(
                           child: Text(
                             'All Transactions',
-                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: provider.transactionType == 'A' ? FontWeight.bold : FontWeight.normal),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'A' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -348,9 +348,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         child: Center(
                           child: Text(
                             'More Filter Option',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: _haveFilters() ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
