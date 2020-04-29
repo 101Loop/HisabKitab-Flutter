@@ -197,11 +197,14 @@ class _MainScreenState extends State<MainScreen> {
               type: BottomNavigationBarType.fixed,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(RupeeIcon.rupee_icon, size: 21),
-                  title: Text(
-                    'Dashboard',
-                    style: TextStyle(
-                      fontSize: 12,
+                  icon: Icon(RupeeIcon.rupee_icon, size: 18),
+                  title: Padding(
+                    padding: const EdgeInsets.only(top: 3.0),
+                    child: Text(
+                      'Dashboard',
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),

@@ -271,6 +271,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setCardQuery(false, willNotify: false);
     provider.setChequeQuery(false, willNotify: false);
     provider.setAccountQuery(false, willNotify: false);
+    provider.setNeedsUpdate(true, willNotify: false);
   }
 
   Future<bool> _onQuickFilterPressed() {
@@ -552,7 +553,6 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setCardQuery(provider.isTempCardQuery, willNotify: false);
     provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
     provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
-    provider.setNeedsUpdate(true, willNotify: false);
 
     _refreshScreen();
   }
