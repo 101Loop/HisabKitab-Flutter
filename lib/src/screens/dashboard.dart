@@ -214,6 +214,10 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                             } else if (provider.transactionType == Constants.DEBIT) {
                               provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
                             }
+
+                            if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
+                              _loadMore();
+                            }
                           } else {
                             provider.setLoading(false, willNotify: false);
                           }
@@ -516,6 +520,10 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
           } else if (provider.transactionType == Constants.DEBIT) {
             provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
+          }
+
+          if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
+            _loadMore();
           }
 
           double creditAmount = 0;
