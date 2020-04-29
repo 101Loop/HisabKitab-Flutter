@@ -21,15 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addExpense() {
     return GestureDetector(
       onTap: () async {
-        provider.setTransactionClicked(false, willNotify: false);
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddTransaction(
-              transactionType: 'Add expense',
-              category: 'Debit',
-            ),
-          ),
-        );
+        _navigateToTransactionScreen('Add expense', 'Debit');
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -50,15 +42,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addEarning() {
     return GestureDetector(
       onTap: () {
-        provider.setTransactionClicked(false, willNotify: false);
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddTransaction(
-              transactionType: 'Add earning',
-              category: 'Credit',
-            ),
-          ),
-        );
+        _navigateToTransactionScreen('Add earning', 'Credit');
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -313,6 +297,19 @@ class _MainScreenState extends State<MainScreen> {
           ],
         );
       },
+    );
+  }
+
+  void _navigateToTransactionScreen(String transactionType, String category) {
+    provider.setTransactionClicked(false, willNotify: false);
+    provider.setLoading(false, willNotify: false);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AddTransaction(
+          transactionType: transactionType,
+          category: category,
+        ),
+      ),
     );
   }
 }

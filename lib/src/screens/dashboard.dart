@@ -386,14 +386,6 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             },
             child: Dismissible(
               key: Key(_currentTransaction.id.toString()),
-              onDismissed: (_) async {
-                _refreshScreen();
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Transaction deleted successfully'),
-                  ),
-                );
-              },
               confirmDismiss: (DismissDirection direction) async {
                 return await showDialog(
                   context: context,
@@ -414,6 +406,24 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                             Navigator.of(context).pop(true);
 
                             provider.transactionList.removeAt(index);
+
+                            if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
+                              _loadMore();
+                            } else {
+                              double creditAmount = 0;
+                              double debitAmount = 0;
+
+                              provider.transactionList?.forEach((item) {
+                                if (item.category == 'C') {
+                                  creditAmount += item.amount;
+                                } else {
+                                  debitAmount += item.amount;
+                                }
+                              });
+
+                              provider.setCreditAmount(creditAmount.toString(), willNotify: false);
+                              provider.setDebitAmount(debitAmount.toString());
+                            }
                           },
                           child: Text('DELETE'),
                         ),

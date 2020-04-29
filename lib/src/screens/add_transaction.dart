@@ -126,6 +126,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     size: 20,
                                   ),
                                   onPressed: () {
+                                    provider.setNeedsUpdate(false, willNotify: false);
                                     _goToMainScreen();
                                   },
                                 ),
@@ -515,10 +516,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   }
 
   String changeTransactionName(String name) {
-    if (name == 'Edit Transaction')
-      return 'Transaction';
-    else
-      return name.split(' ')[1];
+    return name.split(' ')[1];
   }
 
   ///shows a toast with message [message]
@@ -531,6 +529,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   ///navigates to main screen on pressing back button
   ///always returns false, to prevent popping the screen
   Future<bool> _onBackPressed() async {
+    provider.setNeedsUpdate(false, willNotify: false);
     _goToMainScreen();
     return false;
   }
