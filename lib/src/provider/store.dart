@@ -372,6 +372,9 @@ class AppState extends ChangeNotifier {
   }
 
   void clearData() {
+    _sortScheme = -1;
+    _needsUpdate = true;
+    _next = null;
     _creditAmount = '0';
     _debitAmount = '0';
     _mode = null;

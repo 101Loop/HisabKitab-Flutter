@@ -102,8 +102,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     textAlign: TextAlign.left,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Email/Phone',
                                       alignLabelWithHint: true,
@@ -112,15 +111,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     obscureText: provider.isHideText,
@@ -130,8 +127,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     autovalidate: provider.autoValidate,
                                     validator: validateField,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       hintText: 'Password',
                                       alignLabelWithHint: true,
@@ -140,8 +136,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: provider.isHideText
@@ -154,8 +149,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                                 color: Colors.grey.shade400,
                                               ),
                                         onPressed: () {
-                                          provider.setHideText(
-                                              !provider.isHideText);
+                                          provider.setHideText(!provider.isHideText);
                                         },
                                       ),
                                     ),
@@ -274,10 +268,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
           showSnackBar(response.error ?? '');
         } else if (response.data.token != null) {
           provider.setCurrentTab(0, willNotify: false);
-          provider.setCurrentPage(Dashboard());
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => MainScreen()),
-              (Route<dynamic> route) => false);
+          provider.setCurrentPage(Dashboard(), willNotify: false);
+          provider.setNeedsUpdate(true, willNotify: false);
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MainScreen()), (Route<dynamic> route) => false);
         }
       });
     }

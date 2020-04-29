@@ -41,8 +41,7 @@ class _AccountState extends State<Account> with ValidationMixin {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppState initStateProvider =
-          Provider.of<AppState>(context, listen: false);
+      AppState initStateProvider = Provider.of<AppState>(context, listen: false);
       if (initStateProvider.userProfile == null)
         LoginAPIController.getUserProfile().then(
           (response) {
@@ -58,8 +57,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                 if (name.length == 1) {
                   initStateProvider.setInitials(name[0][0].toUpperCase());
                 } else if (name.length > 1) {
-                  initStateProvider
-                      .setInitials((name[0][0] + name[1][0]).toUpperCase());
+                  initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
                 }
               }
             }
@@ -76,8 +74,7 @@ class _AccountState extends State<Account> with ValidationMixin {
           if (name.length == 1) {
             initStateProvider.setInitials(name[0][0].toUpperCase());
           } else if (name.length > 1) {
-            initStateProvider
-                .setInitials((name[0][0] + name[1][0]).toUpperCase());
+            initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
           }
         }
       }
@@ -122,8 +119,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                         fit: BoxFit.contain,
-                        image:
-                            AssetImage('assets/images/hisabkitabUIProfile.png'),
+                        image: AssetImage('assets/images/hisabkitabUIProfile.png'),
                       )),
                       child: CircleAvatar(
                         radius: 45.0,
@@ -170,8 +166,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'Name',
                                   alignLabelWithHint: true,
@@ -186,8 +181,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                               ),
                             ),
                             Container(
-                              margin:
-                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 controller: _mobileController,
@@ -199,8 +193,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'Mobile',
                                   alignLabelWithHint: true,
@@ -215,8 +208,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                               ),
                             ),
                             Container(
-                              margin:
-                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 controller: _emailController,
@@ -228,8 +220,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: 'Email-ID',
                                   alignLabelWithHint: true,
@@ -322,8 +313,7 @@ class _AccountState extends State<Account> with ValidationMixin {
             provider.isLoading
                 ? Center(
                     child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                     ),
                   )
                 : Container(),
@@ -356,20 +346,15 @@ class _AccountState extends State<Account> with ValidationMixin {
     if (_formState.validate()) {
       _formState.save();
 
-      if ((_name != null && _name.isNotEmpty) ||
-          (_mobile != null && _mobile.isNotEmpty) ||
-          (_email != null && _email.isNotEmpty)) {
+      if ((_name != null && _name.isNotEmpty) || (_mobile != null && _mobile.isNotEmpty) || (_email != null && _email.isNotEmpty)) {
         provider.setLoading(true);
-        UserProfile userProfile =
-            UserProfile(name: _name, mobile: _mobile, email: _email);
+        UserProfile userProfile = UserProfile(name: _name, mobile: _mobile, email: _email);
 
         LoginAPIController.updateUserProfile(userProfile).then((response) {
           provider.setLoading(false);
           if (response.error?.isNotEmpty ?? false) {
-            if (response.error
-                .contains('This mobile number is already registered')) {
-              _showSnackBar(
-                  'Entered Mobile or Email already exists with some other account');
+            if (response.error.contains('This mobile number is already registered')) {
+              _showSnackBar('Entered Mobile or Email already exists with some other account');
             } else {
               _showSnackBar(response?.error);
             }
@@ -379,11 +364,9 @@ class _AccountState extends State<Account> with ValidationMixin {
             List<String> name = response.name?.split(' ');
             if (name != null) {
               if (name.length == 1) {
-                provider.setInitials(name[0][0].toUpperCase(),
-                    willNotify: false);
+                provider.setInitials(name[0][0].toUpperCase(), willNotify: false);
               } else if (name.length > 1) {
-                provider.setInitials((name[0][0] + name[1][0]).toUpperCase(),
-                    willNotify: false);
+                provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);
               }
             }
 
