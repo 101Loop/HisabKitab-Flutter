@@ -6,6 +6,7 @@ import 'package:hisabkitab/src/screens/about_us.dart';
 import 'package:hisabkitab/src/screens/account_screen/account.dart';
 import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
+import 'package:hisabkitab/utils/baked_icons/rupee_icon_icons.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';
 
@@ -20,15 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addExpense() {
     return GestureDetector(
       onTap: () async {
-        provider.setTransactionClicked(false, willNotify: false);
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddTransaction(
-              transactionType: 'Add expense',
-              category: 'Debit',
-            ),
-          ),
-        );
+        _navigateToTransactionScreen('Add expense', 'Debit');
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -49,15 +42,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addEarning() {
     return GestureDetector(
       onTap: () {
-        provider.setTransactionClicked(false, willNotify: false);
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AddTransaction(
-              transactionType: 'Add earning',
-              category: 'Credit',
-            ),
-          ),
-        );
+        _navigateToTransactionScreen('Add earning', 'Credit');
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -91,7 +76,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    dashboard = Dashboard();
+    dashboard = Dashboard(
+      key: dashboardKey,
+    );
     account = Account(
       key: accountKey,
     );
@@ -123,8 +110,7 @@ class _MainScreenState extends State<MainScreen> {
                 child: provider.currentTab == 0
                     ? GestureDetector(
                         onTap: () {
-                          provider.setTransactionClicked(
-                              !provider.addTransactionClicked);
+                          provider.setTransactionClicked(!provider.addTransactionClicked);
                         },
                         child: Container(
                           height: 60,
@@ -154,8 +140,7 @@ class _MainScreenState extends State<MainScreen> {
                             borderRadius: BorderRadius.circular(15.0),
                             image: DecorationImage(
                               fit: BoxFit.fill,
-                              image: AssetImage(
-                                  'assets/images/hisab_kitab_logo.png'),
+                              image: AssetImage('assets/images/hisab_kitab_logo.png'),
                             ),
                           ),
                         ),
@@ -184,23 +169,26 @@ class _MainScreenState extends State<MainScreen> {
             ),
             child: BottomNavigationBar(
               onTap: (int value) {
-                if (value == 3) {
-                  return;
-                } else {
+                if (value != 3) {
+                  provider.setLoading(false, willNotify: false);
                   provider.setCurrentTab(value, willNotify: false);
-                  provider.setTransactionClicked(false);
+                  provider.setTransactionClicked(false, willNotify: false);
+                  provider.setNeedsUpdate(false, willNotify: false);
+                  provider.setCurrentPage(pages[value]);
                 }
-                provider.setCurrentPage(pages[value]);
               },
               currentIndex: provider.currentTab,
               type: BottomNavigationBarType.fixed,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.attach_money),
-                  title: Text(
-                    'Dashboard',
-                    style: TextStyle(
-                      fontSize: 12,
+                  icon: Icon(RupeeIcon.rupee_icon, size: 18),
+                  title: Padding(
+                    padding: const EdgeInsets.only(top: 3.0),
+                    child: Text(
+                      'Dashboard',
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -271,8 +259,7 @@ class _MainScreenState extends State<MainScreen> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           title: title != null
               ? Text(title)
               : Container(
@@ -284,8 +271,7 @@ class _MainScreenState extends State<MainScreen> {
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               color: Colors.red,
               child: Text(
                 'CANCEL',
@@ -299,8 +285,7 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.of(context).pop(true);
                 callback();
               },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               color: primaryColor,
               child: Text(
                 'OK',
@@ -312,6 +297,19 @@ class _MainScreenState extends State<MainScreen> {
           ],
         );
       },
+    );
+  }
+
+  void _navigateToTransactionScreen(String transactionType, String category) {
+    provider.setTransactionClicked(false, willNotify: false);
+    provider.setLoading(false, willNotify: false);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AddTransaction(
+          transactionType: transactionType,
+          category: category,
+        ),
+      ),
     );
   }
 }

@@ -12,10 +12,11 @@ import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/baked_icons/earning_icons.dart';
 import 'package:hisabkitab/utils/baked_icons/spending_icons.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
+import 'package:hisabkitab/utils/common_widgets/non_animated_page_route.dart';
 import 'package:hisabkitab/utils/common_widgets/sorting_items.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 String compactCurrency(String amount) {
   return NumberFormat.compactCurrency(
@@ -33,24 +34,15 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
-class _DashboardState extends State<Dashboard>
-    with AutomaticKeepAliveClientMixin {
+class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
   double deviceHeight;
   double deviceWidth;
 
-  static List<PopupMenuItem<SortingItems>> _sortingItems = sortingItems
-      .map((SortingItems val) =>
-          PopupMenuItem<SortingItems>(child: Text(val.name), value: val))
-      .toList();
   AppState provider;
 
   Future<PaginatedResponse> _futureTransactionDetails;
 
   String queryParams = '?';
-
-  Map<dynamic, int> _sortSchemeMap = Map();
-
-  int _sortScheme = 0;
 
   String _next;
 
@@ -61,72 +53,61 @@ class _DashboardState extends State<Dashboard>
   @override
   void initState() {
     super.initState();
-    //sets sort scheme
-    for (int i = 0; i < sortingItems.length; i++) {
-      _sortSchemeMap.putIfAbsent(sortingItems[i].name, () => i);
-    }
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
-    if (initStateProvider.searchQuery.isNotEmpty)
-      queryParams += 'search=${initStateProvider.searchQuery}&';
-    if (initStateProvider.dateQuery.isNotEmpty)
-      queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
-    if (initStateProvider.minAmountQuery != null &&
-        initStateProvider.minAmountQuery > 0)
-      queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
-    if (initStateProvider.maxAmountQuery != null &&
-        initStateProvider.maxAmountQuery > 0)
-      queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
-    if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
-    if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
-    if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
-    if (initStateProvider.isAccountQuery) queryParams += 'mode=3&';
 
-    if (initStateProvider.isEarning) {
-      if (initStateProvider.isSpending) {
-        initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS,
-            willNotify: false);
-      } else {
-        queryParams += 'category=C&';
-        initStateProvider.setTransactionType(Constants.CREDIT,
-            willNotify: false);
-      }
-    } else {
-      if (initStateProvider.isSpending) {
-        queryParams += 'category=D&';
-        initStateProvider.setTransactionType(Constants.DEBIT,
-            willNotify: false);
-      }
-    }
+    if (initStateProvider.needsUpdate)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
+        if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
+        if (initStateProvider.minAmountQuery != null && initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
+        if (initStateProvider.maxAmountQuery != null && initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
+        if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
+        if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
+        if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
+        if (initStateProvider.isAccountQuery) queryParams += 'mode=3&';
 
-    _futureTransactionDetails =
-        TransactionApiController.getTransaction(queryParams);
-    _futureTransactionDetails.then((response) {
-      var list = response.results as List;
-      List<TransactionDetails> transactionList =
-          list?.map((item) => TransactionDetails.fromJson(item))?.toList();
-
-      double creditAmount = 0;
-      double debitAmount = 0;
-
-      transactionList?.forEach((item) {
-        if (item.category == 'C') {
-          creditAmount += item.amount;
+        if (initStateProvider.isEarning) {
+          if (initStateProvider.isSpending) {
+            initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
+          } else {
+            queryParams += 'category=C&';
+            initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
+          }
         } else {
-          debitAmount += item.amount;
+          if (initStateProvider.isSpending) {
+            queryParams += 'category=D&';
+            initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
+          }
         }
-      });
 
-      initStateProvider.setCreditAmount(creditAmount.toString(),
-          willNotify: false);
-      initStateProvider.setDebitAmount(debitAmount.toString());
-    });
+        _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
+        _futureTransactionDetails.then((response) {
+          var list = response.results as List;
+          List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
+
+          double creditAmount = 0;
+          double debitAmount = 0;
+
+          transactionList?.forEach((item) {
+            if (item.category == 'C') {
+              creditAmount += item.amount;
+            } else {
+              debitAmount += item.amount;
+            }
+          });
+
+          initStateProvider.setCreditAmount(creditAmount.toString(), willNotify: false);
+          initStateProvider.setDebitAmount(debitAmount.toString());
+        });
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
+    print('built dashboard screen');
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
@@ -159,9 +140,9 @@ class _DashboardState extends State<Dashboard>
                     _haveFilters()
                         ? FlatButton(
                             onPressed: () async {
-                              _submit();
+                              provider.setTransactionType('A', willNotify: false);
                               _clearFilter();
-                              provider.setTransactionType('A');
+                              _submit();
                             },
                             color: Constants.lightGreen.withRed(210),
                             padding: EdgeInsets.all(0),
@@ -175,13 +156,11 @@ class _DashboardState extends State<Dashboard>
                       icon: Icon(Icons.sort),
                       color: Constants.primaryColor,
                       onPressed: () {
-                        _onSortPressed();
+                        _onQuickFilterPressed();
                       },
                     ),
                     PopupMenuButton(
-                      itemBuilder: (BuildContext context) {
-                        return _sortingItems;
-                      },
+                      itemBuilder: _itemSortBuilder,
                       child: Icon(
                         Icons.more_vert,
                         color: Constants.primaryColor,
@@ -197,14 +176,9 @@ class _DashboardState extends State<Dashboard>
             SizedBox(height: 20.0),
             provider.transactionType == Constants.CREDIT
                 ? GreenCard(totalBalance: provider.creditAmount)
-                : provider.transactionType == Constants.DEBIT
-                    ? RedCard(totalBalance: provider.debitAmount)
-                    : RedGreenCard(
-                        totalEarning: provider.creditAmount,
-                        totalExpense: provider.debitAmount),
+                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
-            (provider.transactionType != Constants.CREDIT &&
-                    provider.transactionType != Constants.DEBIT)
+            (provider.transactionType != Constants.CREDIT && provider.transactionType != Constants.DEBIT)
                 ? DataAnnotation(
                     earning: provider.creditAmount,
                     expense: provider.debitAmount,
@@ -212,71 +186,56 @@ class _DashboardState extends State<Dashboard>
                 : Container(),
             SizedBox(height: 10.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT
-                  ? 'Earnings'
-                  : provider.transactionType == Constants.DEBIT
-                      ? 'Expenditures'
-                      : 'All Transactions',
+              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Expenditures' : 'All Transactions',
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
             ),
             SizedBox(height: 10.0),
             Expanded(
-              child: FutureBuilder(
-                future: _futureTransactionDetails,
-                builder: (BuildContext context,
-                    AsyncSnapshot<PaginatedResponse> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (!_fetchedList && snapshot.hasData) {
-                      _fetchedList = true;
-                      _next = snapshot.data.next;
+              child: provider.needsUpdate
+                  ? FutureBuilder(
+                      future: _futureTransactionDetails,
+                      builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (!_fetchedList && snapshot.hasData) {
+                            _fetchedList = true;
+                            _next = snapshot.data.next;
 
-                      provider.transactionList?.clear();
-                      provider.setLoading(false, willNotify: false);
+                            provider.transactionList?.clear();
+                            provider.setLoading(false, willNotify: false);
 
-                      var list = snapshot.data.results as List;
-                      provider.setTransactionList(
-                          list
-                              ?.map((item) => TransactionDetails.fromJson(item))
-                              ?.toList(),
-                          willNotify: false);
+                            var list = snapshot.data.results as List;
+                            provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
+                            provider.setInitialTransactionList(provider.transactionList, willNotify: false);
 
-                      if (provider.transactionType == Constants.CREDIT) {
-                        provider.transactionList?.removeWhere(
-                            (item) => item.category != Constants.CREDIT);
-                      } else if (provider.transactionType == Constants.DEBIT) {
-                        provider.transactionList?.removeWhere(
-                            (item) => item.category == Constants.CREDIT);
-                      }
-                    } else {
-                      provider.setLoading(false, willNotify: false);
-                    }
-                  } else {
-                    provider.setLoading(true, willNotify: false);
-                  }
+                            if (provider.transactionType == Constants.CREDIT) {
+                              provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
+                            } else if (provider.transactionType == Constants.DEBIT) {
+                              provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
+                            }
 
-                  return provider.isLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Constants.primaryColor),
-                          ),
-                        )
-                      : provider.transactionList != null &&
-                              provider.transactionList.length > 0
-                          ? _listViewBuilder()
-                          : _nothingToShowWidget();
-                },
-              ),
+                            if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
+                              _loadMore();
+                            }
+                          } else {
+                            provider.setLoading(false, willNotify: false);
+                          }
+                        } else {
+                          provider.setLoading(true, willNotify: false);
+                        }
+
+                        return _transactionListView();
+                      },
+                    )
+                  : _transactionListView(),
             ),
             provider.isLoadingItems
                 ? Center(
                     child: Column(
                       children: <Widget>[
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Constants.primaryColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                         ),
                         SizedBox(height: 5),
                         Text('Please wait...'),
@@ -296,6 +255,7 @@ class _DashboardState extends State<Dashboard>
 
     provider.setLoading(false, willNotify: false);
     provider.setTransactionClicked(false, willNotify: false);
+    provider.setNext(_next, willNotify: false);
   }
 
   void _clearFilter() {
@@ -303,6 +263,7 @@ class _DashboardState extends State<Dashboard>
     minTextController.text = '';
     maxTextController.text = '';
 
+    provider.setSortScheme(-1, willNotify: false);
     provider.setEarning(false, willNotify: false);
     provider.setSpending(false, willNotify: false);
     provider.setSearchQuery('', willNotify: false);
@@ -313,37 +274,31 @@ class _DashboardState extends State<Dashboard>
     provider.setCashQuery(false, willNotify: false);
     provider.setCardQuery(false, willNotify: false);
     provider.setChequeQuery(false, willNotify: false);
-    provider.setAccountQuery(false);
+    provider.setAccountQuery(false, willNotify: false);
+    provider.setNeedsUpdate(true, willNotify: false);
   }
 
-  Future<bool> _onSortPressed() {
+  Future<bool> _onQuickFilterPressed() {
     return showDialog(
             context: context,
             builder: (context) {
               provider = Provider.of<AppState>(context);
               return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     FlatButton(
                       splashColor: Constants.primaryColor,
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('C', willNotify: false);
-                        _clearFilter();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (BuildContext context) => MainScreen()));
+                        _handleQuickFilterPressed('C');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
                         child: Center(
                           child: Text(
                             'Earnings',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'C' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -351,20 +306,14 @@ class _DashboardState extends State<Dashboard>
                     FlatButton(
                       splashColor: Constants.primaryColor,
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('D', willNotify: false);
-                        _clearFilter();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (BuildContext context) => MainScreen()));
+                        _handleQuickFilterPressed('D');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
                         child: Center(
                           child: Text(
                             'Expenditures',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'D' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -372,20 +321,14 @@ class _DashboardState extends State<Dashboard>
                     FlatButton(
                       splashColor: Constants.primaryColor,
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        provider.setTransactionType('A', willNotify: false);
-                        _clearFilter();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (BuildContext context) => MainScreen()));
+                        _handleQuickFilterPressed('A');
                       },
                       child: Container(
                         padding: EdgeInsets.all(15.0),
                         child: Center(
                           child: Text(
                             'All Transactions',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'A' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -405,9 +348,7 @@ class _DashboardState extends State<Dashboard>
                         child: Center(
                           child: Text(
                             'More Filter Option',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16.0,
-                            ),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: _haveFilters() ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -422,44 +363,30 @@ class _DashboardState extends State<Dashboard>
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
-            !provider.isLoadingItems &&
-            _next != null &&
-            !_isLoadingItems) {
+        if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 10 && !provider.isLoadingItems && !_isLoadingItems && (_next != null || provider.next != null)) {
           _isLoadingItems = true;
           _loadMore();
+          return true;
         }
-        return true;
+        return false;
       },
       child: ListView.builder(
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
         itemCount: provider.transactionList?.length,
         itemBuilder: (context, index) {
-          TransactionDetails _currentTransaction =
-              provider.transactionList?.elementAt(index);
+          TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
 
           return GestureDetector(
             onTap: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (BuildContext context) => AddTransaction(
-                      transactionType: 'Edit Transaction',
-                      transaction: _currentTransaction),
+                  builder: (BuildContext context) => AddTransaction(transactionType: 'Edit Transaction', transaction: _currentTransaction),
                 ),
               );
             },
             child: Dismissible(
               key: Key(_currentTransaction.id.toString()),
-              onDismissed: (_) async {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => MainScreen()));
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Transaction deleted successfully'),
-                  ),
-                );
-              },
               confirmDismiss: (DismissDirection direction) async {
                 return await showDialog(
                   context: context,
@@ -476,11 +403,12 @@ class _DashboardState extends State<Dashboard>
                           onPressed: () {
                             print(_currentTransaction.id);
                             print(_currentTransaction.amount);
-                            TransactionApiController.deleteTransaction(
-                                _currentTransaction.id);
+                            TransactionApiController.deleteTransaction(_currentTransaction.id);
                             Navigator.of(context).pop(true);
 
                             provider.transactionList.removeAt(index);
+
+                            _refreshScreen();
                           },
                           child: Text('DELETE'),
                         ),
@@ -494,9 +422,7 @@ class _DashboardState extends State<Dashboard>
                 );
               },
               child: ListCard(
-                icon: _currentTransaction.category == Constants.CREDIT
-                    ? Earning.earning
-                    : Spending.spending,
+                icon: _currentTransaction.category == Constants.CREDIT ? Earning.earning : Spending.spending,
                 name: _currentTransaction.contact.name,
                 amount: _currentTransaction.amount.toString(),
                 transactionType: _currentTransaction.category,
@@ -531,32 +457,35 @@ class _DashboardState extends State<Dashboard>
   ///sorts the transaction list, according to [value] received
   ///[value] is a nullable field, make it null to sort it by the previous scheme, if there's no previous scheme
   void _sortTransactionList([SortingItems value]) {
-    int sortScheme = value != null ? _sortSchemeMap[value.name] : _sortScheme;
-    _sortScheme = sortScheme;
-
     List<TransactionDetails> _tempList = List.from(provider.transactionList);
 
-    switch (sortScheme) {
+    //if value is null or user selected the previously selected sort scheme
+    //sort the list by name, and make the sorting items unselected
+    if (value == null || provider.sortScheme == value.sortScheme) {
+      provider.setSortScheme(-1, willNotify: false);
+      provider.setTransactionList(provider.initialTransactionList);
+      return;
+    }
+
+    switch (value.sortScheme) {
       case 0: //name ascending
-        _tempList.sort((transaction1, transaction2) => transaction1
-            .contact?.name
-            ?.compareTo(transaction2.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
       case 1: //name descending
-        _tempList.sort((transaction1, transaction2) => transaction2
-            .contact?.name
-            ?.compareTo(transaction1.contact?.name ?? ''));
+        _tempList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
       case 2: //amount high to low
-        _tempList.sort((transaction1, transaction2) =>
-            transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
       case 3: //amount low to high
-        _tempList.sort((transaction1, transaction2) =>
-            transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        _tempList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
     }
@@ -564,28 +493,48 @@ class _DashboardState extends State<Dashboard>
 
   ///loads more items on scrolling
   void _loadMore() {
-    if (_next?.isNotEmpty ?? false) {
+    String next = !provider.needsUpdate ? provider.next : _next;
+
+    if (next?.isNotEmpty ?? false) {
       List<TransactionDetails> _tempList = List.from(provider.transactionList);
       provider.setLoadingItems(true);
-      TransactionApiController.getTransaction(queryParams, next: _next).then(
+      TransactionApiController.getTransaction(queryParams, next: next).then(
         (response) {
+          _isLoadingItems = false;
+          provider.setLoadingItems(false, willNotify: false);
+
           _next = response.next;
+          provider.setNext(_next, willNotify: false);
           print('$_next should be fetched next');
 
           var list = response.results as List;
-          _tempList.addAll(
-              list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          _tempList.addAll(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
           provider.setTransactionList(_tempList, willNotify: false);
+          provider.setInitialTransactionList(_tempList, willNotify: false);
 
           if (provider.transactionType == Constants.CREDIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category != Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
           } else if (provider.transactionType == Constants.DEBIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category == Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
           }
-          _isLoadingItems = false;
-          provider.setLoadingItems(false);
+
+          if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
+            _loadMore();
+          }
+
+          double creditAmount = 0;
+          double debitAmount = 0;
+
+          _tempList?.forEach((item) {
+            if (item.category == 'C') {
+              creditAmount += item.amount;
+            } else {
+              debitAmount += item.amount;
+            }
+          });
+
+          provider.setCreditAmount(creditAmount.toString(), willNotify: false);
+          provider.setDebitAmount(debitAmount.toString());
         },
       );
     }
@@ -605,8 +554,8 @@ class _DashboardState extends State<Dashboard>
     provider.setCardQuery(provider.isTempCardQuery, willNotify: false);
     provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
     provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+
+    _refreshScreen();
   }
 
   bool _haveFilters() {
@@ -624,11 +573,46 @@ class _DashboardState extends State<Dashboard>
     else
       return true;
   }
+
+  List<PopupMenuEntry> _itemSortBuilder(BuildContext context) {
+    return sortingItems
+        .map((SortingItems val) => PopupMenuItem<SortingItems>(
+            child: Text(
+              val.name,
+              style: TextStyle(fontWeight: provider.sortScheme == val.sortScheme ? FontWeight.bold : FontWeight.normal),
+            ),
+            value: val))
+        .toList();
+  }
+
+  Widget _transactionListView() {
+    return provider.isLoading
+        ? Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+            ),
+          )
+        : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
+  }
+
+  ///navigates the user to the same screen to update the views
+  void _refreshScreen() {
+    provider.setNeedsUpdate(true, willNotify: false);
+    Navigator.of(context).pushReplacement(NonAnimatedPageRoute(builder: (BuildContext context) => MainScreen()));
+  }
+
+  /// [transactionType] - the type of the transaction to be selected
+  /// method basically sets the type of transaction, clears the filter and refreshes the screen with new values
+  void _handleQuickFilterPressed(String transactionType) {
+    Navigator.of(context).pop();
+    provider.setTransactionType(transactionType, willNotify: false);
+    _clearFilter();
+    _refreshScreen();
+  }
 }
 
 class DataAnnotation extends StatelessWidget {
-  DataAnnotation({Key key, @required this.earning, @required this.expense})
-      : super(key: key);
+  DataAnnotation({Key key, @required this.earning, @required this.expense}) : super(key: key);
 
   final String earning;
   final String expense;
@@ -669,13 +653,8 @@ class DataAnnotation extends StatelessWidget {
               ],
             ),
             Text(
-              earningPercentage(earning, expense) == 'NaN'
-                  ? '0 %'
-                  : earningPercentage(earning, expense) + ' %',
-              style: TextStyle(
-                  fontSize: 13.0,
-                  color: Constants.primaryColor,
-                  fontWeight: FontWeight.bold),
+              earningPercentage(earning, expense) == 'NaN' ? '0 %' : earningPercentage(earning, expense) + ' %',
+              style: TextStyle(fontSize: 13.0, color: Constants.primaryColor, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -698,13 +677,8 @@ class DataAnnotation extends StatelessWidget {
               ],
             ),
             Text(
-              expensePercentage(earning, expense) == 'NaN'
-                  ? '0 %'
-                  : expensePercentage(earning, expense) + ' %',
-              style: TextStyle(
-                  fontSize: 13.0,
-                  color: Colors.red.shade400,
-                  fontWeight: FontWeight.bold),
+              expensePercentage(earning, expense) == 'NaN' ? '0 %' : expensePercentage(earning, expense) + ' %',
+              style: TextStyle(fontSize: 13.0, color: Colors.red.shade400, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -788,11 +762,7 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: compactCurrency(totalBalance),
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: compactCurrency(totalBalance), maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -879,11 +849,7 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: compactCurrency(totalBalance),
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: compactCurrency(totalBalance), maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -909,8 +875,7 @@ class RedGreenCard extends StatelessWidget {
     final double _earning = double.parse(totalEarning);
     final double _expense = double.parse(totalExpense);
     final _end = _expense > _earning ? Alignment.center : Alignment.centerRight;
-    final _begin =
-        _earning > _expense ? Alignment.center : Alignment.centerLeft;
+    final _begin = _earning > _expense ? Alignment.center : Alignment.centerLeft;
 
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
@@ -967,16 +932,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: compactCurrency(totalEarning),
-                            maxFontSize: 26,
-                            minFontSize: 23,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: compactCurrency(totalEarning), maxFontSize: 26, minFontSize: 23, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -988,16 +948,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: compactCurrency(totalExpense),
-                            maxFontSize: 26,
-                            minFontSize: 23,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: compactCurrency(totalExpense), maxFontSize: 26, minFontSize: 23, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -1036,9 +991,7 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: transactionType == Constants.DEBIT
-            ? Colors.red.shade100
-            : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1122,9 +1075,7 @@ class ListCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.nunito(
-                    color: transactionType != Constants.CREDIT
-                        ? Colors.red.shade300
-                        : Constants.primaryColor,
+                    color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
                     fontWeight: FontWeight.w800,
                   ),
                 ),

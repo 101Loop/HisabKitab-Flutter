@@ -55,8 +55,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
-      provider
-          .setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
+      provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
   }
 
@@ -75,8 +74,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         initStateProvider.setCategory('Debit', willNotify: false);
       }
 
-      initStateProvider.setDateTime(_transaction.transactionDate,
-          willNotify: false);
+      initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
       initStateProvider.setMode(_transaction.mode?.mode, willNotify: false);
       _contact = _transaction.contact?.name ?? '';
       _comment = _transaction.comments ?? '';
@@ -128,6 +126,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     size: 20,
                                   ),
                                   onPressed: () {
+                                    provider.setNeedsUpdate(false, willNotify: false);
                                     _goToMainScreen();
                                   },
                                 ),
@@ -149,8 +148,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: AssetImage(
-                                        'assets/images/addTransactionImage.png'),
+                                    image: AssetImage('assets/images/addTransactionImage.png'),
                                   ),
                                 ),
                               ),
@@ -165,8 +163,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           SizedBox(height: 10.0),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.only(
-                                left: 15, bottom: 8, right: 8, top: 8),
+                            padding: EdgeInsets.only(left: 15, bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: 67,
                             decoration: BoxDecoration(
@@ -190,11 +187,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   ),
                                   border: InputBorder.none,
                                   isDense: true,
-                                  contentPadding: EdgeInsets.only(
-                                      bottom: 0.0,
-                                      left: 0.0,
-                                      top: 14.0,
-                                      right: 0.0),
+                                  contentPadding: EdgeInsets.only(bottom: 0.0, left: 0.0, top: 14.0, right: 0.0),
                                 ),
                               ),
                             ),
@@ -213,8 +206,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.only(
-                                left: 15, bottom: 8, right: 8, top: 8),
+                            padding: EdgeInsets.only(left: 15, bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: 67,
                             decoration: BoxDecoration(
@@ -223,8 +215,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             ),
                             child: Container(
                               child: TextFormField(
-                                initialValue:
-                                    _transaction?.amount?.toString() ?? '',
+                                initialValue: _transaction?.amount?.toString() ?? '',
                                 validator: validateDoubleValue,
                                 autovalidate: provider.autoValidate,
                                 onSaved: (value) {
@@ -243,11 +234,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   ),
                                   border: InputBorder.none,
                                   isDense: true,
-                                  contentPadding: EdgeInsets.only(
-                                      bottom: 0.0,
-                                      left: 0.0,
-                                      top: 14.0,
-                                      right: 0.0),
+                                  contentPadding: EdgeInsets.only(bottom: 0.0, left: 0.0, top: 14.0, right: 0.0),
                                 ),
                               ),
                             ),
@@ -264,8 +251,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding:
-                                EdgeInsets.only(bottom: 8, right: 8, top: 8),
+                            padding: EdgeInsets.only(bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: 67,
                             decoration: BoxDecoration(
@@ -293,12 +279,10 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     underline: Container(),
                                     value: provider.category,
                                     onChanged: (value) {
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
+                                      FocusScope.of(context).requestFocus(FocusNode());
                                       provider.setCategory(value);
                                     },
-                                    items:
-                                        Constant.categoryList.map((category) {
+                                    items: Constant.categoryList.map((category) {
                                       return DropdownMenuItem(
                                         child: Text(category),
                                         value: category,
@@ -325,8 +309,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               selectDate(context);
                             },
                             child: Container(
-                              margin:
-                                  EdgeInsets.only(bottom: 15.0, right: 15.0),
+                              margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
                               padding: EdgeInsets.all(15.0),
                               width: deviceWidth,
                               height: 67,
@@ -335,8 +318,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                 color: Color(0xffecf8f8).withRed(210),
                               ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Container(
                                     width: deviceWidth * 0.70,
@@ -365,8 +347,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding:
-                                EdgeInsets.only(bottom: 8, right: 8, top: 8),
+                            padding: EdgeInsets.only(bottom: 8, right: 8, top: 8),
                             width: deviceWidth,
                             height: 67,
                             decoration: BoxDecoration(
@@ -386,8 +367,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   underline: Container(),
                                   value: provider.mode,
                                   onChanged: (value) {
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
+                                    FocusScope.of(context).requestFocus(FocusNode());
                                     provider.setMode(value);
                                   },
                                   items: Constant.paymentList.map((mode) {
@@ -412,8 +392,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           Container(
                             margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.only(
-                                left: 15, bottom: 5.0, right: 8.0, top: 5.0),
+                            padding: EdgeInsets.only(left: 15, bottom: 5.0, right: 8.0, top: 5.0),
                             width: deviceWidth,
                             height: 67,
                             decoration: BoxDecoration(
@@ -441,11 +420,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   counterStyle: TextStyle(fontSize: 10),
                                   border: InputBorder.none,
                                   isDense: true,
-                                  contentPadding: EdgeInsets.only(
-                                      bottom: 0.0,
-                                      left: 0.0,
-                                      top: 22.0,
-                                      right: 0.0),
+                                  contentPadding: EdgeInsets.only(bottom: 0.0, left: 0.0, top: 22.0, right: 0.0),
                                 ),
                               ),
                             ),
@@ -458,16 +433,14 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               _submit();
                             },
                             child: Container(
-                              margin:
-                                  EdgeInsets.only(bottom: 15.0, right: 15.0),
+                              margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
                               padding: EdgeInsets.all(15.0),
                               width: deviceWidth,
                               height: 65,
                               decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                    color:
-                                        Constant.buttonColor.withOpacity(0.5),
+                                    color: Constant.buttonColor.withOpacity(0.5),
                                     blurRadius: 6.0,
                                     offset: Offset(2, 6),
                                   ),
@@ -477,8 +450,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               ),
                               child: Center(
                                 child: HeaderWidget(
-                                  headerText:
-                                      '+ Save ${changeTransactionName(widget.transactionType)}',
+                                  headerText: '+ Save ${changeTransactionName(widget.transactionType)}',
                                   maxFontSize: 18.0,
                                   minFontSize: 18.0,
                                   textColor: Colors.white,
@@ -494,8 +466,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                 provider.isLoading
                     ? Center(
                         child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            Constant.primaryColor),
+                        valueColor: AlwaysStoppedAnimation<Color>(Constant.primaryColor),
                       ))
                     : Container()
               ],
@@ -518,29 +489,21 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     provider.setAutoValidate(true);
     final _formState = _formKey.currentState;
 
-    if (_formState.validate() &&
-        (provider?.dateTime?.isNotEmpty ?? false) &&
-        (provider?.mode?.isNotEmpty ?? false)) {
+    if (_formState.validate() && (provider?.dateTime?.isNotEmpty ?? false) && (provider?.mode?.isNotEmpty ?? false)) {
       provider.setLoading(true);
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount),
-          category: provider.category[0],
-          transactionDate: provider.dateTime,
-          mode: Constant.paymentMap[provider.mode],
-          contact: _contact,
-          comments: _comment);
+          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
 
-      TransactionApiController.addUpdateTransaction(
-              transactionDetails, _transaction?.id ?? -1)
-          .then((response) {
+      TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
         _showSnackBar(response.message);
 
         //if the response is ok, then pop with a delay of 1 sec, otherwise instantly
         if (response.statusCode == 200) {
           Future.delayed(Duration(seconds: 1), () {
             provider.setLoading(false, willNotify: false);
+            provider.setNeedsUpdate(true, willNotify: false);
             _goToMainScreen();
           });
         } else {
@@ -553,10 +516,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   }
 
   String changeTransactionName(String name) {
-    if (name == 'Edit Transaction')
-      return 'Transaction';
-    else
-      return name.split(' ')[1];
+    return name.split(' ')[1];
   }
 
   ///shows a toast with message [message]
@@ -569,13 +529,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   ///navigates to main screen on pressing back button
   ///always returns false, to prevent popping the screen
   Future<bool> _onBackPressed() async {
+    provider.setNeedsUpdate(false, willNotify: false);
     _goToMainScreen();
     return false;
   }
 
   ///navigates to main screen
   void _goToMainScreen() {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 }

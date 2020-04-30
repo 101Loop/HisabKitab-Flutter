@@ -5,6 +5,7 @@ import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
 
 class AppState extends ChangeNotifier {
+  int _sortScheme = -1;
   bool _otpRequested = false;
   String _transactionType = 'Earnings';
   bool _autoValidate = false;
@@ -13,6 +14,7 @@ class AppState extends ChangeNotifier {
   String _debitAmount = '0';
   String _mode;
   String _category;
+  String _next;
   bool _isEarning = false;
   bool _isSpending = false;
   bool _isTempEarning = false;
@@ -37,23 +39,29 @@ class AppState extends ChangeNotifier {
   bool _addTransactionClicked = false;
   bool _isHideText = true;
   bool _isHideText1 = true;
+  bool _needsUpdate = true;
   int _currentTab = 0;
   String _dateTime = '';
   String _tempDateTime = '';
   UserProfile _userProfile;
   List<TransactionDetails> _transactionList = List();
+  List<TransactionDetails> _initialTransactionList = List();
   String _initials = '?';
   Widget _currentPage = Dashboard();
 
   bool _isIgnoring = false;
+
+  int get sortScheme => _sortScheme;
 
   bool get getOTPRequested => _otpRequested;
 
   String get transactionType => _transactionType;
 
   String get creditAmount => _creditAmount;
+  String get next => _next;
 
   bool get isLoading => _isLoading;
+  bool get needsUpdate => _needsUpdate;
 
   String get debitAmount => _debitAmount;
 
@@ -126,6 +134,8 @@ class AppState extends ChangeNotifier {
   UserProfile get userProfile => _userProfile;
 
   List<TransactionDetails> get transactionList => _transactionList;
+
+  List<TransactionDetails> get initialTransactionList => _initialTransactionList;
 
   setLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
@@ -282,6 +292,11 @@ class AppState extends ChangeNotifier {
     if (willNotify) notifyListeners();
   }
 
+  setInitialTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
+    _initialTransactionList = list;
+    if (willNotify) notifyListeners();
+  }
+
   updateTransactionList(List<TransactionDetails> list, {bool willNotify = true}) {
     _transactionList.addAll(list);
     if (willNotify) notifyListeners();
@@ -337,11 +352,29 @@ class AppState extends ChangeNotifier {
     if (willNotify) notifyListeners();
   }
 
+  setSortScheme(int sortSceme, {bool willNotify = true}) {
+    _sortScheme = sortSceme;
+    if (willNotify) notifyListeners();
+  }
+
+  setNeedsUpdate(bool needsUpdate, {bool willNotify = true}) {
+    _needsUpdate = needsUpdate;
+    if (willNotify) notifyListeners();
+  }
+
+  setNext(String next, {bool willNotify = true}) {
+    _next = next;
+    if (willNotify) notifyListeners();
+  }
+
   void initialState() {
     _autoValidate = false;
   }
 
   void clearData() {
+    _sortScheme = -1;
+    _needsUpdate = true;
+    _next = null;
     _creditAmount = '0';
     _debitAmount = '0';
     _mode = null;

@@ -98,7 +98,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 validator: validateEmail,
                                 autovalidate: provider.autoValidate,
-                                keyboardType: TextInputType.text,
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   contentPadding:
                                       EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
@@ -239,12 +239,13 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
         _showSnackBar(response.data + ' Please check Your Email.' ?? '');
         print(response.data);
         Future.delayed(Duration(seconds: 2), () {
-          provider.setAutoValidate(false);
+          provider.setAutoValidate(false, willNotify: false);
           provider.setOTPRequested(true);
         });
       } else if (response.statusCode == HTTP_200_OK &&
           response.data.split('.').length == 3) {
         Utility.saveToken(response.data);
+        provider.setNeedsUpdate(true, willNotify: false);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => MainScreen(),
