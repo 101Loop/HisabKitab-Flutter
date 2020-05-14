@@ -7,6 +7,7 @@ import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user_account.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/login_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
 
   Future<UserAccount> signUpResponse;
 
+  AppLocalizations appLocalizations;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -64,7 +68,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                     Container(
                       margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
                       child: HeaderWidget(
-                        headerText: 'Sign up',
+                        headerText: appLocalizations.translate('signUp'),
                         maxFontSize: 30,
                         minFontSize: 28,
                         textColor: Colors.black,
@@ -89,7 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                           Container(
                             margin: EdgeInsets.only(top: 30.0, left: 20.0),
                             child: HeaderWidget(
-                              headerText: "Let's get started",
+                              headerText: appLocalizations.translate('letsGetStarted'),
                               textColor: Colors.black54,
                               maxFontSize: 18,
                               minFontSize: 16,
@@ -100,115 +104,127 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                             child: Column(
                               children: <Widget>[
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
-                                    validator: validateField,
+                                    validator: (value) {
+                                      String result = validateField(value);
+                                      if (result != null)
+                                        return appLocalizations.translate(result);
+                                      else
+                                        return result;
+                                    },
                                     controller: _name,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
-                                      hintText: 'Name',
+                                      hintText: appLocalizations.translate('name'),
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
                                         color: Colors.grey.shade400,
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
-                                    validator: validateEmail,
+                                    validator: (value) {
+                                      String result = validateEmail(value);
+                                      if (result != null)
+                                        return appLocalizations.translate(result);
+                                      else
+                                        return result;
+                                    },
                                     controller: _email,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
-                                      hintText: 'Email',
+                                      hintText: appLocalizations.translate('email'),
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
                                         color: Colors.grey.shade400,
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
-                                    validator: validateMobile,
+                                    validator: (value) {
+                                      String result = validateMobile(value);
+                                      if (result != null)
+                                        return appLocalizations.translate(result);
+                                      else
+                                        return result;
+                                    },
                                     controller: _mobile,
                                     keyboardType: TextInputType.phone,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
-                                      hintText: 'Mobile',
+                                      hintText: appLocalizations.translate('mobile'),
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
                                         color: Colors.grey.shade400,
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     obscureText: provider.isHideText,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
-                                    validator: validatePassword,
+                                    validator: (value) {
+                                      String result = validatePassword(value);
+                                      if (result != null)
+                                        return appLocalizations.translate(result);
+                                      else
+                                        return result;
+                                    },
                                     controller: _password,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
                                       errorMaxLines: 3,
-                                      hintText: 'Password',
+                                      hintText: appLocalizations.translate('password'),
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
                                         color: Colors.grey.shade400,
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: provider.isHideText
@@ -221,16 +237,14 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                                 color: Colors.grey.shade400,
                                               ),
                                         onPressed: () {
-                                          provider.setHideText(
-                                              !provider.isHideText);
+                                          provider.setHideText(!provider.isHideText);
                                         },
                                       ),
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      15.0, 0.0, 15.0, 15.0),
+                                  margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     obscureText: provider.isHideText1,
@@ -239,25 +253,23 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     autovalidate: provider.autoValidate,
                                     validator: (value) {
                                       if (value != _password.text) {
-                                        return 'Password does\'t match';
+                                        return appLocalizations.translate('passwordMustMatch');
                                       }
                                       return null;
                                     },
                                     controller: _confirmPass,
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          10.0, 0.0, 0.0, 0.0),
+                                      contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
-                                      hintText: 'Confirm Password',
+                                      hintText: appLocalizations.translate('confirmPassword'),
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
                                         color: Colors.grey.shade400,
                                         fontSize: 14,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                                        borderRadius: BorderRadius.circular(10.0),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: provider.isHideText1
@@ -270,8 +282,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                                 color: Colors.grey.shade400,
                                               ),
                                         onPressed: () {
-                                          provider.setHideText1(
-                                              !provider.isHideText1);
+                                          provider.setHideText1(!provider.isHideText1);
                                         },
                                       ),
                                     ),
@@ -290,7 +301,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                       child: RaisedButton(
                         onPressed: onSignUpClicked,
                         child: HeaderWidget(
-                          headerText: 'SIGN UP',
+                          headerText: appLocalizations.translate('signUp'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: Colors.white,
@@ -308,7 +319,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                     Container(
                       margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
                       child: Text(
-                        'Already have account?',
+                        appLocalizations.translate('alreadyHaveAccount'),
                         style: GoogleFonts.nunito(
                           fontSize: 16.0,
                           wordSpacing: 1,
@@ -324,6 +335,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                           color: primaryColor,
                         ),
                         onPressed: () {
+                          provider.setLoading(false, willNotify: false);
                           FocusScope.of(context).unfocus();
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
@@ -332,7 +344,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                           );
                         },
                         child: HeaderWidget(
-                          headerText: 'LOGIN',
+                          headerText: appLocalizations.translate('login'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: primaryColor,
@@ -382,9 +394,8 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
         provider.setLoading(false);
         if (response.error != null) {
           showSnackBar(response.error);
-        } else if (response.data.email != null &&
-            response.data.mobile != null) {
-          showSnackBar('SignUp Sucessfully');
+        } else if (response.data.email != null && response.data.mobile != null) {
+          showSnackBar(appLocalizations.translate('signUpSuccessful'));
           Future.delayed(
             Duration(seconds: 2),
             navigateToLogin,

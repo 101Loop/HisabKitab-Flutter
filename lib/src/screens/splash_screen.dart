@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/utility.dart';
 
@@ -46,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 bottom: deviceHeight * 0.41,
                 child: Center(
                   child: Text(
-                    'Hisab Kitab',
+                    AppLocalizations.of(context).translate('appName'),
                     style: TextStyle(
                       fontFamily: 'YeonSung',
                       fontSize: 33.0,

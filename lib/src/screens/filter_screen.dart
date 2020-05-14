@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/baked_icons/rupee_icon_icons.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
@@ -27,6 +28,8 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
 
   final _formKey = GlobalKey<FormState>();
 
+  AppLocalizations appLocalizations;
+
   Future<Null> selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
       context: context,
@@ -46,6 +49,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
   void initState() {
     super.initState();
 
+    appLocalizations = AppLocalizations.of(context);
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
 
     initStateProvider.setTempEarning(initStateProvider.isEarning, willNotify: false);
@@ -115,7 +119,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                   ),
                                   SizedBox(width: 20.0),
                                   Text(
-                                    'Filter',
+                                    appLocalizations.translate('filter'),
                                     style: GoogleFonts.roboto(
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.w500,
@@ -142,7 +146,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempEarning(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(headerText: 'Earnings', textColor: Colors.black54, maxFontSize: 14, minFontSize: 11),
+                              title: HeaderWidget(headerText: appLocalizations.translate('earnings'), textColor: Colors.black54, maxFontSize: 14, minFontSize: 11),
                             ),
                           ),
                           ConstrainedBox(
@@ -157,7 +161,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempSpending(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(headerText: 'Expenditures', textColor: Colors.black54, maxFontSize: 13, minFontSize: 10),
+                              title: HeaderWidget(headerText: appLocalizations.translate('expenditures'), textColor: Colors.black54, maxFontSize: 13, minFontSize: 10),
                             ),
                           ),
                         ],
@@ -180,7 +184,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             ),
                             contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                             fillColor: Colors.white,
-                            hintText: 'Search By Name',
+                            hintText: appLocalizations.translate('searchByName'),
                             alignLabelWithHint: true,
                             hintStyle: GoogleFonts.nunito(
                               color: Colors.grey.shade400,
@@ -209,7 +213,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 width: deviceWidth * 0.69,
                                 margin: EdgeInsets.only(left: 10),
                                 child: Text(
-                                  provider.tempDateTime?.isNotEmpty ?? false ? provider.tempDateTime : 'Search By Date',
+                                  provider.tempDateTime?.isNotEmpty ?? false ? provider.tempDateTime : appLocalizations.translate('searchByDate'),
                                   style: GoogleFonts.nunito(
                                     color: provider.tempDateTime?.isNotEmpty ?? false ? Colors.black54 : Colors.grey.shade400,
                                     fontSize: 14,
@@ -247,7 +251,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                           ),
                         ),
                       ),
-                      HeaderWidget(headerText: 'Search by Range', textColor: Colors.black26, maxFontSize: 18, minFontSize: 15),
+                      HeaderWidget(headerText: appLocalizations.translate('searchByRange'), textColor: Colors.black26, maxFontSize: 18, minFontSize: 15),
                       SizedBox(height: 10.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -258,7 +262,13 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             margin: EdgeInsets.fromLTRB(10.0, 0.0, 15.0, 0.0),
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
-                              validator: validateNullableDoubleValue,
+                              validator: (value) {
+                                String result = validateNullableDoubleValue(value);
+                                if (result != null)
+                                  return appLocalizations.translate(result);
+                                else
+                                  return result;
+                              },
                               controller: minTextController,
                               maxLength: 20,
                               onSaved: (value) {
@@ -273,7 +283,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                 fillColor: Colors.white,
-                                hintText: 'Minimum',
+                                hintText: appLocalizations.translate('minimum'),
                                 errorMaxLines: 2,
                                 alignLabelWithHint: true,
                                 hintStyle: GoogleFonts.nunito(
@@ -298,7 +308,13 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
                               controller: maxTextController,
-                              validator: validateNullableDoubleValue,
+                              validator: (value) {
+                                String result = validateNullableDoubleValue(value);
+                                if (result != null)
+                                  return appLocalizations.translate(result);
+                                else
+                                  return result;
+                              },
                               maxLength: 20,
                               onSaved: (value) {
                                 if (value == null || value.isEmpty)
@@ -313,7 +329,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 errorMaxLines: 2,
                                 contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                 fillColor: Colors.white,
-                                hintText: 'Maximum',
+                                hintText: appLocalizations.translate('maximum'),
                                 alignLabelWithHint: true,
                                 hintStyle: GoogleFonts.nunito(
                                   color: Colors.grey.shade400,
@@ -347,7 +363,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempCashQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(headerText: 'Cash', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
+                              title: HeaderWidget(headerText: appLocalizations.translate('cash'), textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                           ConstrainedBox(
@@ -362,7 +378,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempCardQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(headerText: 'Card', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
+                              title: HeaderWidget(headerText: appLocalizations.translate('card'), textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                         ],
@@ -381,7 +397,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempChequeQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(headerText: 'Cheque', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
+                              title: HeaderWidget(headerText: appLocalizations.translate('cheque'), textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                           ConstrainedBox(
@@ -396,7 +412,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                                 provider.setTempAccountQuery(value);
                               },
                               activeColor: Constants.primaryColor,
-                              title: HeaderWidget(headerText: 'Account Transfer', textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
+                              title: HeaderWidget(headerText: appLocalizations.translate('accountTransfer'), textColor: Colors.black54, maxFontSize: 15, minFontSize: 12),
                             ),
                           ),
                         ],
@@ -424,7 +440,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                           ),
                           child: Center(
                             child: HeaderWidget(
-                              headerText: 'Apply',
+                              headerText: appLocalizations.translate('apply'),
                               maxFontSize: 16.0,
                               minFontSize: 16.0,
                               textColor: Colors.white,

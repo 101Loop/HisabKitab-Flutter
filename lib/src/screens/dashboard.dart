@@ -9,6 +9,7 @@ import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/filter_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/baked_icons/earning_icons.dart';
 import 'package:hisabkitab/utils/baked_icons/spending_icons.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
@@ -49,6 +50,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   bool _isLoadingItems = false;
 
   bool _fetchedList = false;
+
+  AppLocalizations appLocalizations;
 
   @override
   void initState() {
@@ -107,7 +110,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
 
-    print('built dashboard screen');
+    appLocalizations = AppLocalizations.of(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
@@ -147,7 +150,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                             color: Constants.lightGreen.withRed(210),
                             padding: EdgeInsets.all(0),
                             child: Text(
-                              'Clear Filters',
+                              appLocalizations.translate('clearFilters'),
                               style: TextStyle(color: Constants.primaryColor),
                             ),
                           )
@@ -186,7 +189,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                 : Container(),
             SizedBox(height: 10.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT ? 'Earnings' : provider.transactionType == Constants.DEBIT ? 'Expenditures' : 'All Transactions',
+              headerText: provider.transactionType == Constants.CREDIT ? appLocalizations.translate('earnings') : provider.transactionType == Constants.DEBIT ? appLocalizations.translate('expenditures') : appLocalizations.translate('allTransactions'),
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -238,7 +241,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                           valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                         ),
                         SizedBox(height: 5),
-                        Text('Please wait...'),
+                        Text(appLocalizations.translate('pleaseWait')),
                       ],
                     ),
                   )
@@ -297,7 +300,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         padding: EdgeInsets.all(15.0),
                         child: Center(
                           child: Text(
-                            'Earnings',
+                            appLocalizations.translate('earnings'),
                             style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'C' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
@@ -312,7 +315,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         padding: EdgeInsets.all(15.0),
                         child: Center(
                           child: Text(
-                            'Expenditures',
+                            appLocalizations.translate('expenditures'),
                             style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'D' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
@@ -327,7 +330,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         padding: EdgeInsets.all(15.0),
                         child: Center(
                           child: Text(
-                            'All Transactions',
+                            appLocalizations.translate('allTransactions'),
                             style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'A' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
@@ -347,7 +350,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                         padding: EdgeInsets.all(15.0),
                         child: Center(
                           child: Text(
-                            'More Filter Option',
+                            appLocalizations.translate('moreFilterOption'),
                             style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: _haveFilters() ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
@@ -396,8 +399,8 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      title: Text('Confirm'),
-                      content: Text('Are you sure?'),
+                      title: Text(appLocalizations.translate('confirm')),
+                      content: Text(appLocalizations.translate('areYouSure')),
                       actions: <Widget>[
                         FlatButton(
                           onPressed: () {
@@ -410,11 +413,11 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
                             _refreshScreen();
                           },
-                          child: Text('DELETE'),
+                          child: Text(appLocalizations.translate('delete')),
                         ),
                         FlatButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text('CANCEL'),
+                          child: Text(appLocalizations.translate('cancel')),
                         ),
                       ],
                     );
@@ -451,7 +454,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   }
 
   _nothingToShowWidget() {
-    return Center(child: Text('There\'s nothing to show :)'));
+    return Center(child: Text(appLocalizations.translate('nothingToShow')));
   }
 
   ///sorts the transaction list, according to [value] received
@@ -616,6 +619,7 @@ class DataAnnotation extends StatelessWidget {
 
   final String earning;
   final String expense;
+  AppLocalizations appLocalizations;
 
   String earningPercentage(String earning, String expense) {
     double earningDouble = double.parse(earning);
@@ -633,6 +637,8 @@ class DataAnnotation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
+
     return Column(
       children: <Widget>[
         Row(
@@ -647,7 +653,7 @@ class DataAnnotation extends StatelessWidget {
                 ),
                 SizedBox(width: 20),
                 Text(
-                  'Earnings',
+                  appLocalizations.translate('earnings'),
                   style: TextStyle(fontSize: 12.0),
                 ),
               ],
@@ -671,7 +677,7 @@ class DataAnnotation extends StatelessWidget {
                 ),
                 SizedBox(width: 20),
                 Text(
-                  'Expenditures',
+                  appLocalizations.translate('expenditures'),
                   style: TextStyle(fontSize: 12.0),
                 ),
               ],
@@ -985,6 +991,8 @@ class ListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations appLocalizations = AppLocalizations.of(context);
+
     double deviceWidth = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.only(bottom: 7.0, top: 7.0),
@@ -1086,7 +1094,7 @@ class ListCard extends StatelessWidget {
               Container(
                 width: deviceWidth * 0.15,
                 child: AutoSizeText(
-                  transactionType == Constants.CREDIT ? 'Credit' : 'Debit',
+                  transactionType == Constants.CREDIT ? appLocalizations.translate('credit') : appLocalizations.translate('debit'),
                   minFontSize: 10,
                   maxFontSize: 14,
                   maxLines: 1,

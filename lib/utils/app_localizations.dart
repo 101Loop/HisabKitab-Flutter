@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-class AppLocalizations{
+class AppLocalizations {
   final Locale locale;
 
   Map<String, String> _localizedMap;
+
   AppLocalizations(this.locale);
+
   static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// helper method
@@ -18,7 +20,10 @@ class AppLocalizations{
   /// loads the json
   Future<bool> load() async {
     String jsonString = await rootBundle.loadString('lang/${locale.languageCode}.json');
-    _localizedMap = json.decode(jsonString);
+    Map<String, dynamic> jsonMap = json.decode(jsonString);
+    _localizedMap = jsonMap.map((key, value) {
+      return MapEntry(key, value.toString());
+    });
     return true;
   }
 

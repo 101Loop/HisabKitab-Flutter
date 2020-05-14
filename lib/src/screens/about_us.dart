@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/provider/store.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class AboutUs extends StatefulWidget {
 class _AboutUsState extends State<AboutUs> {
   AppState provider;
   double deviceWidth;
+  AppLocalizations appLocalizations;
 
   void customLaunch(command) async {
     if (await canLaunch(command)) {
@@ -27,6 +29,7 @@ class _AboutUsState extends State<AboutUs> {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
     return SafeArea(
@@ -43,7 +46,7 @@ class _AboutUsState extends State<AboutUs> {
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
-                      'About Us',
+                      appLocalizations.translate('aboutUs'),
                       style: GoogleFonts.roboto(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
@@ -55,7 +58,7 @@ class _AboutUsState extends State<AboutUs> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     HeaderWidget(
-                      headerText: 'Hisab Kitab',
+                      headerText: appLocalizations.translate('appName'),
                       maxFontSize: 25,
                       minFontSize: 25,
                       textColor: Colors.black,
@@ -66,8 +69,7 @@ class _AboutUsState extends State<AboutUs> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.fill,
-                          image: AssetImage(
-                              'assets/images/addTransactionImage.png'),
+                          image: AssetImage('assets/images/addTransactionImage.png'),
                         ),
                       ),
                     ),
@@ -77,8 +79,7 @@ class _AboutUsState extends State<AboutUs> {
                 Container(
                   margin: EdgeInsets.only(right: 10.0),
                   child: HeaderWidget(
-                    headerText:
-                        'The easiest way to track your money flow, convienent in budget management, expenditure control and money management. Useful for individual, family, business or corporate.',
+                    headerText: appLocalizations.translate('aboutUsPara'),
                     maxFontSize: 15,
                     minFontSize: 15,
                     textColor: Colors.black,
@@ -94,8 +95,7 @@ class _AboutUsState extends State<AboutUs> {
                       color: primaryColor,
                     ),
                     onPressed: () {
-                      customLaunch(
-                          'mailto:help@vithartha.com?subject=Regarding%20HisabKitab');
+                      customLaunch('mailto:help@vithartha.com?subject=Regarding%20HisabKitab');
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +106,7 @@ class _AboutUsState extends State<AboutUs> {
                         ),
                         SizedBox(width: 10.0),
                         HeaderWidget(
-                          headerText: 'Email Us',
+                          headerText: appLocalizations.translate('emailUs'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: primaryColor,
@@ -140,7 +140,7 @@ class _AboutUsState extends State<AboutUs> {
                         ),
                         SizedBox(width: 10.0),
                         HeaderWidget(
-                          headerText: 'Call Us',
+                          headerText: appLocalizations.translate('callUs'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: primaryColor,

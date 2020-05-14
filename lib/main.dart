@@ -55,12 +55,12 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [
-          Locale('en'), // English
-          Locale('hi'), // Hindi
+          Locale('en', 'US'), // English
+          Locale('hi', 'IN'), // Hindi
         ],
         localeResolutionCallback: (locale, supportedLocales) {
           for (var currentLocale in supportedLocales) {
-            if (currentLocale.languageCode == locale.languageCode)
+            if (currentLocale.languageCode == locale.languageCode && currentLocale.countryCode == locale.countryCode)
               return currentLocale;
           }
           return supportedLocales.first;

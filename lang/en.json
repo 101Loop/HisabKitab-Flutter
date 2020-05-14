@@ -1,6 +1,6 @@
 {
   "appName": "Hisab Kitab",
-  "welcomeToHK": "Welcome to Hisab Kitab",
+  "welcomeToHK": "Welcome to Hisab Kitab!",
   "makeItEasy": "Make It Easy",
   "login": "LOGIN",
   "signUp": "SIGN UP",
@@ -9,6 +9,7 @@
   "email": "Email",
   "password": "Password",
   "forgotPassLogWithOTP": "Forgot Password? Login with OTP.",
+  "logWithOTP": "LOGIN with OTP.",
   "getOTP": "GET OTP.",
   "letsGetStarted": "Let's get started",
   "alreadyHaveAccount": "Already have account?",
@@ -71,5 +72,14 @@
   "alreadyExistingError" : "Entered Mobile or Email already exists with some other account",
   "profileUpdated" : "Profile updated successfully",
   "checkEmail" : " Please check Your Email.",
-  "signUpSuccessful" : "SignUp successful"
+  "signUpSuccessful" : "SignUp successful",
+  "pleaseWait" : "Please wait...",
+  "confirm": "Confirm",
+  "areYouSure": "Are you sure?ै",
+  "delete": "DELETE",
+  "cancel": "CANCEL",
+  "ok": "OK",
+  "profile": "Profile",
+  "unknown": "unknown",
+  "invalidEmail": "Please enter a valid email"
 }

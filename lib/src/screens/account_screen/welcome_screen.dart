@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/login_screen.dart';
 import 'package:hisabkitab/src/screens/account_screen/sign_up_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
+import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -12,9 +15,11 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   double deviceHeight;
   double deviceWidth;
+  AppLocalizations appLocalizations;
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -45,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 SizedBox(height: 15.0),
                 Center(
                   child: HeaderWidget(
-                    headerText: 'Hisab Kitab',
+                    headerText: appLocalizations.translate('appName'),
                     maxFontSize: 40,
                     minFontSize: 35,
                     textColor: Colors.black,
@@ -54,7 +59,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 SizedBox(height: 40.0),
                 Center(
                   child: HeaderWidget(
-                    headerText: 'Welcome to Hisab Kitab!',
+                    headerText: appLocalizations.translate('welcomeToHK'),
                     maxFontSize: 30,
                     minFontSize: 25,
                     textColor: Colors.black,
@@ -63,7 +68,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 SizedBox(height: 10.0),
                 Center(
                   child: HeaderWidget(
-                    headerText: 'Make It Easy',
+                    headerText: appLocalizations.translate('makeItEasy'),
                     maxFontSize: 25,
                     minFontSize: 20,
                     textColor: Colors.black54,
@@ -84,6 +89,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         height: 50.0,
                         child: RaisedButton(
                           onPressed: () {
+                            Provider.of<AppState>(context, listen: false).setLoading(false, willNotify: false);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => LoginScreen(),
@@ -91,7 +97,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             );
                           },
                           child: HeaderWidget(
-                            headerText: 'LOGIN',
+                            headerText: appLocalizations.translate('login'),
                             maxFontSize: 20,
                             minFontSize: 18,
                             textColor: Colors.white,
@@ -114,6 +120,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             color: primaryColor,
                           ),
                           onPressed: () {
+                            Provider.of<AppState>(context, listen: false).setLoading(false, willNotify: false);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => SignUpScreen(),
@@ -121,7 +128,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             );
                           },
                           child: HeaderWidget(
-                            headerText: 'SIGN UP',
+                            headerText: appLocalizations.translate('signUp'),
                             maxFontSize: 20,
                             minFontSize: 18,
                             textColor: primaryColor,

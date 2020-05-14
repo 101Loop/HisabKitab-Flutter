@@ -5,6 +5,7 @@ import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/baked_icons/rupee_icon_icons.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constant;
@@ -44,6 +45,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TransactionDetails _transaction;
+
+  AppLocalizations appLocalizations;
 
   Future<Null> selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
@@ -86,6 +89,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
     provider = Provider.of<AppState>(context);
@@ -155,7 +159,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             ],
                           ),
                           HeaderWidget(
-                            headerText: 'Name *',
+                            headerText: appLocalizations.translate('name') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -173,7 +177,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             child: Container(
                               child: TextFormField(
                                 initialValue: _contact,
-                                validator: validateField,
+                                validator: (value) {
+                                  String result = validateField(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 autovalidate: provider.autoValidate,
                                 onSaved: (value) {
                                   _contact = value;
@@ -196,7 +206,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             height: 10.0,
                           ),
                           HeaderWidget(
-                            headerText: 'Amount *',
+                            headerText: appLocalizations.translate('amount') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -216,7 +226,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             child: Container(
                               child: TextFormField(
                                 initialValue: _transaction?.amount?.toString() ?? '',
-                                validator: validateDoubleValue,
+                                validator: (value) {
+                                  String result = validateDoubleValue(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 autovalidate: provider.autoValidate,
                                 onSaved: (value) {
                                   _amount = value;
@@ -241,7 +257,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 5.0),
                           HeaderWidget(
-                            headerText: 'Category *',
+                            headerText: appLocalizations.translate('category') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16,
                             textColor: Colors.black,
@@ -295,7 +311,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 5.0),
                           HeaderWidget(
-                            headerText: 'Date *',
+                            headerText: appLocalizations.translate('date') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -337,7 +353,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 10.0),
                           HeaderWidget(
-                            headerText: 'Mode of payment *',
+                            headerText: appLocalizations.translate('modeOfPayment') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16,
                             textColor: Colors.black,
@@ -382,7 +398,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 10.0),
                           HeaderWidget(
-                            headerText: 'Comment',
+                            headerText: appLocalizations.translate('comment'),
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -511,7 +527,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         }
       });
     } else {
-      _showSnackBar('Please provide all the required information');
+      _showSnackBar(appLocalizations.translate('provideAllInfo'));
     }
   }
 
