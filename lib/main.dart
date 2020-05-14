@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hisabkitab/app.dart' as App;
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
@@ -46,6 +47,15 @@ class MyApp extends StatelessWidget {
           primarySwatch: Constants.primarySwatch,
         ),
         home: App.App(),
+        localizationsDelegates: [
+          // ... app-specific localization delegate[s] here
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('hi'), // Hindi
+        ],
       ),
     );
   }
