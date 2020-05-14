@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hisabkitab/app.dart' as App;
 import 'package:hisabkitab/src/provider/store.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
 import 'package:sentry/sentry.dart';
@@ -48,14 +49,22 @@ class MyApp extends StatelessWidget {
         ),
         home: App.App(),
         localizationsDelegates: [
-          // ... app-specific localization delegate[s] here
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [
-          const Locale('hi'), // Hindi
+          Locale('en'), // English
+          Locale('hi'), // Hindi
         ],
+        localeResolutionCallback: (locale, supportedLocales) {
+          for (var currentLocale in supportedLocales) {
+            if (currentLocale.languageCode == locale.languageCode)
+              return currentLocale;
+          }
+          return supportedLocales.first;
+        },
       ),
     );
   }
