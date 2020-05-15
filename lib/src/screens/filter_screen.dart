@@ -49,7 +49,6 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
   void initState() {
     super.initState();
 
-    appLocalizations = AppLocalizations.of(context);
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
 
     initStateProvider.setTempEarning(initStateProvider.isEarning, willNotify: false);
@@ -70,6 +69,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
