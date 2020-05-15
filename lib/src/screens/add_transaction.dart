@@ -48,6 +48,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   AppLocalizations appLocalizations;
 
+  bool isFirstBuild = true;
+
   Future<Null> selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
       context: context,
@@ -71,14 +73,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
     initStateProvider.initialState();
     if (_transaction != null) {
-      if (_transaction.category == 'C') {
-        initStateProvider.setCategory('Credit', willNotify: false);
-      } else {
-        initStateProvider.setCategory('Debit', willNotify: false);
-      }
-
       initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
-      initStateProvider.setMode(_transaction.mode?.mode, willNotify: false);
       _contact = _transaction.contact?.name ?? '';
       _comment = _transaction.comments ?? '';
     } else {
@@ -89,10 +84,23 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<AppState>(context);
     appLocalizations = AppLocalizations.of(context);
+
+    if (isFirstBuild && _transaction != null) {
+      isFirstBuild = false;
+      String mode = getModeKey(_transaction.mode?.mode);
+      provider.setMode(appLocalizations.translate(mode), willNotify: false);
+
+      if (_transaction.category == 'C') {
+        provider.setCategory(appLocalizations.translate('credit'), willNotify: false);
+      } else {
+        provider.setCategory(appLocalizations.translate('debit'), willNotify: false);
+      }
+    }
+
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-    provider = Provider.of<AppState>(context);
 
     return WillPopScope(
       onWillPop: _onBackPressed,
@@ -300,8 +308,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     },
                                     items: Constant.categoryList.map((category) {
                                       return DropdownMenuItem(
-                                        child: Text(category),
-                                        value: category,
+                                        child: Text(appLocalizations.translate(category)),
+                                        value: appLocalizations.translate(category),
                                       );
                                     }).toList(),
                                   ),
@@ -387,9 +395,11 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     provider.setMode(value);
                                   },
                                   items: Constant.paymentList.map((mode) {
+                                    mode = getModeKey(mode);
+
                                     return DropdownMenuItem(
-                                      child: Text(mode),
-                                      value: mode,
+                                      child: Text(appLocalizations.translate(mode)),
+                                      value: appLocalizations.translate(mode),
                                     );
                                   }).toList(),
                                 ),
@@ -510,7 +520,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
+          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: getModeValue(provider.mode), contact: _contact, comments: _comment);
 
       TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
         String message;
@@ -559,5 +569,44 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   ///navigates to main screen
   void _goToMainScreen() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+  }
+
+  /// returns key for modes
+  String getModeKey(String mode) {
+    if (mode == 'Account Transfer')
+      return 'accountTransfer';
+    else
+      return mode.toLowerCase();
+  }
+
+  /// returns mode value, based on the mode selected
+  /// [1 for cash, 2 for card, 3 for cheque, 5 for account transfer]
+  String getModeValue(String mode) {
+    switch (mode) {
+      case "Cash":
+      case "पैसे":
+        mode = '1';
+        break;
+
+      case "Card":
+      case "कार्ड":
+        mode = '2';
+        break;
+
+      case "Cheque":
+      case "चेक":
+        mode = '3';
+        break;
+
+      case "Account Transfer":
+      case "खाता स्थानांतरण":
+        mode = '5';
+        break;
+
+      default:
+        mode = '1';
+    }
+
+    return mode;
   }
 }

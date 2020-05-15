@@ -581,7 +581,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     return sortingItems
         .map((SortingItems val) => PopupMenuItem<SortingItems>(
             child: Text(
-              val.name,
+              AppLocalizations.of(context).translate(val.name),
               style: TextStyle(fontWeight: provider.sortScheme == val.sortScheme ? FontWeight.bold : FontWeight.normal),
             ),
             value: val))
