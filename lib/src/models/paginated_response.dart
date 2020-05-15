@@ -5,8 +5,9 @@ class PaginatedResponse {
   final totalAmount;
   final results;
   final String error;
+  final int statusCode;
 
-  PaginatedResponse({this.count, this.next, this.previous, this.results, this.error, this.totalAmount});
+  PaginatedResponse({this.count, this.next, this.previous, this.results, this.error, this.totalAmount, this.statusCode});
 
   factory PaginatedResponse.fromJson(var json) {
     return PaginatedResponse(
@@ -18,7 +19,7 @@ class PaginatedResponse {
     );
   }
 
-  factory PaginatedResponse.withError(String error) {
-    return PaginatedResponse(error: error);
+  factory PaginatedResponse.withError(String error, {int statusCode = -1}) {
+    return PaginatedResponse(error: error, statusCode: statusCode);
   }
 }

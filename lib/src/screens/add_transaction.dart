@@ -466,7 +466,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               ),
                               child: Center(
                                 child: HeaderWidget(
-                                  headerText: '+ Save ${changeTransactionName(widget.transactionType)}',
+                                  headerText: appLocalizations.translate('saveTransaction'),
                                   maxFontSize: 18.0,
                                   minFontSize: 18.0,
                                   textColor: Colors.white,
@@ -513,7 +513,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
           amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
 
       TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
-        _showSnackBar(response.message);
+        String message;
+        if (response.statusCode == 200 || response.statusCode == 0)
+          message = appLocalizations.translate(response.message);
+        else
+          message = response.message;
+
+        _showSnackBar(message);
 
         //if the response is ok, then pop with a delay of 1 sec, otherwise instantly
         if (response.statusCode == 200) {

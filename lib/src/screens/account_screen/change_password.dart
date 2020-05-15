@@ -220,7 +220,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
             });
           } else {
             provider.setLoading(false);
-            _showSnackBar(response.data ?? Constants.serverError);
+            String error = response.data;
+            if (error != null && error.isNotEmpty) {
+              if (response.statusCode == 0) {
+                error = appLocalizations.translate(error);
+              }
+            } else {
+              error = appLocalizations.translate('serverError');
+            }
+
+            _showSnackBar(error);
           }
         });
       } else {

@@ -283,7 +283,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
       _futureUser.then((response) {
         provider.setLoading(false);
         if (response.error != null) {
-          showSnackBar(response.error ?? '');
+          String error = response.error;
+          if (response.statusCode == 0)
+            error = appLocalizations.translate(error);
+
+          showSnackBar(error ?? '');
         } else if (response.data.token != null) {
           provider.setCurrentTab(0, willNotify: false);
           provider.setCurrentPage(Dashboard(), willNotify: false);

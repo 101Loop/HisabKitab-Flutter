@@ -45,8 +45,7 @@
   "date": "Date",
   "modeOfPayment": "Mode of payment",
   "comment": "Comment",
-  "saveExpense": "+ Save expense",
-  "saveEarning": "+ Save earning",
+  "saveTransaction": "+ Save transaction",
   "updateProfile": "Update Profile",
   "changePassword": "Change Password",
   "logout": "LOGOUT",
@@ -81,5 +80,10 @@
   "ok": "OK",
   "profile": "Profile",
   "unknown": "unknown",
-  "invalidEmail": "Please enter a valid email"
+  "invalidEmail": "Please enter a valid email",
+  "editTransaction": "Edit Transaction",
+  "transactionAddedSuccessful": "Transaction added successfully",
+  "transactionUpdatedSuccessful": "Transaction updated successfully",
+  "somethingWentWrong": "Something went wrong!, Please try again later",
+  "serverError": "Server is not responding, Please check your connection and try again later!"
 }

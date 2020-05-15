@@ -384,7 +384,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
             onTap: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (BuildContext context) => AddTransaction(transactionType: 'Edit Transaction', transaction: _currentTransaction),
+                  builder: (BuildContext context) => AddTransaction(transactionType: appLocalizations.translate('editTransaction'), transaction: _currentTransaction),
                 ),
               );
             },

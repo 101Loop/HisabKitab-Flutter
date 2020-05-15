@@ -45,8 +45,7 @@
   "date": "तारीख",
   "modeOfPayment": "भुगतान का तरीका",
   "comment": "टिप्पणी",
-  "saveExpense": "+ Save expense",
-  "saveEarning": "+ Save earning",
+  "saveTransaction": "+ लेनदेन सुरक्षित करें",
   "updateProfile": "प्रोफ़ाइल अपडेट करें",
   "changePassword": "पासवर्ड बदलें",
   "logout": "लॉग आउट",
@@ -81,5 +80,10 @@
   "ok": "ठीक",
   "profile": "प्रोफाइल",
   "unknown": "अनजान",
-  "invalidEmail": "कृपया वैध ईमेल दर्ज़ करें"
+  "invalidEmail": "कृपया वैध ईमेल दर्ज़ करें",
+  "editTransaction": "लेनदेन संपादित करें",
+  "transactionAddedSuccessful": "लेन-देन सफलतापूर्वक अपडेट गया है",
+  "transactionUpdatedSuccessful": "लेन-देन सफलतापूर्वक जोड़ा गया है",
+  "somethingWentWrong": "कुछ गलत हो गया है। कृपया बाद में दोबारा प्रयास करें",
+  "serverError": "सर्वर जवाब नहीं दे रहा है, कृपया अपना कनेक्शन जांचें और बाद में पुन: प्रयास करें!"
 }

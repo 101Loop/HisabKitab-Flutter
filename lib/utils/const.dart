@@ -32,10 +32,6 @@ const String username = "username";
 const String password = "password";
 const String TOKEN = "token";
 
-///constants
-const String serverError =
-    "Server is not responding, Please check your connection and try again later!";
-
 ///http codes
 const int HTTP_200_OK = 200;
 const int HTTP_201_CREATED = 201;

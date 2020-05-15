@@ -17,7 +17,7 @@ class LoginAPIController {
       response = await http.post(Constants.LOGIN_URL,
           headers: headers, body: json.encode(user.toMap()));
     } catch (_) {
-      return User(error: Constants.serverError);
+      return User(error: 'serverError', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
@@ -54,7 +54,7 @@ class LoginAPIController {
           return User(error: e.toString());
         }
       }
-      return User(error: Constants.serverError);
+      return User(error: 'serverError', statusCode: 0);
     }
   }
 
@@ -70,7 +70,7 @@ class LoginAPIController {
     try {
       response = await http.get(Constants.PROFILE_URL, headers: headers);
     } catch (_) {
-      return UserProfile(error: Constants.serverError);
+      return UserProfile(error: 'serverError', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
@@ -106,9 +106,9 @@ class LoginAPIController {
           return UserProfile(error: e.toString());
         }
       } else {
-        return UserProfile(error: Constants.serverError);
+        return UserProfile(error: 'serverError', statusCode: 0);
       }
-      return UserProfile(error: Constants.serverError);
+      return UserProfile(error: 'serverError', statusCode: 0);
     }
   }
 
@@ -125,7 +125,7 @@ class LoginAPIController {
       response = await http.patch(Constants.UPDATE_PROFILE_URL,
           headers: headers, body: json.encode(data.toMap()));
     } catch (_) {
-      return UserProfile(error: Constants.serverError);
+      return UserProfile(error: 'serverError', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
@@ -164,9 +164,9 @@ class LoginAPIController {
           return UserProfile(error: e.toString());
         }
       } else {
-        return UserProfile(error: Constants.serverError);
+        return UserProfile(error: 'serverError',statusCode: 0);
       }
-      return UserProfile(error: Constants.serverError);
+      return UserProfile(error: 'serverError', statusCode: 0);
     }
   }
 
@@ -183,14 +183,14 @@ class LoginAPIController {
       response = await http.patch(Constants.UPDATE_PASSWORD_URL,
           headers: headers, body: json.encode({"new_password": password}));
     } catch (_) {
-      return PasswordResponse(data: 'Something went wrong', statusCode: -1);
+      return PasswordResponse(data: 'somethingWentWrong', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
 
     if (statusCode == Constants.HTTP_202_ACCEPTED) {
       return PasswordResponse(
-          data: 'Password updated successfully', statusCode: statusCode);
+          data: 'passwordUpdatedSuccessfully', statusCode: statusCode);
     } else {
       String errorMessage = response.body.toString();
       if (errorMessage != null) {
@@ -226,7 +226,7 @@ class LoginAPIController {
         }
       } else {
         return PasswordResponse(
-            data: Constants.serverError, statusCode: statusCode);
+            data: 'serverError', statusCode: 0);
       }
     }
   }
@@ -245,8 +245,7 @@ class LoginAPIController {
           headers: headers,
           body: otp != null ? json.encode(otpBody) : json.encode(emailBody));
     } catch (_) {
-      print('yaay! caught an exception while verifying OTP');
-      return PasswordResponse(data: Constants.serverError, statusCode: -1);
+      return PasswordResponse(data: 'serverError', statusCode: 0);
     }
 
     final int statusCode = response.statusCode;

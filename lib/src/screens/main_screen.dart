@@ -24,7 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addExpense() {
     return GestureDetector(
       onTap: () async {
-        _navigateToTransactionScreen('Add expense', 'Debit');
+        _navigateToTransactionScreen(appLocalizations.translate('addExpense'), 'Debit');
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -45,7 +45,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget addEarning() {
     return GestureDetector(
       onTap: () {
-        _navigateToTransactionScreen('Add earning', 'Credit');
+        _navigateToTransactionScreen(appLocalizations.translate('addEarning'), 'Credit');
       },
       child: Container(
         padding: EdgeInsets.all(8.0),

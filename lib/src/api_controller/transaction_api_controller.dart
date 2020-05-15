@@ -26,7 +26,7 @@ class TransactionApiController {
     try {
       response = await http.get(next ?? Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
     } catch (_) {
-      return PaginatedResponse.withError(Constants.serverError);
+      return PaginatedResponse.withError('serverError',statusCode: 0);
     }
 
     final int statusCode = response.statusCode;
@@ -49,14 +49,14 @@ class TransactionApiController {
             var parsedData = json.decode(dataObject);
             var nonFieldErrors = parsedData['non_field_errors'];
             if (nonFieldErrors != null) {
-              return PaginatedResponse.withError('Email or Mobile already used');
+              return PaginatedResponse.withError(nonFieldErrors[0].toString());
             }
           }
         } catch (e) {
           return PaginatedResponse.withError(e.toString());
         }
       }
-      return PaginatedResponse.withError('Email or Mobile already used');
+      return PaginatedResponse.withError(errorMessage);
     }
   }
 
@@ -72,14 +72,14 @@ class TransactionApiController {
         response = await http.patch(Constants.TRANSACTION_URL + '$id/update/', headers: headers, body: json.encode(data.toMap()));
       }
     } catch (_) {
-      return TransactionDetails.withError(Constants.serverError);
+      return TransactionDetails.withError('serverError', statusCode: 0);
     }
 
     final int statusCode = response.statusCode;
 
     if (statusCode == Constants.HTTP_201_CREATED || statusCode == Constants.HTTP_200_OK) {
       var parsedResponse = json.decode(response.body);
-      return TransactionDetails.fromJson(parsedResponse, message: id != -1 ? 'Transaction updated successfully' : 'Transaction added successfully');
+      return TransactionDetails.fromJson(parsedResponse, message: id != -1 ? 'transactionUpdatedSuccessful' : 'transactionAddedSuccessful');
     } else {
       String errorMessage = response.body.toString();
       if (errorMessage != null) {
@@ -97,7 +97,7 @@ class TransactionApiController {
             if (nonFieldErrors != null) {
               return TransactionDetails.withError(nonFieldErrors);
             } else {
-              return TransactionDetails.withError('Something went wrong!, Please try again later');
+              return TransactionDetails.withError('somethingWentWrong', statusCode: 0);
             }
           } else if (errorResponse['mode'] != null) {
             return TransactionDetails.withError(errorResponse['mode'][0]);
@@ -108,7 +108,7 @@ class TransactionApiController {
           return TransactionDetails.withError(e.toString());
         }
       } else
-        return TransactionDetails.withError('Something went wrong!, Please try again later');
+        return TransactionDetails.withError('somethingWentWrong', statusCode: 0);
     }
   }
 

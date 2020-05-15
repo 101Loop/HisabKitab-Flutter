@@ -393,7 +393,10 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
       signUpResponse.then((response) {
         provider.setLoading(false);
         if (response.error != null) {
-          showSnackBar(response.error);
+          String error = response.error;
+          if (response.statusCode == 0) error = appLocalizations.translate(error);
+
+          showSnackBar(error);
         } else if (response.data.email != null && response.data.mobile != null) {
           showSnackBar(appLocalizations.translate('signUpSuccessful'));
           Future.delayed(

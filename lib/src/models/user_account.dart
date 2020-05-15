@@ -3,15 +3,17 @@ import 'package:hisabkitab/utils/const.dart' as Keys;
 class UserAccount {
   Data data;
   String error;
+  int statusCode;
 
-  UserAccount({this.data, this.error});
+  UserAccount({this.data, this.error, this.statusCode});
 
   UserAccount.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    statusCode = 200;
   }
 
-  factory UserAccount.withError(String error) {
-    return UserAccount(error: error);
+  factory UserAccount.withError(String error, {int statusCode = -1}) {
+    return UserAccount(error: error, statusCode: statusCode);
   }
 }
 

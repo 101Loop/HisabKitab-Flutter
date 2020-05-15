@@ -110,8 +110,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                 autovalidate: provider.autoValidate,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: appLocalizations.translate('email'),
                                   alignLabelWithHint: true,
@@ -127,8 +126,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                             ),
                             provider.getOTPRequested
                                 ? Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        15.0, 0.0, 15.0, 15.0),
+                                    margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                     padding: EdgeInsets.all(8.0),
                                     child: TextFormField(
                                       controller: _otp,
@@ -145,8 +143,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                       maxLength: 7,
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.fromLTRB(
-                                            10.0, 0.0, 0.0, 0.0),
+                                        contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                         fillColor: Colors.white,
                                         hintText: 'OTP',
                                         alignLabelWithHint: true,
@@ -155,8 +152,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                           fontSize: 14,
                                         ),
                                         border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
+                                          borderRadius: BorderRadius.circular(10.0),
                                         ),
                                       ),
                                     ),
@@ -173,8 +169,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                       child: RaisedButton(
                         onPressed: onButtonPressed,
                         child: HeaderWidget(
-                          headerText:
-                              !provider.getOTPRequested ? appLocalizations.translate('getOTP') : appLocalizations.translate('login'),
+                          headerText: !provider.getOTPRequested ? appLocalizations.translate('getOTP') : appLocalizations.translate('login'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: Colors.white,
@@ -246,21 +241,18 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
 
   void getOTP() {
     (provider.getOTPRequested) ? otp = int?.tryParse(_otp.text) : otp = null;
-    Future<PasswordResponse> _futureGetOTP =
-        LoginAPIController.getOtp(_email.text, otp: otp);
+    Future<PasswordResponse> _futureGetOTP = LoginAPIController.getOtp(_email.text, otp: otp);
     _futureGetOTP.then((response) {
       print(response.data);
       provider.setLoading(false);
-      if (response.statusCode == HTTP_201_CREATED ||
-          response.statusCode == HTTP_202_ACCEPTED) {
+      if (response.statusCode == HTTP_201_CREATED || response.statusCode == HTTP_202_ACCEPTED) {
         _showSnackBar(response.data + appLocalizations.translate('checkEmail') ?? '');
         print(response.data);
         Future.delayed(Duration(seconds: 2), () {
           provider.setAutoValidate(false, willNotify: false);
           provider.setOTPRequested(true);
         });
-      } else if (response.statusCode == HTTP_200_OK &&
-          response.data.split('.').length == 3) {
+      } else if (response.statusCode == HTTP_200_OK && response.data.split('.').length == 3) {
         Utility.saveToken(response.data);
         provider.setNeedsUpdate(true, willNotify: false);
         Navigator.of(context).pushReplacement(
@@ -279,8 +271,14 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
               ),
             );
           });
-        } else
-          _showSnackBar(response?.data ?? '');
+        } else {
+          String error = response.data;
+          if (error != null && error.isNotEmpty && response.statusCode == 0) {
+            error = appLocalizations.translate(error);
+          }
+
+          _showSnackBar(error);
+        }
       }
     });
   }

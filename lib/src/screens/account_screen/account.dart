@@ -372,7 +372,11 @@ class _AccountState extends State<Account> with ValidationMixin {
             if (response.error.contains('This mobile number is already registered')) {
               _showSnackBar(appLocalizations.translate('alreadyExistingError'));
             } else {
-              _showSnackBar(response?.error);
+              String error = response.error;
+              if (response.statusCode == 0)
+                error = appLocalizations.translate(error);
+
+              _showSnackBar(error);
             }
           } else {
             _showSnackBar(appLocalizations.translate('profileUpdated'));
