@@ -5,6 +5,7 @@ import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/baked_icons/rupee_icon_icons.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constant;
@@ -45,6 +46,10 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   TransactionDetails _transaction;
 
+  AppLocalizations appLocalizations;
+
+  bool isFirstBuild = true;
+
   Future<Null> selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
       context: context,
@@ -68,14 +73,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
     initStateProvider.initialState();
     if (_transaction != null) {
-      if (_transaction.category == 'C') {
-        initStateProvider.setCategory('Credit', willNotify: false);
-      } else {
-        initStateProvider.setCategory('Debit', willNotify: false);
-      }
-
       initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
-      initStateProvider.setMode(_transaction.mode?.mode, willNotify: false);
       _contact = _transaction.contact?.name ?? '';
       _comment = _transaction.comments ?? '';
     } else {
@@ -86,9 +84,23 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<AppState>(context);
+    appLocalizations = AppLocalizations.of(context);
+
+    if (isFirstBuild && _transaction != null) {
+      isFirstBuild = false;
+      String mode = getModeKey(_transaction.mode?.mode);
+      provider.setMode(appLocalizations.translate(mode), willNotify: false);
+
+      if (_transaction.category == 'C') {
+        provider.setCategory(appLocalizations.translate('credit'), willNotify: false);
+      } else {
+        provider.setCategory(appLocalizations.translate('debit'), willNotify: false);
+      }
+    }
+
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-    provider = Provider.of<AppState>(context);
 
     return WillPopScope(
       onWillPop: _onBackPressed,
@@ -155,7 +167,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             ],
                           ),
                           HeaderWidget(
-                            headerText: 'Name *',
+                            headerText: appLocalizations.translate('name') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -173,7 +185,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             child: Container(
                               child: TextFormField(
                                 initialValue: _contact,
-                                validator: validateField,
+                                validator: (value) {
+                                  String result = validateField(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 autovalidate: provider.autoValidate,
                                 onSaved: (value) {
                                   _contact = value;
@@ -196,7 +214,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             height: 10.0,
                           ),
                           HeaderWidget(
-                            headerText: 'Amount *',
+                            headerText: appLocalizations.translate('amount') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -216,7 +234,13 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                             child: Container(
                               child: TextFormField(
                                 initialValue: _transaction?.amount?.toString() ?? '',
-                                validator: validateDoubleValue,
+                                validator: (value) {
+                                  String result = validateDoubleValue(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 autovalidate: provider.autoValidate,
                                 onSaved: (value) {
                                   _amount = value;
@@ -241,7 +265,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 5.0),
                           HeaderWidget(
-                            headerText: 'Category *',
+                            headerText: appLocalizations.translate('category') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16,
                             textColor: Colors.black,
@@ -284,8 +308,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     },
                                     items: Constant.categoryList.map((category) {
                                       return DropdownMenuItem(
-                                        child: Text(category),
-                                        value: category,
+                                        child: Text(appLocalizations.translate(category)),
+                                        value: appLocalizations.translate(category),
                                       );
                                     }).toList(),
                                   ),
@@ -295,7 +319,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 5.0),
                           HeaderWidget(
-                            headerText: 'Date *',
+                            headerText: appLocalizations.translate('date') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -337,7 +361,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 10.0),
                           HeaderWidget(
-                            headerText: 'Mode of payment *',
+                            headerText: appLocalizations.translate('modeOfPayment') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16,
                             textColor: Colors.black,
@@ -371,9 +395,11 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                     provider.setMode(value);
                                   },
                                   items: Constant.paymentList.map((mode) {
+                                    mode = getModeKey(mode);
+
                                     return DropdownMenuItem(
-                                      child: Text(mode),
-                                      value: mode,
+                                      child: Text(appLocalizations.translate(mode)),
+                                      value: appLocalizations.translate(mode),
                                     );
                                   }).toList(),
                                 ),
@@ -382,7 +408,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 10.0),
                           HeaderWidget(
-                            headerText: 'Comment',
+                            headerText: appLocalizations.translate('comment'),
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
                             textColor: Colors.black,
@@ -450,7 +476,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               ),
                               child: Center(
                                 child: HeaderWidget(
-                                  headerText: '+ Save ${changeTransactionName(widget.transactionType)}',
+                                  headerText: appLocalizations.translate('saveTransaction'),
                                   maxFontSize: 18.0,
                                   minFontSize: 18.0,
                                   textColor: Colors.white,
@@ -494,10 +520,16 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
+          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: getModeValue(provider.mode), contact: _contact, comments: _comment);
 
       TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
-        _showSnackBar(response.message);
+        String message;
+        if (response.statusCode == 200 || response.statusCode == 0)
+          message = appLocalizations.translate(response.message);
+        else
+          message = response.message;
+
+        _showSnackBar(message);
 
         //if the response is ok, then pop with a delay of 1 sec, otherwise instantly
         if (response.statusCode == 200) {
@@ -511,7 +543,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         }
       });
     } else {
-      _showSnackBar('Please provide all the required information');
+      _showSnackBar(appLocalizations.translate('provideAllInfo'));
     }
   }
 
@@ -537,5 +569,52 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   ///navigates to main screen
   void _goToMainScreen() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+  }
+
+  /// returns category according to the selected category
+  /// TODO: see what is to be passed as category in the API, and just return that parameter in here
+  String getCategory(String category) {
+    if (category == appLocalizations.translate('credit'))
+      return 'Credit';
+    else
+      return 'Debit';
+  }
+  /// returns key for modes
+  String getModeKey(String mode) {
+    if (mode == 'Account Transfer')
+      return 'accountTransfer';
+    else
+      return mode.toLowerCase();
+  }
+
+  /// returns mode value, based on the mode selected
+  /// [1 for cash, 2 for card, 3 for cheque, 5 for account transfer]
+  String getModeValue(String mode) {
+    switch (mode) {
+      case "Cash":
+      case "पैसे":
+        mode = '1';
+        break;
+
+      case "Card":
+      case "कार्ड":
+        mode = '2';
+        break;
+
+      case "Cheque":
+      case "चेक":
+        mode = '3';
+        break;
+
+      case "Account Transfer":
+      case "खाता स्थानांतरण":
+        mode = '5';
+        break;
+
+      default:
+        mode = '1';
+    }
+
+    return mode;
   }
 }

@@ -8,6 +8,7 @@ import 'package:hisabkitab/src/screens/account_screen/otp_login.dart';
 import 'package:hisabkitab/src/screens/account_screen/sign_up_screen.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  AppLocalizations appLocalizations;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -56,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                     Container(
                       margin: EdgeInsets.only(top: 30.0, bottom: 20.0),
                       child: HeaderWidget(
-                        headerText: 'LOGIN',
+                        headerText: appLocalizations.translate('login'),
                         maxFontSize: 30,
                         minFontSize: 25,
                         textColor: Colors.black,
@@ -81,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                           Container(
                             margin: EdgeInsets.only(top: 30.0, left: 20.0),
                             child: HeaderWidget(
-                              headerText: 'Sign in to continue',
+                              headerText: appLocalizations.translate('signInToContinue'),
                               textColor: Colors.black54,
                               maxFontSize: 18,
                               minFontSize: 15,
@@ -97,14 +101,20 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   child: TextFormField(
                                     autovalidate: provider.autoValidate,
                                     controller: usernameController,
-                                    validator: validateField,
+                                    validator: (value) {
+                                      String result = validateField(value);
+                                      if (result != null)
+                                        return appLocalizations.translate(result);
+                                      else
+                                        return result;
+                                    },
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
-                                      hintText: 'Email/Phone',
+                                      hintText: appLocalizations.translate('emailPhone'),
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
                                         color: Colors.grey.shade400,
@@ -125,11 +135,17 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     textAlign: TextAlign.left,
                                     controller: passwordController,
                                     autovalidate: provider.autoValidate,
-                                    validator: validateField,
+                                    validator: (value) {
+                                      String result = validateField(value);
+                                      if (result != null)
+                                        return appLocalizations.translate(result);
+                                      else
+                                        return result;
+                                    },
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                       fillColor: Colors.white,
-                                      hintText: 'Password',
+                                      hintText: appLocalizations.translate('password'),
                                       alignLabelWithHint: true,
                                       hintStyle: GoogleFonts.nunito(
                                         color: Colors.grey.shade400,
@@ -170,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                           _onLoginPressed();
                         },
                         child: HeaderWidget(
-                          headerText: 'LOGIN',
+                          headerText: appLocalizations.translate('login'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: Colors.white,
@@ -186,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                     ),
                     GestureDetector(
                       onTap: () {
+                        provider.setLoading(false, willNotify: false);
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => OTPLoginScreen(),
@@ -195,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                       child: Container(
                         margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
                         child: Text(
-                          'Forgot Password? Login with OTP.',
+                          appLocalizations.translate('forgotPassLogWithOTP'),
                           style: GoogleFonts.nunito(
                             fontSize: 16.0,
                             wordSpacing: 1,
@@ -213,6 +230,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                           color: primaryColor,
                         ),
                         onPressed: () {
+                          provider.setLoading(false, willNotify: false);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => SignUpScreen(),
@@ -220,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                           );
                         },
                         child: HeaderWidget(
-                          headerText: 'SIGN UP',
+                          headerText: appLocalizations.translate('signUp'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: primaryColor,
@@ -265,7 +283,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
       _futureUser.then((response) {
         provider.setLoading(false);
         if (response.error != null) {
-          showSnackBar(response.error ?? '');
+          String error = response.error;
+          if (response.statusCode == 0)
+            error = appLocalizations.translate(error);
+
+          showSnackBar(error ?? '');
         } else if (response.data.token != null) {
           provider.setCurrentTab(0, willNotify: false);
           provider.setCurrentPage(Dashboard(), willNotify: false);

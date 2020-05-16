@@ -18,7 +18,7 @@ class SignUpAPIController {
         ),
       );
     } catch (_) {
-      return UserAccount.withError(Constants.serverError);
+      return UserAccount.withError('serverError', statusCode: 0);
     }
 
     final int statusCode = response.statusCode;
@@ -42,15 +42,14 @@ class SignUpAPIController {
             var parsedData = json.decode(dataObject);
             var nonFieldErrors = parsedData['non_field_errors'];
             if (nonFieldErrors != null) {
-              return UserAccount.withError('Email or Mobile already used');
+              return UserAccount.withError('alreadyExistingError', statusCode: 0);
             }
           }
         } catch (e) {
           return UserAccount.withError(e.toString());
         }
       }
-      // return UserAccount.withError(errorMessage);
-      return UserAccount.withError('Email or Mobile already used');
+      return UserAccount.withError('alreadyExistingError', statusCode: 0);
     }
   }
 }

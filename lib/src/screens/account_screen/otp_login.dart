@@ -6,6 +6,7 @@ import 'package:hisabkitab/src/models/password_response.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/sign_up_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:hisabkitab/utils/utility.dart';
@@ -27,6 +28,8 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  AppLocalizations appLocalizations;
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +40,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -55,7 +59,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                     Container(
                       margin: EdgeInsets.only(top: 30.0, bottom: 20.0),
                       child: HeaderWidget(
-                        headerText: 'LOGIN WITH OTP',
+                        headerText: appLocalizations.translate('logWithOTP'),
                         maxFontSize: 30,
                         minFontSize: 25,
                         textColor: Colors.black,
@@ -83,7 +87,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                             Container(
                               margin: EdgeInsets.only(top: 30.0, left: 20.0),
                               child: HeaderWidget(
-                                headerText: 'Sign in to continue',
+                                headerText: appLocalizations.translate('signInToContinue'),
                                 textColor: Colors.black54,
                                 maxFontSize: 18,
                                 minFontSize: 15,
@@ -96,14 +100,19 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                 controller: _email,
                                 cursorColor: primaryColor,
                                 textAlign: TextAlign.left,
-                                validator: validateEmail,
+                                validator: (value) {
+                                  String result = validateEmail(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 autovalidate: provider.autoValidate,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: 'Email',
+                                  hintText: appLocalizations.translate('email'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -117,20 +126,24 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                             ),
                             provider.getOTPRequested
                                 ? Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        15.0, 0.0, 15.0, 15.0),
+                                    margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                     padding: EdgeInsets.all(8.0),
                                     child: TextFormField(
                                       controller: _otp,
                                       cursorColor: primaryColor,
                                       textAlign: TextAlign.left,
-                                      validator: validateOTPLength,
+                                      validator: (value) {
+                                        String result = validateOTPLength(value);
+                                        if (result != null)
+                                          return appLocalizations.translate(result);
+                                        else
+                                          return result;
+                                      },
                                       autovalidate: provider.autoValidate,
                                       maxLength: 7,
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.fromLTRB(
-                                            10.0, 0.0, 0.0, 0.0),
+                                        contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                         fillColor: Colors.white,
                                         hintText: 'OTP',
                                         alignLabelWithHint: true,
@@ -139,8 +152,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                           fontSize: 14,
                                         ),
                                         border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
+                                          borderRadius: BorderRadius.circular(10.0),
                                         ),
                                       ),
                                     ),
@@ -157,8 +169,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                       child: RaisedButton(
                         onPressed: onButtonPressed,
                         child: HeaderWidget(
-                          headerText:
-                              !provider.getOTPRequested ? 'GET OTP' : 'LOGIN',
+                          headerText: !provider.getOTPRequested ? appLocalizations.translate('getOTP') : appLocalizations.translate('login'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: Colors.white,
@@ -181,6 +192,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                           color: primaryColor,
                         ),
                         onPressed: () {
+                          provider.setLoading(false, willNotify: false);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => SignUpScreen(),
@@ -188,7 +200,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                           );
                         },
                         child: HeaderWidget(
-                          headerText: 'SIGN UP',
+                          headerText: appLocalizations.translate('signUp'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: primaryColor,
@@ -229,21 +241,18 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
 
   void getOTP() {
     (provider.getOTPRequested) ? otp = int?.tryParse(_otp.text) : otp = null;
-    Future<PasswordResponse> _futureGetOTP =
-        LoginAPIController.getOtp(_email.text, otp: otp);
+    Future<PasswordResponse> _futureGetOTP = LoginAPIController.getOtp(_email.text, otp: otp);
     _futureGetOTP.then((response) {
       print(response.data);
       provider.setLoading(false);
-      if (response.statusCode == HTTP_201_CREATED ||
-          response.statusCode == HTTP_202_ACCEPTED) {
-        _showSnackBar(response.data + ' Please check Your Email.' ?? '');
+      if (response.statusCode == HTTP_201_CREATED || response.statusCode == HTTP_202_ACCEPTED) {
+        _showSnackBar(response.data + appLocalizations.translate('checkEmail') ?? '');
         print(response.data);
         Future.delayed(Duration(seconds: 2), () {
           provider.setAutoValidate(false, willNotify: false);
           provider.setOTPRequested(true);
         });
-      } else if (response.statusCode == HTTP_200_OK &&
-          response.data.split('.').length == 3) {
+      } else if (response.statusCode == HTTP_200_OK && response.data.split('.').length == 3) {
         Utility.saveToken(response.data);
         provider.setNeedsUpdate(true, willNotify: false);
         Navigator.of(context).pushReplacement(
@@ -255,14 +264,21 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
         if (response.data.contains('Attempt exceeded')) {
           _showSnackBar(response?.data ?? '');
           Future.delayed(Duration(seconds: 1), () {
+            provider.setLoading(false, willNotify: false);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => OTPLoginScreen(),
               ),
             );
           });
-        } else
-          _showSnackBar(response?.data ?? '');
+        } else {
+          String error = response.data;
+          if (error != null && error.isNotEmpty && response.statusCode == 0) {
+            error = appLocalizations.translate(error);
+          }
+
+          _showSnackBar(error);
+        }
       }
     });
   }

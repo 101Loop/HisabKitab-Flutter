@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/provider/store.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
@@ -12,8 +13,7 @@ class ChangePasswordScreen extends StatefulWidget {
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen>
-    with ValidationMixin {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> with ValidationMixin {
   double deviceHeight;
   double deviceWidth;
   AppState provider;
@@ -24,7 +24,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   String _confirmedPassword;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  
+
+  AppLocalizations appLocalizations;
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -52,7 +55,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     Container(
                       margin: EdgeInsets.only(top: 30.0, bottom: 20.0),
                       child: HeaderWidget(
-                        headerText: 'CHANGE PASSWORD',
+                        headerText: appLocalizations.translate('changePassword'),
                         maxFontSize: 30,
                         minFontSize: 25,
                         textColor: Colors.black,
@@ -80,7 +83,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                               margin: EdgeInsets.all(15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
-                                validator: validatePassword,
+                                validator: (value) {
+                                  String result = validatePassword(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 onSaved: (value) {
                                   _password = value;
                                 },
@@ -91,10 +100,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
                                   errorMaxLines: 3,
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: 'New password',
+                                  hintText: appLocalizations.translate('newPassword'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -107,24 +115,28 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                               ),
                             ),
                             Container(
-                              margin:
-                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 onSaved: (value) {
                                   _confirmedPassword = value;
                                 },
-                                validator: validateField,
+                                validator: (value) {
+                                  String result = validateField(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 obscureText: true,
                                 autovalidate: provider.autoValidate,
                                 cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: 'Confirm password',
+                                  hintText: appLocalizations.translate('confirmPassword'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -149,7 +161,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                           _submit();
                         },
                         child: HeaderWidget(
-                          headerText: 'UPDATE PASSWORD',
+                          headerText: appLocalizations.translate('updatePassword'),
                           maxFontSize: 19,
                           minFontSize: 17,
                           textColor: Colors.white,
@@ -171,8 +183,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
             provider.isLoading
                 ? Center(
                     child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                    valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                   ))
                 : Container(),
           ],
@@ -201,21 +212,29 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
       if (_password == _confirmedPassword) {
         LoginAPIController.updatePassword(_password).then((response) {
           provider.setLoading(false, willNotify: false);
-          if (response.statusCode == Constants.HTTP_202_ACCEPTED ||
-              response.statusCode == Constants.HTTP_200_OK) {
-            _showSnackBar(response.data ?? 'Password updated successfully');
+          if (response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
+            _showSnackBar(response.data ?? appLocalizations.translate('passwordUpdatedSuccessfully'));
 
             Future.delayed(Duration(seconds: 2), () {
               Navigator.of(context).pop();
             });
           } else {
             provider.setLoading(false);
-            _showSnackBar(response.data ?? Constants.serverError);
+            String error = response.data;
+            if (error != null && error.isNotEmpty) {
+              if (response.statusCode == 0) {
+                error = appLocalizations.translate(error);
+              }
+            } else {
+              error = appLocalizations.translate('serverError');
+            }
+
+            _showSnackBar(error);
           }
         });
       } else {
         provider.setLoading(false);
-        _showSnackBar('Passwords must be matching!');
+        _showSnackBar(appLocalizations.translate('passwordMustMatch'));
       }
     }
   }

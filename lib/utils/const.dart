@@ -32,10 +32,6 @@ const String username = "username";
 const String password = "password";
 const String TOKEN = "token";
 
-///constants
-const String serverError =
-    "Server is not responding, Please check your connection and try again later!";
-
 ///http codes
 const int HTTP_200_OK = 200;
 const int HTTP_201_CREATED = 201;
@@ -69,12 +65,12 @@ const List<String> paymentList = [
   'Account Transfer',
   'Card',
 ];
-const List<String> categoryList = ['Credit', 'Debit'];
+const List<String> categoryList = ['credit', 'debit'];
 const Map<String, String> paymentMap = {
-  'Cash': '1',
-  'Cheque': '2',
-  'Account Transfer': '3',
-  'Card': '5',
+  'cash': '1',
+  'cheque': '2',
+  'accountTransfer': '3',
+  'card': '5',
 };
 
 ///static vars

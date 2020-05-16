@@ -7,6 +7,7 @@ import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/utility.dart';
@@ -36,6 +37,8 @@ class _AccountState extends State<Account> with ValidationMixin {
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
+
+  AppLocalizations appLocalizations;
 
   @override
   void initState() {
@@ -83,6 +86,7 @@ class _AccountState extends State<Account> with ValidationMixin {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -103,7 +107,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Text(
-                          'Profile',
+                          appLocalizations.translate('profile'),
                           style: GoogleFonts.roboto(
                             fontSize: 18.0,
                             fontWeight: FontWeight.w500,
@@ -136,7 +140,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                     ),
                     SizedBox(height: 10.0),
                     HeaderWidget(
-                      headerText: provider.userProfile?.name ?? 'Unknown',
+                      headerText: provider.userProfile?.name ?? appLocalizations.translate('unknown'),
                       maxFontSize: 22,
                       minFontSize: 20,
                       textColor: Colors.black,
@@ -168,7 +172,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: 'Name',
+                                  hintText: appLocalizations.translate('name'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -188,14 +192,20 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 onSaved: (value) {
                                   _mobile = value;
                                 },
-                                validator: validateMobile,
+                                validator: (value) {
+                                  String result = validateMobile(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: 'Mobile',
+                                  hintText: appLocalizations.translate('mobile'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -215,14 +225,20 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 onSaved: (value) {
                                   _email = value;
                                 },
-                                validator: validateEmail,
+                                validator: (value) {
+                                  String result = validateEmail(value);
+                                  if (result != null)
+                                    return appLocalizations.translate(result);
+                                  else
+                                    return result;
+                                },
                                 cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: 'Email-ID',
+                                  hintText: appLocalizations.translate('emailId'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -247,7 +263,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                           _submit();
                         },
                         child: HeaderWidget(
-                          headerText: 'Update Profile',
+                          headerText: appLocalizations.translate('updateProfile'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: Colors.white,
@@ -272,7 +288,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                       child: Container(
                         margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
                         child: Text(
-                          'Change Password?',
+                          appLocalizations.translate('changePassword') + ' ?',
                           style: GoogleFonts.nunito(
                             fontSize: 16.0,
                             wordSpacing: 1,
@@ -293,7 +309,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                           _logout();
                         },
                         child: HeaderWidget(
-                          headerText: 'LOGOUT',
+                          headerText: appLocalizations.translate('logout'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: Constants.primaryColor,
@@ -354,12 +370,16 @@ class _AccountState extends State<Account> with ValidationMixin {
           provider.setLoading(false);
           if (response.error?.isNotEmpty ?? false) {
             if (response.error.contains('This mobile number is already registered')) {
-              _showSnackBar('Entered Mobile or Email already exists with some other account');
+              _showSnackBar(appLocalizations.translate('alreadyExistingError'));
             } else {
-              _showSnackBar(response?.error);
+              String error = response.error;
+              if (response.statusCode == 0)
+                error = appLocalizations.translate(error);
+
+              _showSnackBar(error);
             }
           } else {
-            _showSnackBar('Profile updated successfully');
+            _showSnackBar(appLocalizations.translate('profileUpdated'));
 
             List<String> name = response.name?.split(' ');
             if (name != null) {

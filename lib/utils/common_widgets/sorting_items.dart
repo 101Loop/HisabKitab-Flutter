@@ -7,18 +7,18 @@ class SortingItems {
 final List<SortingItems> sortingItems = [
   SortingItems(
     sortScheme: 0,
-    name: 'A => Z',
+    name: 'aToZ',
   ),
   SortingItems(
     sortScheme: 1,
-    name: 'Z => A',
+    name: 'zToA',
   ),
   SortingItems(
     sortScheme: 2,
-    name: 'Price (Higher => Lower)',
+    name: 'priceHighToLow',
   ),
   SortingItems(
     sortScheme: 3,
-    name: 'Price (Lower => Higher)',
+    name: 'priceLowToHigh',
   ),
 ];

@@ -54,8 +54,8 @@ class TransactionDetails {
     );
   }
 
-  factory TransactionDetails.withError(String error) {
-    return TransactionDetails(message: error);
+  factory TransactionDetails.withError(String error, {int statusCode = -1}) {
+    return TransactionDetails(message: error, statusCode: statusCode);
   }
 
   Map<String, dynamic> toMap() {
@@ -80,7 +80,8 @@ class Mode {
   Mode({this.id, this.mode});
 
   factory Mode.fromJson(var json) {
-    return Mode(id: json['id'], mode: json['mode']);
+    String mode = json['mode'].toString().replaceAll(' ', '');
+    return Mode(id: json['id'], mode: mode);
   }
 }
 

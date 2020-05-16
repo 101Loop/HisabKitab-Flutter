@@ -6,6 +6,7 @@ import 'package:hisabkitab/src/screens/about_us.dart';
 import 'package:hisabkitab/src/screens/account_screen/account.dart';
 import 'package:hisabkitab/src/screens/add_transaction.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/baked_icons/rupee_icon_icons.dart';
 import 'package:hisabkitab/utils/const.dart';
 import 'package:provider/provider.dart';
@@ -18,15 +19,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   AppState provider;
 
+  AppLocalizations appLocalizations;
+
   Widget addExpense() {
     return GestureDetector(
       onTap: () async {
-        _navigateToTransactionScreen('Add expense', 'Debit');
+        _navigateToTransactionScreen(appLocalizations.translate('addExpense'), appLocalizations.translate('debit'));
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
         child: Text(
-          'Add Expense',
+          appLocalizations.translate('addExpense'),
           style: GoogleFonts.nunito(
             color: Colors.white,
           ),
@@ -42,12 +45,12 @@ class _MainScreenState extends State<MainScreen> {
   Widget addEarning() {
     return GestureDetector(
       onTap: () {
-        _navigateToTransactionScreen('Add earning', 'Credit');
+        _navigateToTransactionScreen(appLocalizations.translate('addEarning'), appLocalizations.translate('credit'));
       },
       child: Container(
         padding: EdgeInsets.all(8.0),
         child: Text(
-          'Add Earning',
+          appLocalizations.translate('addEarning'),
           style: GoogleFonts.nunito(
             color: Colors.white,
           ),
@@ -95,6 +98,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
@@ -185,7 +189,7 @@ class _MainScreenState extends State<MainScreen> {
                   title: Padding(
                     padding: const EdgeInsets.only(top: 3.0),
                     child: Text(
-                      'Dashboard',
+                      appLocalizations.translate('dashboard'),
                       style: TextStyle(
                         fontSize: 12,
                       ),
@@ -195,7 +199,7 @@ class _MainScreenState extends State<MainScreen> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person_outline),
                   title: Text(
-                    'Account',
+                    appLocalizations.translate('account'),
                     style: TextStyle(
                       fontSize: 12,
                     ),
@@ -204,7 +208,7 @@ class _MainScreenState extends State<MainScreen> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.info_outline),
                   title: Text(
-                    'About Us',
+                    appLocalizations.translate('aboutUs'),
                     style: TextStyle(
                       fontSize: 12,
                     ),
@@ -236,8 +240,8 @@ class _MainScreenState extends State<MainScreen> {
     //exit the app if already on 1st tab
     if (provider.currentPage == dashboard) {
       _showAlertDialog(
-        'Confirm',
-        'Are you sure to exit the app?',
+        appLocalizations.translate('confirm'),
+        appLocalizations.translate('areYouSure'),
         () {
           SystemNavigator.pop();
         },
@@ -274,7 +278,7 @@ class _MainScreenState extends State<MainScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               color: Colors.red,
               child: Text(
-                'CANCEL',
+                appLocalizations.translate('cancel'),
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -288,7 +292,7 @@ class _MainScreenState extends State<MainScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               color: primaryColor,
               child: Text(
-                'OK',
+                appLocalizations.translate('ok'),
                 style: TextStyle(
                   color: Colors.white,
                 ),

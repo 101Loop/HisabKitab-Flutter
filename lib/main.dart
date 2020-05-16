@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hisabkitab/app.dart' as App;
 import 'package:hisabkitab/src/provider/store.dart';
+import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:provider/provider.dart';
 import 'package:sentry/sentry.dart';
@@ -46,6 +48,23 @@ class MyApp extends StatelessWidget {
           primarySwatch: Constants.primarySwatch,
         ),
         home: App.App(),
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('en', 'US'), // English
+          Locale('hi', 'IN'), // Hindi
+        ],
+        localeResolutionCallback: (locale, supportedLocales) {
+          for (var currentLocale in supportedLocales) {
+            if (currentLocale.languageCode == locale.languageCode && currentLocale.countryCode == locale.countryCode)
+              return currentLocale;
+          }
+          return supportedLocales.first;
+        },
       ),
     );
   }
