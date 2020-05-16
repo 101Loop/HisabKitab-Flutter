@@ -520,7 +520,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       _formState.save();
 
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount), category: provider.category[0], transactionDate: provider.dateTime, mode: getModeValue(provider.mode), contact: _contact, comments: _comment);
+          amount: double.parse(_amount), category: getCategory(provider.category[0]), transactionDate: provider.dateTime, mode: getModeValue(provider.mode), contact: _contact, comments: _comment);
 
       TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
         String message;
@@ -572,12 +572,11 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   }
 
   /// returns category according to the selected category
-  /// TODO: see what is to be passed as category in the API, and just return that parameter in here
   String getCategory(String category) {
     if (category == appLocalizations.translate('credit'))
-      return 'Credit';
+      return 'C';
     else
-      return 'Debit';
+      return 'D';
   }
   /// returns key for modes
   String getModeKey(String mode) {
