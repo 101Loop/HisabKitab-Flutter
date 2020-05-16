@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 bottom: deviceHeight * 0.41,
                 child: Center(
                   child: Text(
-                    AppLocalizations.of(context).translate('appName'),
+                    'Hisab Kitab',
                     style: TextStyle(
                       fontFamily: 'YeonSung',
                       fontSize: 33.0,

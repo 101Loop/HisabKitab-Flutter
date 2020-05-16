@@ -571,6 +571,14 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 
+  /// returns category according to the selected category
+  /// TODO: see what is to be passed as category in the API, and just return that parameter in here
+  String getCategory(String category) {
+    if (category == appLocalizations.translate('credit'))
+      return 'Credit';
+    else
+      return 'Debit';
+  }
   /// returns key for modes
   String getModeKey(String mode) {
     if (mode == 'Account Transfer')
