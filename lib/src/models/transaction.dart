@@ -80,8 +80,7 @@ class Mode {
   Mode({this.id, this.mode});
 
   factory Mode.fromJson(var json) {
-    String mode = json['mode'].toString().replaceAll(' ', '');
-    return Mode(id: json['id'], mode: mode);
+    return Mode(id: json['id'], mode: json['mode']);
   }
 }
 
