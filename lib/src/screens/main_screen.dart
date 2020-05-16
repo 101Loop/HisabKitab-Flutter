@@ -83,8 +83,10 @@ class _MainScreenState extends State<MainScreen> {
       key: dashboardKey,
     );
     account = Account(
-      key: accountKey,
-    );
+        key: accountKey,
+        languageUpdateCallback: () {
+          setState(() {});
+        });
     aboutUs = AboutUs(
       key: aboutUsKey,
     );

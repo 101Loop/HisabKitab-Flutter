@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:hisabkitab/main.dart';
 
 class AppLocalizations {
   final Locale locale;
@@ -19,7 +20,11 @@ class AppLocalizations {
 
   /// loads the json
   Future<bool> load() async {
-    String jsonString = await rootBundle.loadString('lang/${locale.languageCode}.json');
+    String languageCode = prefs.getString('languageCode');
+    if (languageCode == null)
+      languageCode = locale.languageCode;
+
+    String jsonString = await rootBundle.loadString('lang/$languageCode.json');
     Map<String, dynamic> jsonMap = json.decode(jsonString);
     _localizedMap = jsonMap.map((key, value) {
       return MapEntry(key, value.toString());
