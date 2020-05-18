@@ -99,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   margin: EdgeInsets.all(15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    key: ValueKey('usernameField'),
                                     autovalidate: provider.autoValidate,
                                     controller: usernameController,
                                     validator: (value) {
@@ -130,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    key: ValueKey('passwordField'),
                                     obscureText: provider.isHideText,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
@@ -182,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                       width: deviceWidth * 0.75,
                       height: 50.0,
                       child: RaisedButton(
+                        key: ValueKey('loginBtn'),
                         onPressed: () {
                           _onLoginPressed();
                         },

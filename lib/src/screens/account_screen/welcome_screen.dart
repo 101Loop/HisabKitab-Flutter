@@ -88,6 +88,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         width: deviceWidth * 0.75,
                         height: 50.0,
                         child: RaisedButton(
+                          key: ValueKey('loginButton'),
                           onPressed: () {
                             Provider.of<AppState>(context, listen: false).setLoading(false, willNotify: false);
                             Navigator.of(context).push(

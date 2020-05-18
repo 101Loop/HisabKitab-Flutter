@@ -174,6 +174,7 @@ class _MainScreenState extends State<MainScreen> {
               topRight: Radius.circular(20.0),
             ),
             child: BottomNavigationBar(
+              key: ValueKey('bottomNavBar'),
               onTap: (int value) {
                 if (value != 3) {
                   provider.setLoading(false, willNotify: false);
