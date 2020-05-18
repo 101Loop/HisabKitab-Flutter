@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
@@ -14,7 +17,9 @@ import 'package:hisabkitab/utils/utility.dart';
 import 'package:provider/provider.dart';
 
 class Account extends StatefulWidget {
-  Account({Key key}) : super(key: key);
+  final Function languageUpdateCallback;
+
+  Account({Key key, @required this.languageUpdateCallback}) : super(key: key);
 
   @override
   _AccountState createState() => _AccountState();
@@ -40,10 +45,17 @@ class _AccountState extends State<Account> with ValidationMixin {
 
   AppLocalizations appLocalizations;
 
+  List<Map<String, String>> availableLangList = List();
+
+  String _currentSelectedLang = '';
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getAvailableLangs();
+      _currentSelectedLang = prefs.getString('languageCode');
+
       AppState initStateProvider = Provider.of<AppState>(context, listen: false);
       if (initStateProvider.userProfile == null)
         LoginAPIController.getUserProfile().then(
@@ -102,18 +114,29 @@ class _AccountState extends State<Account> with ValidationMixin {
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: <Widget>[
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          appLocalizations.translate('profile'),
-                          style: GoogleFonts.roboto(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w500,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              appLocalizations.translate('profile'),
+                              style: GoogleFonts.roboto(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        GestureDetector(
+                          onTap: () {
+                            _showLanguageChangeDialog();
+                          },
+                          child: LanguageBtn(),
+                        )
+                      ],
                     ),
                     SizedBox(height: 50.0),
                     Container(
@@ -373,8 +396,7 @@ class _AccountState extends State<Account> with ValidationMixin {
               _showSnackBar(appLocalizations.translate('alreadyExistingError'));
             } else {
               String error = response.error;
-              if (response.statusCode == 0)
-                error = appLocalizations.translate(error);
+              if (response.statusCode == 0) error = appLocalizations.translate(error);
 
               _showSnackBar(error);
             }
@@ -407,6 +429,119 @@ class _AccountState extends State<Account> with ValidationMixin {
       MaterialPageRoute(
         builder: (context) => WelcomeScreen(),
       ),
+    );
+  }
+
+  /// displays dialog to change location
+  Future<bool> _showLanguageChangeDialog() {
+    return showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              title: Text(appLocalizations.translate('changeLanguage')),
+              contentPadding: const EdgeInsets.all(5.0),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(height: 10),
+                  Container(
+                    width: 300,
+                    height: 150,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: availableLangList.length,
+                      itemBuilder: _langOptionItemBuilder,
+                    ),
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(appLocalizations.translate('cancel')),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+  }
+
+  /// gets available languages from langs.json file
+  void _getAvailableLangs() async {
+    availableLangList.clear();
+    var langJsonString = await rootBundle.loadString('lang/langs.json');
+    List langList = json.decode(langJsonString);
+    langList.forEach((item) {
+      Map<String, String> map = (item as Map).map((key, value) => MapEntry(key, value != null ? value.toString() : null));
+      availableLangList.add(map);
+    });
+  }
+
+  /// item widget builder, creates a LanguageOption widget
+  Widget _langOptionItemBuilder(BuildContext context, int index) {
+    String language = availableLangList[index]['language'];
+    String languageCode = availableLangList[index]['languageCode'];
+
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            _currentSelectedLang = languageCode;
+            prefs.setString('languageCode', languageCode);
+            appLocalizations.load();
+            setState(() {});
+            widget.languageUpdateCallback();
+            Navigator.of(context).pop();
+          },
+          child: LanguageOption(language: language, isSelected: languageCode == _currentSelectedLang),
+        ),
+        index != availableLangList.length - 1 ? Divider() : Container()
+      ],
+    );
+  }
+}
+
+/// stateless widget for language option
+class LanguageOption extends StatelessWidget {
+  final String language;    // language to be shown
+  final bool isSelected;    // bool to highlight the selected language
+
+  LanguageOption({this.language, this.isSelected = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.7,
+      color: Colors.transparent,
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Align(
+          alignment: Alignment.center,
+          heightFactor: 1.5,
+          widthFactor: 1.5,
+          child: Text(
+            language,
+            style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// stateless widget for language change button
+class LanguageBtn extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.language,
+      color: Colors.black54,
     );
   }
 }

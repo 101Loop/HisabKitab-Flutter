@@ -87,5 +87,6 @@
   "transactionAddedSuccessful": "Transaction added successfully",
   "transactionUpdatedSuccessful": "Transaction updated successfully",
   "somethingWentWrong": "Something went wrong!, Please try again later",
-  "serverError": "Server is not responding, Please check your connection and try again later!"
+  "serverError": "Server is not responding, Please check your connection and try again later!",
+  "changeLanguage": "Change language"
 }

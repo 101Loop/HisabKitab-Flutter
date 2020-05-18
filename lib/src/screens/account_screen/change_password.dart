@@ -213,7 +213,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
         LoginAPIController.updatePassword(_password).then((response) {
           provider.setLoading(false, willNotify: false);
           if (response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
-            _showSnackBar(response.data ?? appLocalizations.translate('passwordUpdatedSuccessfully'));
+            String responseData = response.data;
+            if (response.statusCode == Constants.HTTP_202_ACCEPTED) responseData = appLocalizations.translate(responseData);
+
+            _showSnackBar(responseData ?? appLocalizations.translate('passwordUpdatedSuccessfully'));
 
             Future.delayed(Duration(seconds: 2), () {
               Navigator.of(context).pop();
