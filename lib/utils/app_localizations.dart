@@ -21,7 +21,7 @@ class AppLocalizations {
   /// loads the json
   Future<bool> load() async {
     String languageCode = prefs.getString('languageCode');
-    if (languageCode == null)
+    if (languageCode == null || languageCode.isEmpty || languageCode == "null")
       languageCode = locale.languageCode;
 
     String jsonString = await rootBundle.loadString('lang/$languageCode.json');
