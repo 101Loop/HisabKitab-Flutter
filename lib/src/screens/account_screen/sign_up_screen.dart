@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/signUp_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user_account.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -389,7 +389,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
     if (form.validate()) {
       provider.setLoading(true);
       form.save();
-      signUpResponse = SignUpAPIController.registerUser(userAccount);
+      signUpResponse = APIController.registerUser(userAccount);
       signUpResponse.then((response) {
         provider.setLoading(false);
         if (response.error != null) {

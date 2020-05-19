@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -282,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
         username: usernameController.text,
         password: passwordController.text,
       );
-      _futureUser = LoginAPIController.login(user);
+      _futureUser = APIController.login(user);
       _futureUser.then((response) {
         provider.setLoading(false);
         if (response.error != null) {

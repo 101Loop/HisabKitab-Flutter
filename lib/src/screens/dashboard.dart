@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/transaction_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/models/paginated_response.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -84,7 +84,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
           }
         }
 
-        _futureTransactionDetails = TransactionApiController.getTransaction(queryParams);
+        _futureTransactionDetails = APIController.getTransaction(queryParams);
         _futureTransactionDetails.then((response) {
           var list = response.results as List;
           List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
@@ -406,7 +406,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                           onPressed: () {
                             print(_currentTransaction.id);
                             print(_currentTransaction.amount);
-                            TransactionApiController.deleteTransaction(_currentTransaction.id);
+                            APIController.deleteTransaction(_currentTransaction.id);
                             Navigator.of(context).pop(true);
 
                             provider.transactionList.removeAt(index);
@@ -501,7 +501,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     if (next?.isNotEmpty ?? false) {
       List<TransactionDetails> _tempList = List.from(provider.transactionList);
       provider.setLoadingItems(true);
-      TransactionApiController.getTransaction(queryParams, next: next).then(
+      APIController.getTransaction(queryParams, next: next).then(
         (response) {
           _isLoadingItems = false;
           provider.setLoadingItems(false, willNotify: false);

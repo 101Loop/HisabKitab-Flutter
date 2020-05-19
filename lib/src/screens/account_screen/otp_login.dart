@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/password_response.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -241,7 +241,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
 
   void getOTP() {
     (provider.getOTPRequested) ? otp = int?.tryParse(_otp.text) : otp = null;
-    Future<PasswordResponse> _futureGetOTP = LoginAPIController.getOtp(_email.text, otp: otp);
+    Future<PasswordResponse> _futureGetOTP = APIController.getOtp(_email.text, otp: otp);
     _futureGetOTP.then((response) {
       print(response.data);
       provider.setLoading(false);

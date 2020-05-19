@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/utils/app_localizations.dart';
@@ -210,7 +210,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
       _formState.save();
 
       if (_password == _confirmedPassword) {
-        LoginAPIController.updatePassword(_password).then((response) {
+        APIController.updatePassword(_password).then((response) {
           provider.setLoading(false, willNotify: false);
           if (response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
             String responseData = response.data;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hisabkitab/src/api_controller/transaction_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -518,7 +518,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       TransactionDetails transactionDetails = TransactionDetails(
           amount: double.parse(_amount), category: getCategory(provider.category[0]), transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
 
-      TransactionApiController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
+      APIController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
         String message;
         if (response.statusCode == 200 || response.statusCode == 0)
           message = appLocalizations.translate(response.message);
