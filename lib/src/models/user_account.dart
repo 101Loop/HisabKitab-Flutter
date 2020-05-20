@@ -1,22 +1,38 @@
 import 'package:hisabkitab/utils/const.dart' as Keys;
 
+/// Model class for [UserAccount].
+///
+/// Represents the user's account
 class UserAccount {
+  /// User account's data having account related details
   Data data;
+
+  /// Error, encountered while fetching the response from the server
   String error;
+
+  /// Response code while fetching the data from the server
   int statusCode;
 
+  /// Constructor.
   UserAccount({this.data, this.error, this.statusCode});
 
-  UserAccount.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    statusCode = 200;
+  /// Returns [UserAccount] object from [json].
+  factory UserAccount.fromJson(Map<String, dynamic> json) {
+    return UserAccount(
+      data: json['data'] != null ? new Data.fromJson(json['data']) : null,
+      statusCode: 200,
+    );
   }
 
+  /// Returns [UserAccount] object wight [error].
   factory UserAccount.withError(String error, {int statusCode = -1}) {
     return UserAccount(error: error, statusCode: statusCode);
   }
 }
 
+/// Model class for [Data].
+///
+/// Represents some basic details of the user's account
 class Data {
   String name;
   String username;
@@ -24,16 +40,21 @@ class Data {
   String mobile;
   String password;
 
+  /// Constructor.
   Data({this.name, this.username, this.email, this.mobile, this.password});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    name = json[Keys.name];
-    username = json[Keys.username];
-    email = json[Keys.email];
-    mobile = json[Keys.mobile];
-    password = json[Keys.password];
+  /// Returns [Data] object from [json].
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      name: json[Keys.name],
+      username: json[Keys.username],
+      email: json[Keys.email],
+      mobile: json[Keys.mobile],
+      password: json[Keys.password],
+    );
   }
 
+  /// Returns map representation of [Data] object.
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data[Keys.name] = this.name;

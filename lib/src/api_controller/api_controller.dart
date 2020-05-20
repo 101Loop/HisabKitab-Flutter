@@ -10,8 +10,10 @@ import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/utility.dart';
 import 'package:http/http.dart' as http;
 
+
+/// API controller class
 class APIController {
-  /// api call to login the user
+  /// Calls login API
   static Future<User> login(User user) async {
     Map<String, String> headers = {"Content-Type": "application/json"};
 
@@ -61,7 +63,7 @@ class APIController {
     }
   }
 
-  /// api call to get user profile
+  /// Calls user profile API
   static Future<UserProfile> getUserProfile() async {
     Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
@@ -112,7 +114,7 @@ class APIController {
     }
   }
 
-  /// api call to update user profile
+  /// Updates user profile
   static Future<UserProfile> updateUserProfile(UserProfile data) async {
     Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
@@ -165,7 +167,7 @@ class APIController {
     }
   }
 
-  /// api call to update password
+  /// Updates password
   static Future<PasswordResponse> updatePassword(String password) async {
     Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
@@ -270,7 +272,7 @@ class APIController {
     }
   }
 
-  ///api call to register user
+  /// Registers user
   static Future<UserAccount> registerUser(UserAccount user) async {
     final Map<String, String> headers = {"Content-Type": "application/json"};
 
@@ -319,7 +321,7 @@ class APIController {
     }
   }
 
-  ///api call to fetch transaction details
+  /// Gets transaction list
   static Future<PaginatedResponse> getTransaction(String queryParams, {String next}) async {
     //removes &, if present at last
     if (queryParams.endsWith("\&")) {
@@ -373,7 +375,7 @@ class APIController {
     }
   }
 
-  ///api call to add transaction details
+  /// Adds or updates a transaction
   static Future<TransactionDetails> addUpdateTransaction(TransactionDetails data, int id) async {
     final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
 
@@ -425,7 +427,7 @@ class APIController {
     }
   }
 
-  /// api call to delete the transaction
+  /// Deletes transaction
   static void deleteTransaction(int transactionId) async {
     final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
     try {
