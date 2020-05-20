@@ -41,13 +41,6 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
   AppLocalizations appLocalizations;
 
   @override
-  void initState() {
-    super.initState();
-    var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initialState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
@@ -336,6 +329,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                         ),
                         onPressed: () {
                           provider.setLoading(false, willNotify: false);
+                          provider.setAutoValidate(false, willNotify: false);
                           FocusScope.of(context).unfocus();
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
@@ -418,6 +412,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
   }
 
   navigateToLogin() {
+    provider.setAutoValidate(false, willNotify: false);
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return LoginScreen();

@@ -71,7 +71,6 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     _transaction = widget.transaction;
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
-    initStateProvider.initialState();
     if (_transaction != null) {
       initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
       _contact = _transaction.contact?.name ?? '';

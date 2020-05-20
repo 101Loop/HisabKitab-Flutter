@@ -31,7 +31,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
   void initState() {
     super.initState();
     var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initialState();
+    _provider.setAutoValidate(false, willNotify: false);
   }
 
   @override

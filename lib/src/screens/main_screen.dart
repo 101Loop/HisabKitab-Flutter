@@ -310,6 +310,7 @@ class _MainScreenState extends State<MainScreen> {
   void _navigateToTransactionScreen(String transactionType, String category) {
     provider.setTransactionClicked(false, willNotify: false);
     provider.setLoading(false, willNotify: false);
+    provider.setAutoValidate(false, willNotify: false);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AddTransaction(

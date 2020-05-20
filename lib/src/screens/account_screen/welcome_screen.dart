@@ -90,7 +90,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         child: RaisedButton(
                           key: ValueKey('loginButton'),
                           onPressed: () {
-                            Provider.of<AppState>(context, listen: false).setLoading(false, willNotify: false);
+                            AppState provider = Provider.of<AppState>(context, listen: false);
+                            provider.setLoading(false, willNotify: false);
+                            provider.setAutoValidate(false, willNotify: false);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => LoginScreen(),
@@ -121,7 +123,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             color: primaryColor,
                           ),
                           onPressed: () {
-                            Provider.of<AppState>(context, listen: false).setLoading(false, willNotify: false);
+                            AppState provider = Provider.of<AppState>(context, listen: false);
+                            provider.setLoading(false, willNotify: false);
+                            provider.setAutoValidate(false, willNotify: false);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => SignUpScreen(),

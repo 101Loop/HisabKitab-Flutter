@@ -382,6 +382,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
 
           return GestureDetector(
             onTap: () {
+              provider.setAutoValidate(false, willNotify: false);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (BuildContext context) => AddTransaction(transactionType: 'editTransaction', transaction: _currentTransaction),

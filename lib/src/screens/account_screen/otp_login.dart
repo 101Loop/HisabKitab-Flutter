@@ -31,14 +31,6 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
   AppLocalizations appLocalizations;
 
   @override
-  void initState() {
-    super.initState();
-    var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initialState();
-    _provider.setOTPRequested(false, willNotify: false);
-  }
-
-  @override
   Widget build(BuildContext context) {
     appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
@@ -193,6 +185,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                         ),
                         onPressed: () {
                           provider.setLoading(false, willNotify: false);
+                          provider.setAutoValidate(false, willNotify: false);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => SignUpScreen(),
@@ -265,6 +258,8 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
           _showSnackBar(response?.data ?? '');
           Future.delayed(Duration(seconds: 1), () {
             provider.setLoading(false, willNotify: false);
+            provider.setOTPRequested(false, willNotify: false);
+            provider.setAutoValidate(false, willNotify: false);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => OTPLoginScreen(),

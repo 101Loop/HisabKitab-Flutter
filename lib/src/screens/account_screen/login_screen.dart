@@ -33,13 +33,6 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   AppLocalizations appLocalizations;
 
   @override
-  void initState() {
-    super.initState();
-    var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initialState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     appLocalizations = AppLocalizations.of(context);
     provider = Provider.of<AppState>(context);
@@ -206,6 +199,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                     GestureDetector(
                       onTap: () {
                         provider.setLoading(false, willNotify: false);
+                        provider.setOTPRequested(false, willNotify: false);
+                        provider.setAutoValidate(false, willNotify: false);
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => OTPLoginScreen(),
@@ -234,6 +229,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                         ),
                         onPressed: () {
                           provider.setLoading(false, willNotify: false);
+                          provider.setAutoValidate(false, willNotify: false);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => SignUpScreen(),
