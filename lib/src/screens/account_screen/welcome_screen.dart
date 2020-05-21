@@ -13,8 +13,11 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
+
+  /// Instance of [AppLocalizations], used to get the translated word
   AppLocalizations appLocalizations;
 
   @override
@@ -22,6 +25,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     appLocalizations = AppLocalizations.of(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -90,14 +94,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         child: RaisedButton(
                           key: ValueKey('loginButton'),
                           onPressed: () {
-                            AppState provider = Provider.of<AppState>(context, listen: false);
-                            provider.setLoading(false, willNotify: false);
-                            provider.setAutoValidate(false, willNotify: false);
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            );
+                            _onLoginPressed();
                           },
                           child: HeaderWidget(
                             headerText: appLocalizations.translate('login'),
@@ -152,6 +149,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Handles login press
+  ///
+  /// Basically, sets the loading and autoValidate to false, and navigates the [LoginScreen]
+  void _onLoginPressed() {
+    AppState provider = Provider.of<AppState>(context, listen: false);
+    provider.setLoading(false, willNotify: false);
+    provider.setAutoValidate(false, willNotify: false);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
       ),
     );
   }

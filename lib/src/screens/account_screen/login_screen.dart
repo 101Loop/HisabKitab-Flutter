@@ -19,17 +19,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
+
+  /// Holds the state of the app
   AppState provider;
+
+  /// Future instance of [User]
   Future<User> _futureUser;
 
+  /// Global key of form state, used for validating the form
   final formKey = GlobalKey<FormState>();
+
+  /// Global key of Scaffold state, used for showing the [SnackBar]
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /// Text field controllers
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  /// Instance of [AppLocalizations], used for getting the translated words
   AppLocalizations appLocalizations;
 
   @override
@@ -38,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -266,28 +277,44 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     );
   }
 
+  /// Handles login press
+  ///
+  /// Simply validates the input, calls and handles the API, if the input is validated
   void _onLoginPressed() {
+    /// Makes the loader to rotate
     provider.setAutoValidate(true);
+
+    /// Checks if the input is valid
     if (formKey.currentState.validate()) {
+      /// Makes the loader to stop rotating
       provider.setLoading(true);
-      FocusScope.of(context).requestFocus(FocusNode());
+
+      /// Un-focuses the text fields
+      FocusScope.of(context).unfocus();
+
+      /// Saves the text fields inputs... internally calls the onSaved() method in [TextFormField]
       formKey.currentState.save();
-      print(usernameController.text);
-      print(passwordController.text);
+
+      /// Creates an instance of [User]
       User user = User(
         username: usernameController.text,
         password: passwordController.text,
       );
+
+      /// Makes an API call
       _futureUser = APIController.login(user);
       _futureUser.then((response) {
+        /// Makes the loader to stop rotating
         provider.setLoading(false);
+
+        /// Handles the response
         if (response.error != null) {
           String error = response.error;
-          if (response.statusCode == 0)
-            error = appLocalizations.translate(error);
+          if (response.statusCode == 0) error = appLocalizations.translate(error);
 
           showSnackBar(error ?? '');
         } else if (response.data.token != null) {
+          /// Sets the current tab to [Dashboard] and navigates to main screen
           provider.setCurrentTab(0, willNotify: false);
           provider.setCurrentPage(Dashboard(), willNotify: false);
           provider.setNeedsUpdate(true, willNotify: false);
@@ -297,7 +324,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     }
   }
 
-  ///method to show SnackBar
+  /// Displays [SnackBar]
   void showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(

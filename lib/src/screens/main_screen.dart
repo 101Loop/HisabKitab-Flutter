@@ -17,10 +17,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  /// Holds the state of the app's state
   AppState provider;
 
+  /// Instance of [AppLocalizations] to get the translated word
   AppLocalizations appLocalizations;
 
+  /// Returns the add expense widget
   Widget addExpense() {
     return GestureDetector(
       onTap: () async {
@@ -42,6 +45,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  /// Returns the add expense widget
   Widget addEarning() {
     return GestureDetector(
       onTap: () {
@@ -63,17 +67,24 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  /// Page storage keys to restore the scroll position of the following screens
   final Key dashboardKey = PageStorageKey('dashboard');
   final Key accountKey = PageStorageKey('account');
   final Key aboutUsKey = PageStorageKey('aboutUs');
 
+  /// Widgets for the main screen
   Dashboard dashboard;
   Account account;
   AboutUs aboutUs;
 
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
+
+  /// List of the widgets
   List<Widget> pages;
+
+  /// Index of the current page
   int currentIndex;
 
   @override
@@ -104,6 +115,7 @@ class _MainScreenState extends State<MainScreen> {
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: WillPopScope(
         onWillPop: _onBackPressed,
@@ -238,9 +250,9 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  ///method, called on back pressed
+  /// Handles the back press
   Future<bool> _onBackPressed() async {
-    //exit the app if already on 1st tab
+    /// Exits the app if already on 1st tab
     if (provider.currentPage == dashboard) {
       _showAlertDialog(
         appLocalizations.translate('confirm'),
@@ -251,7 +263,7 @@ class _MainScreenState extends State<MainScreen> {
       );
     }
 
-    //switch to the 1st tab for other cases
+    /// Switches to the 1st tab for other cases
     else {
       provider.setCurrentTab(0, willNotify: false);
       provider.setCurrentPage(dashboard);
@@ -260,6 +272,7 @@ class _MainScreenState extends State<MainScreen> {
     return false;
   }
 
+  /// Displays the alert dialog
   void _showAlertDialog(String title, String content, Function callback) {
     showDialog(
       context: context,
@@ -307,6 +320,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  /// Navigates to [AddTransaction] screen
   void _navigateToTransactionScreen(String transactionType, String category) {
     provider.setTransactionClicked(false, willNotify: false);
     provider.setLoading(false, willNotify: false);

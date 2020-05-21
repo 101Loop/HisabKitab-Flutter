@@ -19,6 +19,7 @@ import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+/// Returns compact version of the currency
 String compactCurrency(String amount) {
   return NumberFormat.compactCurrency(
     decimalDigits: 1,
@@ -36,31 +37,45 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
 
+  /// App's state holder
   AppState provider;
 
+  /// Future instance of the transaction details list
   Future<PaginatedResponse> _futureTransactionDetails;
 
+  /// String representation of the transaction list API's query params
   String queryParams = '?';
 
+  /// Next API URL to be called
   String _next;
 
+  /// Is paginated items loading?
   bool _isLoadingItems = false;
 
+  /// Is the transaction list fetched?
   bool _fetchedList = false;
 
+  /// Instance of [AppLocalizations] to translate the words
   AppLocalizations appLocalizations;
 
+  /// Called for the first time
+  ///
+  /// Initialize the variables here
   @override
   void initState() {
     super.initState();
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
 
+    /// Only re-initialize the screen, if required
     if (initStateProvider.needsUpdate)
+      /// Ensures that the build is done already
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        /// Sets the query params
         if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
         if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
         if (initStateProvider.minAmountQuery != null && initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
@@ -84,6 +99,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
           }
         }
 
+        /// Gets and sets the credit and debit amount
         _futureTransactionDetails = APIController.getTransaction(queryParams);
         _futureTransactionDetails.then((response) {
           var list = response.results as List;
@@ -189,7 +205,9 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                 : Container(),
             SizedBox(height: 10.0),
             HeaderWidget(
-              headerText: provider.transactionType == Constants.CREDIT ? appLocalizations.translate('earnings') : provider.transactionType == Constants.DEBIT ? appLocalizations.translate('expenditures') : appLocalizations.translate('allTransactions'),
+              headerText: provider.transactionType == Constants.CREDIT
+                  ? appLocalizations.translate('earnings')
+                  : provider.transactionType == Constants.DEBIT ? appLocalizations.translate('expenditures') : appLocalizations.translate('allTransactions'),
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -261,6 +279,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setNext(_next, willNotify: false);
   }
 
+  /// Clears the filter option
   void _clearFilter() {
     searchController.text = '';
     minTextController.text = '';
@@ -281,6 +300,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     provider.setNeedsUpdate(true, willNotify: false);
   }
 
+  /// Displays a dialog for quick filter
   Future<bool> _onQuickFilterPressed() {
     return showDialog(
             context: context,
@@ -458,13 +478,14 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     return Center(child: Text(appLocalizations.translate('nothingToShow')));
   }
 
-  ///sorts the transaction list, according to [value] received
-  ///[value] is a nullable field, make it null to sort it by the previous scheme, if there's no previous scheme
+  /// Sorts the transaction list, according to [value] received
+  ///
+  /// [value] is a nullable field, make it null to sort it by the previous scheme, if there's no previous scheme
   void _sortTransactionList([SortingItems value]) {
     List<TransactionDetails> _tempList = List.from(provider.transactionList);
 
-    //if value is null or user selected the previously selected sort scheme
-    //sort the list by name, and make the sorting items unselected
+    /// If value is null or user selected the previously selected sort scheme
+    /// Sort the list by name, and make the sorting items unselected
     if (value == null || provider.sortScheme == value.sortScheme) {
       provider.setSortScheme(-1, willNotify: false);
       provider.setTransactionList(provider.initialTransactionList);
@@ -472,22 +493,22 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     }
 
     switch (value.sortScheme) {
-      case 0: //name ascending
+      case 0: /// Name ascending
         _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
         provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
-      case 1: //name descending
+      case 1: /// Name descending
         _tempList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
         provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
-      case 2: //amount high to low
+      case 2: /// Amount high to low
         _tempList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
         provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
         break;
-      case 3: //amount low to high
+      case 3: /// Amount low to high
         _tempList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
         provider.setSortScheme(value.sortScheme, willNotify: false);
         provider.setTransactionList(_tempList);
@@ -495,7 +516,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     }
   }
 
-  ///loads more items on scrolling
+  /// Loads more items on scrolling
   void _loadMore() {
     String next = !provider.needsUpdate ? provider.next : _next;
 
@@ -547,6 +568,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   @override
   bool get wantKeepAlive => true;
 
+  /// Submits the filter and updates the screen
   void _submit() {
     provider.setEarning(provider.isTempEarning, willNotify: false);
     provider.setSpending(provider.isTempSpending, willNotify: false);
@@ -562,6 +584,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     _refreshScreen();
   }
 
+  /// Returns, if the filter is applied or not
   bool _haveFilters() {
     if (provider.isEarning != true &&
         provider.isSpending != true &&
@@ -578,6 +601,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
       return true;
   }
 
+  /// Returns widget for sorting option
   List<PopupMenuEntry> _itemSortBuilder(BuildContext context) {
     return sortingItems
         .map((SortingItems val) => PopupMenuItem<SortingItems>(
@@ -589,6 +613,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
         .toList();
   }
 
+  /// Returns relevant widget in the center of the screen
   Widget _transactionListView() {
     return provider.isLoading
         ? Center(
@@ -599,14 +624,13 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
         : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
   }
 
-  ///navigates the user to the same screen to update the views
+  /// Navigates the user to the same screen to update the views
   void _refreshScreen() {
     provider.setNeedsUpdate(true, willNotify: false);
     Navigator.of(context).pushReplacement(NonAnimatedPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 
-  /// [transactionType] - the type of the transaction to be selected
-  /// method basically sets the type of transaction, clears the filter and refreshes the screen with new values
+  /// Sets the type of transaction, clears the filter and refreshes the screen with new values
   void _handleQuickFilterPressed(String transactionType) {
     Navigator.of(context).pop();
     provider.setTransactionType(transactionType, willNotify: false);
@@ -615,13 +639,17 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
   }
 }
 
+/// Stateless widget for [DataAnnotation]
+///
+/// Represents the [earning] and [expense] in percentage
 class DataAnnotation extends StatelessWidget {
   DataAnnotation({Key key, @required this.earning, @required this.expense}) : super(key: key);
 
+  /// Total earning and expense amount
   final String earning;
   final String expense;
-  AppLocalizations appLocalizations;
 
+  /// Returns earning percentage
   String earningPercentage(String earning, String expense) {
     double earningDouble = double.parse(earning);
     double expenseDouble = double.parse(expense);
@@ -629,6 +657,7 @@ class DataAnnotation extends StatelessWidget {
     return percentage.toStringAsFixed(2);
   }
 
+  /// Returns expense percentage
   String expensePercentage(String earning, String expense) {
     double earningDouble = double.parse(earning);
     double expenseDouble = double.parse(expense);
@@ -638,7 +667,7 @@ class DataAnnotation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    appLocalizations = AppLocalizations.of(context);
+    AppLocalizations appLocalizations = AppLocalizations.of(context);
 
     return Column(
       children: <Widget>[
@@ -780,12 +809,14 @@ class GreenCard extends StatelessWidget {
   }
 }
 
+/// Stateless widget for expenditure only
 class RedCard extends StatelessWidget {
   RedCard({
     @required this.totalBalance,
     Key key,
   }) : super(key: key);
 
+  /// Total amount to be shown
   final String totalBalance;
 
   @override
@@ -867,6 +898,7 @@ class RedCard extends StatelessWidget {
   }
 }
 
+/// Stateless widget for both type of transactions
 class RedGreenCard extends StatelessWidget {
   RedGreenCard({
     Key key,
@@ -874,6 +906,7 @@ class RedGreenCard extends StatelessWidget {
     @required this.totalExpense,
   }) : super(key: key);
 
+  /// Total earning and expense amount
   final String totalEarning;
   final totalExpense;
 
@@ -881,11 +914,14 @@ class RedGreenCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final double _earning = double.parse(totalEarning);
     final double _expense = double.parse(totalExpense);
+
+    /// Calculates color portion to be shown according to the amount of earning and expenditure
     final _end = _expense > _earning ? Alignment.center : Alignment.centerRight;
     final _begin = _earning > _expense ? Alignment.center : Alignment.centerLeft;
 
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: deviceWidth,
@@ -973,6 +1009,7 @@ class RedGreenCard extends StatelessWidget {
   }
 }
 
+/// Represents the transaction card
 class ListCard extends StatelessWidget {
   const ListCard({
     Key key,
@@ -983,11 +1020,23 @@ class ListCard extends StatelessWidget {
     @required this.transactionDate,
     this.comment,
   }) : super(key: key);
+
+  /// Icon's data - the icon to be shown
   final IconData icon;
+
+  /// Representational name of the transaction
   final String name;
+
+  /// Amount of the transaction
   final String amount;
+
+  /// Type of the transaction, either credit or debit
   final String transactionType;
+
+  /// The date on which the transaction was made
   final String transactionDate;
+
+  /// Some optional comments on the transaction
   final String comment;
 
   @override

@@ -221,14 +221,16 @@ class APIController {
   ///api call to verify user
   static Future<PasswordResponse> getOtp(String email, {int otp}) async {
     final Map<String, String> headers = {"Content-Type": "application/json"};
-    final Map<String, String> emailBody = {"value": email};
-    final Map<String, String> otpBody = {"value": email, "otp": '$otp'};
+    final Map<String, String> data = {"value": email};
+
+    if (otp != null)
+      data['otp'] = otp.toString();
 
     PasswordResponse apiResponse;
 
     var response;
     try {
-      response = await http.post(Constants.LOGIN_OTP_URL, headers: headers, body: otp != null ? json.encode(otpBody) : json.encode(emailBody));
+      response = await http.post(Constants.LOGIN_OTP_URL, headers: headers, body: json.encode(data));
     } catch (_) {
       return PasswordResponse(data: 'serverError', statusCode: 0);
     }

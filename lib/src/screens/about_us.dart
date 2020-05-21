@@ -15,23 +15,22 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
+  /// Stores and updates the state of the app, globally
   AppState provider;
-  double deviceWidth;
-  AppLocalizations appLocalizations;
 
-  void customLaunch(command) async {
-    if (await canLaunch(command)) {
-      await launch(command);
-    } else {
-      print('unable to launch $command');
-    }
-  }
+  /// Device's width
+  double deviceWidth;
+
+  /// Instance of [AppLocalizations] to translate the words
+  AppLocalizations appLocalizations;
 
   @override
   Widget build(BuildContext context) {
     appLocalizations = AppLocalizations.of(context);
     deviceWidth = MediaQuery.of(context).size.width;
     provider = Provider.of<AppState>(context);
+
+    /// Returns the widget to be shown
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -161,10 +160,20 @@ class _AboutUsState extends State<AboutUs> {
     );
   }
 
+  /// Sets loading to false on being removed from the widget tree
   @override
   void deactivate() {
     super.deactivate();
 
     provider.setLoading(false, willNotify: false);
+  }
+
+  /// Launches either phone or email
+  void customLaunch(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print('unable to launch $command');
+    }
   }
 }

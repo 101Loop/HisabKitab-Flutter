@@ -20,17 +20,25 @@ class FilterScreen extends StatefulWidget {
 }
 
 class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
+  /// Selected date
   String date;
+
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
 
+  /// Holds the state of the app
   AppState provider;
 
+  /// A Global key to validate the form
   final _formKey = GlobalKey<FormState>();
 
+  /// Instance of [AppLocalizations] to get the translated word
   AppLocalizations appLocalizations;
 
+  /// Displays the date picker and sets the date
   Future<Null> selectDate(BuildContext context) async {
+    /// Gets the selected date from the date picker
     final DateTime pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -39,6 +47,8 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
       ),
       lastDate: DateTime.now(),
     );
+
+    /// If a date is picked, set it in the app's state
     if (pickedDate != null) {
       provider.setTempDateQuery(DateFormat('yyyy-MM-dd').format(pickedDate).toString(), willNotify: false);
       provider.setTempDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
@@ -51,6 +61,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
 
+    /// Sets a temporary filter state
     initStateProvider.setTempEarning(initStateProvider.isEarning, willNotify: false);
     initStateProvider.setTempSpending(initStateProvider.isSpending, willNotify: false);
     initStateProvider.setTempSearchQuery(initStateProvider.searchQuery, willNotify: false);
@@ -461,6 +472,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
   void dispose() {
     super.dispose();
 
+    /// Clears the selected filter options
     provider.setTempEarning(false, willNotify: false);
     provider.setTempSpending(false, willNotify: false);
     provider.setTempSearchQuery('', willNotify: false);
@@ -473,6 +485,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
     provider.setTempAccountQuery(false, willNotify: false);
   }
 
+  /// Sets the filter and navigates to the main screen
   void submit() {
     final _formState = _formKey.currentState;
 
@@ -495,11 +508,13 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
     }
   }
 
+  /// Navigates to the main screen without setting the filter options
   Future<bool> _onBackPressed() async {
     _goToMainScreen();
     return false;
   }
 
+  /// Navigates to the main screen
   void _goToMainScreen() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }

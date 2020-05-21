@@ -20,8 +20,13 @@ class AddTransaction extends StatefulWidget {
     this.transaction,
   }) : super(key: key);
 
+  /// Type of the transaction, either earning or expense
   final String transactionType;
+
+  /// Holds the transaction's details, passed from the previous screen
   final TransactionDetails transaction;
+
+  /// Category under which the transaction lies, either credit or debit
   final String category;
 
   @override
@@ -29,28 +34,45 @@ class AddTransaction extends StatefulWidget {
 }
 
 class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
 
+  /// Holds the selected date
   String date;
 
+  /// Global key to validate the form
   final _formKey = GlobalKey<FormState>();
 
+  /// Holds the app's state
   AppState provider;
 
+  /// Amount of the transaction
   String _amount;
+
+  /// Holds the transaction's name
   String _contact;
+
+  /// Holds the comment made upon the transaction
   String _comment;
 
+  /// Global key for scaffold, used to show the [SnackBar]
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /// A copy of passed transaction details
   TransactionDetails _transaction;
 
+  /// Instance of [AppLocalizations] to get the translated word
   AppLocalizations appLocalizations;
 
+  /// Is it the first build?
+  ///
+  /// Used to prevent unnecessary UI builds
   bool isFirstBuild = true;
 
+  /// Displays and sets the date
   Future<Null> selectDate(BuildContext context) async {
+    /// Gets the selected date from the date picker
     final DateTime pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -59,6 +81,8 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       ),
       lastDate: DateTime.now(),
     );
+
+    /// Sets the date in the app's state
     if (pickedDate != null) {
       provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
     }
@@ -68,9 +92,11 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   void initState() {
     super.initState();
 
+    /// Copies the passed transaction details
     _transaction = widget.transaction;
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+    /// Sets the details in the placeholders, if the transaction details is passed
     if (_transaction != null) {
       initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
       _contact = _transaction.contact?.name ?? '';
@@ -84,7 +110,9 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       } else {
         initStateProvider.setCategory('debit', willNotify: false);
       }
-    } else {
+    }
+    /// Sets the category and date, if a new transaction is to be added
+    else {
       initStateProvider.setCategory(widget.category, willNotify: false);
       initStateProvider.setDateTime('', willNotify: false);
     }
@@ -502,21 +530,32 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   void deactivate() {
     super.deactivate();
 
+    /// Sets the default transaction type and mode upon being removed from the widget tree
     provider.setTransactionType('', willNotify: false);
     provider.setMode(null, willNotify: false);
   }
 
+  /// Validates and adds or updates the transaction
   void _submit() {
+    /// Makes the field validate on every single change
     provider.setAutoValidate(true);
+
     final _formState = _formKey.currentState;
 
+    /// Validates the form details and the other details as well
     if (_formState.validate() && (provider?.dateTime?.isNotEmpty ?? false) && (provider?.mode?.isNotEmpty ?? false)) {
+
+      /// Displays the progress loader
       provider.setLoading(true);
+
+      /// This basically calls the onSaved() method in [TextFormField], a callback function where the field data is saved
       _formState.save();
 
+      /// Creates an instance of [TransactionDetails] from the entered fields
       TransactionDetails transactionDetails = TransactionDetails(
           amount: double.parse(_amount), category: getCategory(provider.category[0]), transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
 
+      /// Calls the API and handles the response
       APIController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
         String message;
         if (response.statusCode == 200 || response.statusCode == 0)
@@ -526,7 +565,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
         _showSnackBar(message);
 
-        //if the response is ok, then pop with a delay of 1 sec, otherwise instantly
+        /// If the response is ok, then pop with a delay of 1 sec, otherwise instantly
         if (response.statusCode == 200) {
           Future.delayed(Duration(seconds: 1), () {
             provider.setLoading(false, willNotify: false);
@@ -542,38 +581,36 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     }
   }
 
-  String changeTransactionName(String name) {
-    return name.split(' ')[1];
-  }
-
-  ///shows a toast with message [message]
+  /// Shows a toast with a [message]
   void _showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
 
-  ///navigates to main screen on pressing back button
-  ///always returns false, to prevent popping the screen
+  /// Navigates to main screen on pressing back button
+  ///
+  /// Always returns false, to prevent popping the screen
   Future<bool> _onBackPressed() async {
     provider.setNeedsUpdate(false, willNotify: false);
     _goToMainScreen();
     return false;
   }
 
-  ///navigates to main screen
+  /// Navigates to main screen
   void _goToMainScreen() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 
-  /// returns category according to the selected category
+  /// Returns category according to the selected category
   String getCategory(String category) {
     if (category == appLocalizations.translate('credit'))
       return 'C';
     else
       return 'D';
   }
-  /// returns key for modes
+
+  /// Returns key for modes
   String getModeKey(String mode) {
     if (mode == 'Account Transfer')
       return 'accountTransfer';
