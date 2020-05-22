@@ -233,7 +233,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                   _mobile = value;
                                 },
                                 validator: (value) {
-                                  String result = validateMobile(value);
+                                  String result = ValidationMixin.validateMobile(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -266,7 +266,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                   _email = value;
                                 },
                                 validator: (value) {
-                                  String result = validateEmail(value);
+                                  String result = ValidationMixin.validateEmail(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else

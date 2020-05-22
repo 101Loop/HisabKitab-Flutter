@@ -84,7 +84,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 validator: (value) {
-                                  String result = validatePassword(value);
+                                  String result = ValidationMixin.validatePassword(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -122,7 +122,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                                   _confirmedPassword = value;
                                 },
                                 validator: (value) {
-                                  String result = validateField(value);
+                                  String result = ValidationMixin.validateField(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else

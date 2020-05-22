@@ -104,7 +104,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                 cursorColor: primaryColor,
                                 textAlign: TextAlign.left,
                                 validator: (value) {
-                                  String result = validateEmail(value);
+                                  String result = ValidationMixin.validateEmail(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -136,7 +136,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                       cursorColor: primaryColor,
                                       textAlign: TextAlign.left,
                                       validator: (value) {
-                                        String result = validateOTPLength(value);
+                                        String result = ValidationMixin.validateOTP(value);
                                         if (result != null)
                                           return appLocalizations.translate(result);
                                         else

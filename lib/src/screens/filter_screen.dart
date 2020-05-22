@@ -274,7 +274,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
                               validator: (value) {
-                                String result = validateNullableDoubleValue(value);
+                                String result = ValidationMixin.validateNullableDoubleValue(value);
                                 if (result != null)
                                   return appLocalizations.translate(result);
                                 else
@@ -320,7 +320,7 @@ class _FilterScreenState extends State<FilterScreen> with ValidationMixin {
                             child: TextFormField(
                               controller: maxTextController,
                               validator: (value) {
-                                String result = validateNullableDoubleValue(value);
+                                String result = ValidationMixin.validateNullableDoubleValue(value);
                                 if (result != null)
                                   return appLocalizations.translate(result);
                                 else

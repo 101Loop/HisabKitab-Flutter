@@ -209,7 +209,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               child: TextFormField(
                                 initialValue: _contact,
                                 validator: (value) {
-                                  String result = validateField(value);
+                                  String result = ValidationMixin.validateField(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -258,7 +258,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               child: TextFormField(
                                 initialValue: _transaction?.amount?.toString() ?? '',
                                 validator: (value) {
-                                  String result = validateDoubleValue(value);
+                                  String result = ValidationMixin.validateDoubleValue(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else

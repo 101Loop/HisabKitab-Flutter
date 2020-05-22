@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     autovalidate: provider.autoValidate,
                                     controller: usernameController,
                                     validator: (value) {
-                                      String result = validateField(value);
+                                      String result = ValidationMixin.validateField(value);
                                       if (result != null)
                                         return appLocalizations.translate(result);
                                       else
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     controller: passwordController,
                                     autovalidate: provider.autoValidate,
                                     validator: (value) {
-                                      String result = validateField(value);
+                                      String result = ValidationMixin.validateField(value);
                                       if (result != null)
                                         return appLocalizations.translate(result);
                                       else
