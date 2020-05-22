@@ -4,53 +4,117 @@ import 'package:hisabkitab/src/models/transaction.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/screens/dashboard.dart';
 
+/// Class to maintain app's state
+///
+/// Holds the state of the app and updates the listeners when they're notified
 class AppState extends ChangeNotifier {
+  /// Determines which sort scheme to apply
   int _sortScheme = -1;
-  bool _otpRequested = false;
-  String _transactionType = 'Earnings';
-  bool _autoValidate = false;
-  bool _isLoading = false;
-  String _creditAmount = '0';
-  String _debitAmount = '0';
-  String _mode;
-  String _category;
-  String _next;
-  bool _isEarning = false;
-  bool _isSpending = false;
-  bool _isTempEarning = false;
-  bool _isTempSpending = false;
-  String _searchQuery = '';
-  String _dateQuery = '';
+
+  /// Represents current index of the tab, Ex: 0 for Dashboard
+  int _currentTab = 0;
+
+  /// Minimum and maximum amount, set in the filter option
   double _minAmountQuery = -1;
   double _maxAmountQuery = -1;
+
+  /// Temporary min and max amount, used in case, the user discards these changes
+  double _tempMinAmountQuery;
+  double _tempMaxAmountQuery;
+
+  /// Type of the transaction, either earnings or expenditures
+  String _transactionType = 'Earnings';
+
+  /// Credit and debit amount, used in Dashboard screen
+  String _creditAmount = '0';
+  String _debitAmount = '0';
+
+  /// Selected mode of payment, Ex: cash, account transfer etc.
+  String _mode;
+
+  /// Selected category, either credit or debit
+  String _category;
+
+  /// Next API URL of paginated response
+  String _next;
+
+  /// Search and date query, used as the parameters in the transaction list API
+  String _searchQuery = '';
+  String _dateQuery = '';
+
+  /// Temporary search and date query params, just in case these are discarded
+  String _tempSearchQuery = '';
+  String _tempDateQuery = '';
+
+  /// Selected date
+  String _dateTime = '';
+
+  /// Temporarily selected date
+  String _tempDateTime = '';
+
+  /// Name's initials of the user
+  String _initials = '?';
+
+  /// Is OTP requested already?
+  bool _otpRequested = false;
+
+  /// Should a field be auto-validated?
+  bool _autoValidate = false;
+
+  /// Is the screen loading?
+  bool _isLoading = false;
+
+  /// Is the transaction's type earning, spending, both or none?
+  bool _isEarning = false;
+  bool _isSpending = false;
+
+  /// Temporary versions of [_isEarning] and [_isSpending]
+  bool _isTempEarning = false;
+  bool _isTempSpending = false;
+
+  /// Is the transaction's mode cash, card, cheque or account transfer?
   bool _isCashQuery = false;
   bool _isCardQuery = false;
   bool _isChequeQuery = false;
   bool _isAccountQuery = false;
-  String _tempSearchQuery = '';
-  String _tempDateQuery = '';
-  double _tempMinAmountQuery;
-  double _tempMaxAmountQuery;
+
+  /// Temporary version of above variables
   bool _isTempCashQuery = false;
   bool _isTempCardQuery = false;
   bool _isTempChequeQuery = false;
   bool _isTempAccountQuery = false;
-  bool _isLoadingItems = false;
-  bool _addTransactionClicked = false;
-  bool _isHideText = true;
-  bool _isHideText1 = true;
-  bool _needsUpdate = true;
-  int _currentTab = 0;
-  String _dateTime = '';
-  String _tempDateTime = '';
-  UserProfile _userProfile;
-  List<TransactionDetails> _transactionList = List();
-  List<TransactionDetails> _initialTransactionList = List();
-  String _initials = '?';
-  Widget _currentPage = Dashboard();
 
+  /// Are the paginated items loading?
+  bool _isLoadingItems = false;
+
+  /// Is the add transaction clicked?
+  bool _addTransactionClicked = false;
+
+  /// Is the text hidden?
+  bool _isHideText = true;
+
+  /// Is the another text hidden?
+  bool _isHideText1 = true;
+
+  /// Is the current screen needs an update?
+  bool _needsUpdate = true;
+
+  /// Should the touches be ignored?
   bool _isIgnoring = false;
 
+  /// List of [TransactionDetails], might be altered by the user, by sorting or filtering
+  List<TransactionDetails> _transactionList = List();
+
+  /// List of [TransactionDetails], without filter and sorting
+  List<TransactionDetails> _initialTransactionList = List();
+
+  /// Instance of [UserProfile], representing the details of the user
+  UserProfile _userProfile;
+
+  /// Currently selected page
+  Widget _currentPage = Dashboard();
+
+  /// getters
   int get sortScheme => _sortScheme;
 
   bool get getOTPRequested => _otpRequested;
@@ -58,9 +122,11 @@ class AppState extends ChangeNotifier {
   String get transactionType => _transactionType;
 
   String get creditAmount => _creditAmount;
+
   String get next => _next;
 
   bool get isLoading => _isLoading;
+
   bool get needsUpdate => _needsUpdate;
 
   String get debitAmount => _debitAmount;
@@ -137,6 +203,8 @@ class AppState extends ChangeNotifier {
 
   List<TransactionDetails> get initialTransactionList => _initialTransactionList;
 
+
+  /// setters
   setLoading(bool value, {bool willNotify = true}) {
     _isLoading = value;
     if (willNotify) notifyListeners();
@@ -367,10 +435,7 @@ class AppState extends ChangeNotifier {
     if (willNotify) notifyListeners();
   }
 
-  void initialState() {
-    _autoValidate = false;
-  }
-
+  /// defaults all the value
   void clearData() {
     _sortScheme = -1;
     _needsUpdate = true;

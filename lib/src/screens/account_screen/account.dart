@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hisabkitab/main.dart';
-import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -26,39 +26,54 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> with ValidationMixin {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
 
+  /// Holds the app's state
   AppState provider;
 
+  /// Global scaffold state key, to show the [SnackBar]
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /// Global form state key, used for validating the form
   final _formKey = GlobalKey<FormState>();
 
+  /// Basic details of the user
   String _name;
   String _mobile;
   String _email;
 
+  /// Text field's controllers
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
 
+  /// Instance of [AppLocalizations], to get the translated word
   AppLocalizations appLocalizations;
 
+  /// List of the available languages
+  ///
+  /// See lang/langs.json
   List<Map<String, String>> availableLangList = List();
 
+  /// Currently selected language
   String _currentSelectedLang = '';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      /// Gets the languages from the lang/langs.json
       _getAvailableLangs();
+
+      /// Sets the current language, based on the user's preference
       _currentSelectedLang = prefs.getString('languageCode');
 
       AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+      /// Gets the user's profile, if it's not already fetched and sets the details as well
       if (initStateProvider.userProfile == null)
-        LoginAPIController.getUserProfile().then(
+        APIController.getUserProfile().then(
           (response) {
             if (response != null) {
               initStateProvider.setUserProfile(response, willNotify: false);
@@ -78,6 +93,7 @@ class _AccountState extends State<Account> with ValidationMixin {
             }
           },
         );
+      /// Sets the user profile's details, if it's already fetched
       else {
         UserProfile userProfile = initStateProvider.userProfile;
         _nameController.text = userProfile.name;
@@ -102,6 +118,7 @@ class _AccountState extends State<Account> with ValidationMixin {
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -366,31 +383,43 @@ class _AccountState extends State<Account> with ValidationMixin {
   void deactivate() {
     super.deactivate();
 
+    /// Makes the loader's state to not loading and hides the [SnackBar] on being removed from the widget tree
     provider.setLoading(false, willNotify: false);
     _scaffoldKey.currentState.hideCurrentSnackBar();
   }
 
-  ///shows a [SnackBar], displaying [message]
+  /// Shows a [SnackBar], displaying [message]
   void _showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
 
-  ///validate form and submit the response
+  /// Validates the input data and updates the user profile, if the input is valid
   void _submit() {
+    /// Removes the text field focus
     FocusScope.of(context).unfocus();
+
     final _formState = _formKey.currentState;
 
+    /// Checks if the inputs are valid
     if (_formState.validate()) {
+      /// Save the text field's data... this internally calls the onSaved() method in the [TextFormField]
       _formState.save();
 
       if ((_name != null && _name.isNotEmpty) || (_mobile != null && _mobile.isNotEmpty) || (_email != null && _email.isNotEmpty)) {
+        /// Makes the loader to rotate
         provider.setLoading(true);
+
+        /// Creates an instance of [UserProfile]
         UserProfile userProfile = UserProfile(name: _name, mobile: _mobile, email: _email);
 
-        LoginAPIController.updateUserProfile(userProfile).then((response) {
+        /// Calls the user profile update API and handles the response
+        APIController.updateUserProfile(userProfile).then((response) {
+          /// Makes the loader to stop rotating
           provider.setLoading(false);
+
+          /// Mainly handles the error response here
           if (response.error?.isNotEmpty ?? false) {
             if (response.error.contains('This mobile number is already registered')) {
               _showSnackBar(appLocalizations.translate('alreadyExistingError'));
@@ -400,7 +429,9 @@ class _AccountState extends State<Account> with ValidationMixin {
 
               _showSnackBar(error);
             }
-          } else {
+          }
+          /// Handles the successful API response and updates the UI
+          else {
             _showSnackBar(appLocalizations.translate('profileUpdated'));
 
             List<String> name = response.name?.split(' ');
@@ -419,7 +450,7 @@ class _AccountState extends State<Account> with ValidationMixin {
     }
   }
 
-  ///clears provider and preference's data
+  /// Clears provider and preference's data and navigates to welcome screen
   void _logout() {
     provider.clearData();
     Utility.deleteToken();
@@ -432,7 +463,7 @@ class _AccountState extends State<Account> with ValidationMixin {
     );
   }
 
-  /// displays dialog to change location
+  /// Displays dialog to change location
   Future<bool> _showLanguageChangeDialog() {
     return showDialog(
           context: context,
@@ -472,7 +503,7 @@ class _AccountState extends State<Account> with ValidationMixin {
         false;
   }
 
-  /// gets available languages from langs.json file
+  /// Gets available languages from langs.json file
   void _getAvailableLangs() async {
     availableLangList.clear();
     var langJsonString = await rootBundle.loadString('lang/langs.json');
@@ -483,7 +514,7 @@ class _AccountState extends State<Account> with ValidationMixin {
     });
   }
 
-  /// item widget builder, creates a LanguageOption widget
+  /// Item widget builder, creates a LanguageOption widget
   Widget _langOptionItemBuilder(BuildContext context, int index) {
     String language = availableLangList[index]['language'];
     String languageCode = availableLangList[index]['languageCode'];
@@ -507,10 +538,15 @@ class _AccountState extends State<Account> with ValidationMixin {
   }
 }
 
-/// stateless widget for language option
+/// Stateless widget for language option
+///
+/// Returns language option widget
 class LanguageOption extends StatelessWidget {
-  final String language;    // language to be shown
-  final bool isSelected;    // bool to highlight the selected language
+  /// Language to be shown
+  final String language;
+
+  /// Is the language selected?
+  final bool isSelected;
 
   LanguageOption({this.language, this.isSelected = false});
 
@@ -535,7 +571,7 @@ class LanguageOption extends StatelessWidget {
   }
 }
 
-/// stateless widget for language change button
+/// Returns a stateless widget for language change button
 class LanguageBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

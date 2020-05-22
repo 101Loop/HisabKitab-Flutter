@@ -4,27 +4,37 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:hisabkitab/main.dart';
 
+/// Class for handling localizations
 class AppLocalizations {
+  /// Locale of the device
   final Locale locale;
 
+  /// Language's map of words
   Map<String, String> _localizedMap;
 
   AppLocalizations(this.locale);
 
+  /// Instance of the custom delegate
   static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
-  /// helper method
+  /// Helper method
   static AppLocalizations of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  /// loads the json
+  /// Loads the json
   Future<bool> load() async {
+    /// Get the language code from the device
     String languageCode = prefs.getString('languageCode');
+
+    /// Haven't set the preferred language yet, set the language from the device
     if (languageCode == null || languageCode.isEmpty || languageCode == "null")
       languageCode = locale.languageCode;
 
+    /// Get the json file using the languageCode, Ex: en.json for English
     String jsonString = await rootBundle.loadString('lang/$languageCode.json');
+
+    /// Creates and sets the map of the words
     Map<String, dynamic> jsonMap = json.decode(jsonString);
     _localizedMap = jsonMap.map((key, value) {
       return MapEntry(key, value.toString());
@@ -32,24 +42,25 @@ class AppLocalizations {
     return true;
   }
 
-  /// gets the string to be displayed
-  /// [key] - gets the value for this key
+  /// Gets the string to be displayed
   String translate(String key) {
     return _localizedMap[key];
   }
 }
 
+/// Custom localizations delegate class
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
-  /// checks if the locale is supported or not
+  /// Is the language supported?
   @override
   bool isSupported(Locale locale) {
     return ['en', 'hi'].contains(locale.languageCode);
   }
 
-  /// loads the locale, json in our case
-  /// returns Future of instance of [AppLocalizations]
+  /// Loads the locale, json in our case
+  ///
+  /// Returns the localizations to be used
   @override
   Future<AppLocalizations> load(Locale locale) async {
     AppLocalizations localizations = AppLocalizations(locale);
@@ -57,6 +68,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
     return localizations;
   }
 
+  /// Should the delegate be reloaded?
   @override
   bool shouldReload(LocalizationsDelegate<AppLocalizations> old) => false;
 }

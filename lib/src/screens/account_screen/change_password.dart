@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/utils/app_localizations.dart';
@@ -31,7 +31,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
   void initState() {
     super.initState();
     var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initialState();
+    _provider.setAutoValidate(false, willNotify: false);
   }
 
   @override
@@ -199,19 +199,32 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
     provider.setAutoValidate(false, willNotify: false);
   }
 
-  ///submits the data and performs API call, if everything's fine
+  /// Submits the data and performs API call, if everything's fine
   void _submit() {
+    /// Makes the text field to start validating on each change
     provider.setAutoValidate(true);
+
+    /// Gets the current state of the form key
     final _formState = _formKey.currentState;
 
+    /// Checks if the input is valid
     if (_formState.validate()) {
+      /// Makes the loader rotate
       provider.setLoading(true);
+
+      /// Un-focuses the text field
       FocusScope.of(context).unfocus();
+
+      /// Saves the form data... internally calls the onSaved() method in [TextFormField]
       _formState.save();
 
+      /// Updates the password if the password and confirmed passwords match
       if (_password == _confirmedPassword) {
-        LoginAPIController.updatePassword(_password).then((response) {
+        APIController.updatePassword(_password).then((response) {
+          /// Makes the loader to stop rotating
           provider.setLoading(false, willNotify: false);
+
+          /// Handles the response
           if (response.statusCode == Constants.HTTP_202_ACCEPTED || response.statusCode == Constants.HTTP_200_OK) {
             String responseData = response.data;
             if (response.statusCode == Constants.HTTP_202_ACCEPTED) responseData = appLocalizations.translate(responseData);
@@ -235,14 +248,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
             _showSnackBar(error);
           }
         });
-      } else {
+      }
+      /// Displays the passwords not matching [SnackBar]
+      else {
         provider.setLoading(false);
         _showSnackBar(appLocalizations.translate('passwordMustMatch'));
       }
     }
   }
 
-  ///displays SnackBar
+  /// Displays SnackBar
   void _showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(content: Text(message)),

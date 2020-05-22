@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -19,25 +19,28 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
+
+  /// Holds the state of the app
   AppState provider;
+
+  /// Future instance of [User]
   Future<User> _futureUser;
 
+  /// Global key of form state, used for validating the form
   final formKey = GlobalKey<FormState>();
+
+  /// Global key of Scaffold state, used for showing the [SnackBar]
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /// Text field controllers
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  /// Instance of [AppLocalizations], used for getting the translated words
   AppLocalizations appLocalizations;
-
-  @override
-  void initState() {
-    super.initState();
-    var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initialState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     provider = Provider.of<AppState>(context);
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -99,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   margin: EdgeInsets.all(15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    key: ValueKey('usernameField'),
                                     autovalidate: provider.autoValidate,
                                     controller: usernameController,
                                     validator: (value) {
@@ -130,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
+                                    key: ValueKey('passwordField'),
                                     obscureText: provider.isHideText,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
@@ -182,6 +188,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                       width: deviceWidth * 0.75,
                       height: 50.0,
                       child: RaisedButton(
+                        key: ValueKey('loginBtn'),
                         onPressed: () {
                           _onLoginPressed();
                         },
@@ -203,6 +210,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                     GestureDetector(
                       onTap: () {
                         provider.setLoading(false, willNotify: false);
+                        provider.setOTPRequested(false, willNotify: false);
+                        provider.setAutoValidate(false, willNotify: false);
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => OTPLoginScreen(),
@@ -231,6 +240,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                         ),
                         onPressed: () {
                           provider.setLoading(false, willNotify: false);
+                          provider.setAutoValidate(false, willNotify: false);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => SignUpScreen(),
@@ -267,28 +277,44 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     );
   }
 
+  /// Handles login press
+  ///
+  /// Simply validates the input, calls and handles the API, if the input is validated
   void _onLoginPressed() {
+    /// Makes the loader to rotate
     provider.setAutoValidate(true);
+
+    /// Checks if the input is valid
     if (formKey.currentState.validate()) {
+      /// Makes the loader to stop rotating
       provider.setLoading(true);
-      FocusScope.of(context).requestFocus(FocusNode());
+
+      /// Un-focuses the text fields
+      FocusScope.of(context).unfocus();
+
+      /// Saves the text fields inputs... internally calls the onSaved() method in [TextFormField]
       formKey.currentState.save();
-      print(usernameController.text);
-      print(passwordController.text);
+
+      /// Creates an instance of [User]
       User user = User(
         username: usernameController.text,
         password: passwordController.text,
       );
-      _futureUser = LoginAPIController.login(user);
+
+      /// Makes an API call
+      _futureUser = APIController.login(user);
       _futureUser.then((response) {
+        /// Makes the loader to stop rotating
         provider.setLoading(false);
+
+        /// Handles the response
         if (response.error != null) {
           String error = response.error;
-          if (response.statusCode == 0)
-            error = appLocalizations.translate(error);
+          if (response.statusCode == 0) error = appLocalizations.translate(error);
 
           showSnackBar(error ?? '');
         } else if (response.data.token != null) {
+          /// Sets the current tab to [Dashboard] and navigates to main screen
           provider.setCurrentTab(0, willNotify: false);
           provider.setCurrentPage(Dashboard(), willNotify: false);
           provider.setNeedsUpdate(true, willNotify: false);
@@ -298,7 +324,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
     }
   }
 
-  ///method to show SnackBar
+  /// Displays [SnackBar]
   void showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(

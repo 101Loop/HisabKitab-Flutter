@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hisabkitab/src/api_controller/login_api_controller.dart';
+import 'package:hisabkitab/src/api_controller/api_controller.dart';
 import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/password_response.dart';
 import 'package:hisabkitab/src/provider/store.dart';
@@ -18,25 +18,28 @@ class OTPLoginScreen extends StatefulWidget {
 }
 
 class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
+
+  /// Holds the app state
   AppState provider;
+
+  /// Global key of form state, used for validating the input
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  /// Text field controllers
   final TextEditingController _email = TextEditingController();
   final TextEditingController _otp = TextEditingController();
+
+  /// Holds the OTP
   int otp;
 
+  /// Global key of Scaffold state, used for showing the [SnackBar]
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /// Instance of [AppLocalizations], gets the translated word
   AppLocalizations appLocalizations;
-
-  @override
-  void initState() {
-    super.initState();
-    var _provider = Provider.of<AppState>(context, listen: false);
-    _provider.initialState();
-    _provider.setOTPRequested(false, willNotify: false);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +196,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                         ),
                         onPressed: () {
                           provider.setLoading(false, willNotify: false);
+                          provider.setAutoValidate(false, willNotify: false);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => SignUpScreen(),
@@ -229,25 +233,45 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
     );
   }
 
+  /// Handles the button pressed
+  ///
+  /// Validates the input and gets the OTP
   void onButtonPressed() {
+    /// Un-focuses the text field
     FocusScope.of(context).unfocus();
+
+    /// Sets the text fields to auto validate, on each value change
     provider.setAutoValidate(true);
+
+    /// Checks if the input is valid
     if (_formKey.currentState.validate()) {
+      /// Saves the input data... internally calls onSaved() method in [TextFormField]
       _formKey.currentState.save();
+
+      /// Makes the loader to start rotating
       provider.setLoading(true);
-      getOTP();
+
+      /// Handles the OTP login
+      handleOTPLogin();
     }
   }
 
-  void getOTP() {
+  /// Handles the OTP login
+  ///
+  /// if the OTP is null, gets the OTP otherwise logins the user using the OTP itself
+  void handleOTPLogin() {
+    /// if the OTP's already requested set the OTP from the input field, otherwise set it null
     (provider.getOTPRequested) ? otp = int?.tryParse(_otp.text) : otp = null;
-    Future<PasswordResponse> _futureGetOTP = LoginAPIController.getOtp(_email.text, otp: otp);
+
+    /// Makes the OTP call
+    Future<PasswordResponse> _futureGetOTP = APIController.getOtp(_email.text, otp: otp);
     _futureGetOTP.then((response) {
-      print(response.data);
+      /// Makes the loader to stop rotating
       provider.setLoading(false);
+
+      /// Handles the response
       if (response.statusCode == HTTP_201_CREATED || response.statusCode == HTTP_202_ACCEPTED) {
         _showSnackBar(response.data + appLocalizations.translate('checkEmail') ?? '');
-        print(response.data);
         Future.delayed(Duration(seconds: 2), () {
           provider.setAutoValidate(false, willNotify: false);
           provider.setOTPRequested(true);
@@ -265,6 +289,8 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
           _showSnackBar(response?.data ?? '');
           Future.delayed(Duration(seconds: 1), () {
             provider.setLoading(false, willNotify: false);
+            provider.setOTPRequested(false, willNotify: false);
+            provider.setAutoValidate(false, willNotify: false);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => OTPLoginScreen(),
@@ -283,7 +309,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
     });
   }
 
-  ///shows a toast with message [message]
+  /// Shows a toast with message [message]
   void _showSnackBar(String message) {
     _scaffoldKey.currentState.showSnackBar(
       SnackBar(content: Text(message ?? '')),

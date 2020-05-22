@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hisabkitab/main.dart';
 import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
-import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/utility.dart';
 
@@ -12,14 +11,19 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  /// Device's height and width
   double deviceHeight;
   double deviceWidth;
 
   @override
   void initState() {
+    /// Gets and sets the token
     String token = prefs.getString(Constants.TOKEN);
     Utility.saveToken(token);
 
+    /// Navigates to either welcome screen or main screen
+    ///
+    /// if the user is already logged in navigate to main screen otherwise welcome screen
     Future.delayed(Duration(seconds: 3), () async {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

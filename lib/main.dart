@@ -11,13 +11,20 @@ import 'package:provider/provider.dart';
 import 'package:sentry/sentry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Global instance of [SharedPreferences]
 SharedPreferences prefs;
+
+/// Instance of [SentryClient]
 final SentryClient sentry = SentryClient(dsn: Constants.sentryDsn, environmentAttributes: Event(environment: Constants.sentryDsn));
 
 void main() async {
+  /// Ensures that widgets binding is done before running the app
   WidgetsFlutterBinding.ensureInitialized();
+
+  /// Gets the instance of SharedPreferences
   prefs = await SharedPreferences.getInstance();
 
+  /// Catches and reports flutter error in sentry
   runZoned(() => runApp(MyApp()), onError: (error, stackTrace) {
     FlutterError.onError = (details, {bool forceReport = false}) {
       try {
@@ -49,7 +56,10 @@ class MyApp extends StatelessWidget {
         ),
         home: App.App(),
         localizationsDelegates: [
+          /// Custom delegate, handles locale related things
           AppLocalizations.delegate,
+
+          /// Following are the default delegates
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -59,6 +69,7 @@ class MyApp extends StatelessWidget {
           Locale('hi', 'IN'), // Hindi
         ],
         localeResolutionCallback: (locale, supportedLocales) {
+          /// Returns the device locale, if supported otherwise first supported language
           for (var currentLocale in supportedLocales) {
             if (currentLocale.languageCode == locale.languageCode && currentLocale.countryCode == locale.countryCode)
               return currentLocale;

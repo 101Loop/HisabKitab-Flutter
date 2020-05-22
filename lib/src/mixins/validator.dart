@@ -1,15 +1,5 @@
 class ValidationMixin {
-  static String invalidPasswordMessage =
-      'Password must have minimum 8 characters, at least one capital letter, one special character(!@#\$%) and one number';
-  static String isEmojiMessage = 'Please Enter a valid text';
-  static String isValidMobileMessage = 'Please enter a valid mobile number';
-  static String isValidValue = 'Please enter a valid value';
-  static String isEmpty = 'This field can\'t be empty';
-  static String isLargeValue = 'Maximum 18 digits allowed.';
-  static String isSmallValue = 'Please enter a value above 0';
-  static String isValidOTPLength = 'Enter valid OTP';
-
-  ///method to validate passwords
+  /// Validates password
   String validatePassword(String value) {
     if (value == null || value.trim().isEmpty) {
       return 'isEmpty';
@@ -27,7 +17,7 @@ class ValidationMixin {
     }
   }
 
-  ///method to validate email
+  /// Validates email
   String validateEmail(String value) {
     if (value == null || value.trim().isEmpty) {
       return 'isEmpty';
@@ -36,8 +26,7 @@ class ValidationMixin {
     String result = validateNonEmoji(value);
     if (result != null) return result;
 
-    String pattern =
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    String pattern = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
     RegExp regExp = RegExp(pattern);
 
     if (!regExp.hasMatch(value)) {
@@ -47,27 +36,7 @@ class ValidationMixin {
     }
   }
 
-  ///method to validate email
-  String validateNullableEmail(String value) {
-    if (value == null || value.trim().isEmpty) {
-      return null;
-    }
-
-    String result = validateNonEmoji(value);
-    if (result != null) return result;
-
-    String pattern =
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-    RegExp regExp = RegExp(pattern);
-
-    if (!regExp.hasMatch(value)) {
-      return 'invalidEmail';
-    } else {
-      return null;
-    }
-  }
-
-  ///method to validate if the field is empty or not
+  /// Validates if the field is empty or not
   String validateField(String value) {
     String result = validateNonEmoji(value);
     if (result != null) return result;
@@ -79,7 +48,7 @@ class ValidationMixin {
     }
   }
 
-  /// method to validate OTP length
+  /// Validates the length of the OTP
   String validateOTPLength(String value) {
     String result = validateNonEmoji(value);
     if (result != null) return result;
@@ -91,7 +60,7 @@ class ValidationMixin {
     }
   }
 
-  ///method to validate mobile number
+  /// Validates mobile number
   String validateMobile(String value) {
     if (value == null || value.trim().isEmpty) {
       return 'isEmpty';
@@ -109,25 +78,7 @@ class ValidationMixin {
     }
   }
 
-  ///method to validate mobile number
-  String validateNullableMobile(String value) {
-    if (value == null || value.trim().isEmpty) {
-      return null;
-    }
-
-    String result = validateNonEmoji(value);
-    if (result != null) return result;
-
-    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-    RegExp regExp = RegExp(pattern);
-    if (!regExp.hasMatch(value)) {
-      return 'isValidMobileMessage';
-    } else {
-      return null;
-    }
-  }
-
-  ///method to validate double value
+  /// Validates double value
   String validateDoubleValue(String value) {
     if (value == null || value.trim().isEmpty) {
       return 'isEmpty';
@@ -141,7 +92,7 @@ class ValidationMixin {
 
       if (_value < 0)
         return 'isSmallValue';
-      else if (_value.toString().length > 20) return isLargeValue;
+      else if (_value.toString().length > 20) return 'isLargeValue';
     } on FormatException catch (_) {
       return 'isValidValue';
     }
@@ -155,7 +106,7 @@ class ValidationMixin {
     }
   }
 
-  ///method to validate double value
+  /// Validates either the value is null or a valid double value
   String validateNullableDoubleValue(String value) {
     if (value == null || value.trim().isEmpty) {
       return null;
@@ -167,7 +118,7 @@ class ValidationMixin {
     try {
       double _value = double.parse(value);
 
-      if (_value < 0) return isSmallValue;
+      if (_value < 0) return 'isSmallValue';
     } on FormatException catch (_) {
       return 'isValidValue';
     }
@@ -181,7 +132,9 @@ class ValidationMixin {
     }
   }
 
-  ///method to check if the string isn't an emoji
+  /// Validates if non-emoji is entered or not
+  ///
+  /// returns null for non-emoji value
   static String validateNonEmoji(String value) {
     if (value == null || value.trim().isEmpty) {
       return 'isEmpty';
