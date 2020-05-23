@@ -72,7 +72,7 @@
   "passwordMustMatch" : "Passwords must be matching!",
   "alreadyExistingError" : "Entered Mobile or Email already exists with some other account",
   "profileUpdated" : "Profile updated successfully",
-  "checkEmail" : " Please check Your Email.",
+  "checkEmail" : " Message has been sent successfully. Please check your E-mail.",
   "signUpSuccessful" : "SignUp successful",
   "pleaseWait" : "Please wait...",
   "confirm": "Confirm",
