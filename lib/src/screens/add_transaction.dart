@@ -553,7 +553,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
       /// Creates an instance of [TransactionDetails] from the entered fields
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount), category: getCategory(provider.category[0]), transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
+          amount: double.parse(_amount), category: provider.category[0].toUpperCase(), transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
 
       /// Calls the API and handles the response
       APIController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
@@ -600,14 +600,6 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   /// Navigates to main screen
   void _goToMainScreen() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
-  }
-
-  /// Returns category according to the selected category
-  String getCategory(String category) {
-    if (category == appLocalizations.translate('credit'))
-      return 'C';
-    else
-      return 'D';
   }
 
   /// Returns key for modes

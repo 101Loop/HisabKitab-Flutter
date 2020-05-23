@@ -206,6 +206,7 @@ class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin
                 : Container(),
             SizedBox(height: 10.0),
             HeaderWidget(
+              key: ValueKey('transactionType'),
               headerText: provider.transactionType == Constants.CREDIT
                   ? appLocalizations.translate('earnings')
                   : provider.transactionType == Constants.DEBIT ? appLocalizations.translate('expenditures') : appLocalizations.translate('allTransactions'),
@@ -395,6 +396,7 @@ class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin
         return false;
       },
       child: ListView.builder(
+        key: ValueKey('transactionListview'),
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
         itemCount: provider.transactionList?.length,

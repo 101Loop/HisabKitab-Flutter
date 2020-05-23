@@ -271,7 +271,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
 
       /// Handles the response
       if (response.statusCode == HTTP_201_CREATED || response.statusCode == HTTP_202_ACCEPTED) {
-        _showSnackBar(response.data + appLocalizations.translate('checkEmail') ?? '');
+        _showSnackBar(appLocalizations.translate('checkEmail') ?? '');
         Future.delayed(Duration(seconds: 2), () {
           provider.setAutoValidate(false, willNotify: false);
           provider.setOTPRequested(true);
