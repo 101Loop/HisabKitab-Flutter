@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">14</td>
             <td class="headerCovTableEntry">26</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntryLo">53.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 16:57:11</td>
+            <td class="headerValue">2020-05-25 20:42:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -102,22 +102,22 @@
 <span class="lineNum">      40 </span>            : }
 <span class="lineNum">      41 </span>            : 
 <span class="lineNum">      42 </span>            : class MyApp extends StatelessWidget {
-<span class="lineNum">      43 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">      43 </span><span class="lineCov">          1 :   @override</span>
 <span class="lineNum">      44 </span>            :   Widget build(BuildContext context) {
-<span class="lineNum">      45 </span><span class="lineNoCov">          0 :     SystemChrome.setPreferredOrientations([</span>
+<span class="lineNum">      45 </span><span class="lineCov">          2 :     SystemChrome.setPreferredOrientations([</span>
 <span class="lineNum">      46 </span>            :       DeviceOrientation.portraitDown,
 <span class="lineNum">      47 </span>            :       DeviceOrientation.portraitUp,
 <span class="lineNum">      48 </span>            :     ]);
-<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     return ChangeNotifierProvider&lt;AppState&gt;(</span>
+<span class="lineNum">      49 </span><span class="lineCov">          1 :     return ChangeNotifierProvider&lt;AppState&gt;(</span>
 <span class="lineNum">      50 </span><span class="lineNoCov">          0 :       create: (_) =&gt; AppState(),</span>
-<span class="lineNum">      51 </span><span class="lineNoCov">          0 :       child: MaterialApp(</span>
+<span class="lineNum">      51 </span><span class="lineCov">          1 :       child: MaterialApp(</span>
 <span class="lineNum">      52 </span>            :         debugShowCheckedModeBanner: false,
 <span class="lineNum">      53 </span>            :         title: Constants.appName,
-<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         theme: ThemeData(</span>
-<span class="lineNum">      55 </span><span class="lineNoCov">          0 :           primarySwatch: Constants.primarySwatch,</span>
+<span class="lineNum">      54 </span><span class="lineCov">          1 :         theme: ThemeData(</span>
+<span class="lineNum">      55 </span><span class="lineCov">          1 :           primarySwatch: Constants.primarySwatch,</span>
 <span class="lineNum">      56 </span>            :         ),
-<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         home: App.App(),</span>
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         localizationsDelegates: [</span>
+<span class="lineNum">      57 </span><span class="lineCov">          1 :         home: App.App(),</span>
+<span class="lineNum">      58 </span><span class="lineCov">          1 :         localizationsDelegates: [</span>
 <span class="lineNum">      59 </span>            :           /// Custom delegate, handles locale related things
 <span class="lineNum">      60 </span>            :           AppLocalizations.delegate,
 <span class="lineNum">      61 </span>            : 
@@ -126,14 +126,14 @@
 <span class="lineNum">      64 </span>            :           GlobalWidgetsLocalizations.delegate,
 <span class="lineNum">      65 </span>            :           GlobalCupertinoLocalizations.delegate,
 <span class="lineNum">      66 </span>            :         ],
-<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         supportedLocales: [</span>
-<span class="lineNum">      68 </span><span class="lineNoCov">          0 :           Locale('en', 'US'), // English</span>
-<span class="lineNum">      69 </span><span class="lineNoCov">          0 :           Locale('hi', 'IN'), // Hindi</span>
+<span class="lineNum">      67 </span><span class="lineCov">          1 :         supportedLocales: [</span>
+<span class="lineNum">      68 </span><span class="lineCov">          1 :           Locale('en', 'US'), // English</span>
+<span class="lineNum">      69 </span><span class="lineCov">          1 :           Locale('hi', 'IN'), // Hindi</span>
 <span class="lineNum">      70 </span>            :         ],
-<span class="lineNum">      71 </span><span class="lineNoCov">          0 :         localeResolutionCallback: (locale, supportedLocales) {</span>
+<span class="lineNum">      71 </span><span class="lineCov">          1 :         localeResolutionCallback: (locale, supportedLocales) {</span>
 <span class="lineNum">      72 </span>            :           /// Returns the device locale, if supported otherwise first supported language
-<span class="lineNum">      73 </span><span class="lineNoCov">          0 :           for (var currentLocale in supportedLocales) {</span>
-<span class="lineNum">      74 </span><span class="lineNoCov">          0 :             if (currentLocale.languageCode == locale.languageCode &amp;&amp; currentLocale.countryCode == locale.countryCode)</span>
+<span class="lineNum">      73 </span><span class="lineCov">          2 :           for (var currentLocale in supportedLocales) {</span>
+<span class="lineNum">      74 </span><span class="lineCov">          6 :             if (currentLocale.languageCode == locale.languageCode &amp;&amp; currentLocale.countryCode == locale.countryCode)</span>
 <span class="lineNum">      75 </span>            :               return currentLocale;
 <span class="lineNum">      76 </span>            :           }
 <span class="lineNum">      77 </span><span class="lineNoCov">          0 :           return supportedLocales.first;</span>

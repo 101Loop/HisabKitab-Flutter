@@ -20,7 +20,7 @@ class UserAccount extends Equatable {
   /// Returns [UserAccount] object from [json].
   factory UserAccount.fromJson(Map<String, dynamic> json) {
     return UserAccount(
-      data: json['data'] != null ? new Data.fromJson(json['data']) : null,
+      data: json['data'] != null ? Data.fromJson(json['data']) : null,
       statusCode: 200,
     );
   }

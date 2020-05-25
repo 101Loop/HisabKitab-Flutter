@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">12</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 16:57:11</td>
+            <td class="headerValue">2020-05-25 20:42:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -60,50 +60,55 @@
       <td>
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
-<a name="1"><span class="lineNum">       1 </span>            : /// Model class for [PaginatedResponse]</a>
-<span class="lineNum">       2 </span>            : ///
-<span class="lineNum">       3 </span>            : /// Represents a common for every paginated response.
-<span class="lineNum">       4 </span>            : class PaginatedResponse {
-<span class="lineNum">       5 </span>            :   /// The length of the total items
-<span class="lineNum">       6 </span>            :   final int count;
-<span class="lineNum">       7 </span>            : 
-<span class="lineNum">       8 </span>            :   /// API URL for the next page
-<span class="lineNum">       9 </span>            :   final String next;
-<span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span>            :   /// API URL for the previous page
-<span class="lineNum">      12 </span>            :   final String previous;
-<span class="lineNum">      13 </span>            : 
-<span class="lineNum">      14 </span>            :   /// Total amount of the transaction, *for transaction API only
-<span class="lineNum">      15 </span>            :   final totalAmount;
-<span class="lineNum">      16 </span>            : 
-<span class="lineNum">      17 </span>            :   /// List of the paginated items
-<span class="lineNum">      18 </span>            :   final results;
-<span class="lineNum">      19 </span>            : 
-<span class="lineNum">      20 </span>            :   /// Error, encountered while fetching the data from the server
-<span class="lineNum">      21 </span>            :   final String error;
-<span class="lineNum">      22 </span>            : 
-<span class="lineNum">      23 </span>            :   /// Status code of the response while fetching the data from the server
-<span class="lineNum">      24 </span>            :   final int statusCode;
-<span class="lineNum">      25 </span>            : 
-<span class="lineNum">      26 </span>            :   /// Constructor.
-<span class="lineNum">      27 </span><span class="lineNoCov">          0 :   PaginatedResponse({this.count, this.next, this.previous, this.results, this.error, this.totalAmount, this.statusCode});</span>
-<span class="lineNum">      28 </span>            : 
-<span class="lineNum">      29 </span>            :   /// Returns [PaginatedResponse] object from [json].
-<span class="lineNum">      30 </span><span class="lineNoCov">          0 :   factory PaginatedResponse.fromJson(var json) {</span>
-<span class="lineNum">      31 </span><span class="lineNoCov">          0 :     return PaginatedResponse(</span>
-<span class="lineNum">      32 </span><span class="lineNoCov">          0 :       count: json['count'],</span>
-<span class="lineNum">      33 </span><span class="lineNoCov">          0 :       next: json['next'],</span>
-<span class="lineNum">      34 </span><span class="lineNoCov">          0 :       previous: json['previous'],</span>
-<span class="lineNum">      35 </span><span class="lineNoCov">          0 :       results: json['results'],</span>
-<span class="lineNum">      36 </span><span class="lineNoCov">          0 :       totalAmount: json['total_amount'],</span>
-<span class="lineNum">      37 </span>            :     );
-<span class="lineNum">      38 </span>            :   }
-<span class="lineNum">      39 </span>            : 
-<span class="lineNum">      40 </span>            :   /// Returns [PaginatedResponse] object with an [error].
-<span class="lineNum">      41 </span><span class="lineNoCov">          0 :   factory PaginatedResponse.withError(String error, {int statusCode = -1}) {</span>
-<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     return PaginatedResponse(error: error, statusCode: statusCode);</span>
-<span class="lineNum">      43 </span>            :   }
-<span class="lineNum">      44 </span>            : }
+<a name="1"><span class="lineNum">       1 </span>            : import 'package:equatable/equatable.dart';</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : /// Model class for [PaginatedResponse]
+<span class="lineNum">       4 </span>            : ///
+<span class="lineNum">       5 </span>            : /// Represents a common for every paginated response.
+<span class="lineNum">       6 </span>            : class PaginatedResponse extends Equatable {
+<span class="lineNum">       7 </span>            :   /// The length of the total items
+<span class="lineNum">       8 </span>            :   final int count;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :   /// API URL for the next page
+<span class="lineNum">      11 </span>            :   final String next;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :   /// API URL for the previous page
+<span class="lineNum">      14 </span>            :   final String previous;
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :   /// Total amount of the transaction, *for transaction API only
+<span class="lineNum">      17 </span>            :   final totalAmount;
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :   /// List of the paginated items
+<span class="lineNum">      20 </span>            :   final results;
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            :   /// Error, encountered while fetching the data from the server
+<span class="lineNum">      23 </span>            :   final String error;
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            :   /// Status code of the response while fetching the data from the server
+<span class="lineNum">      26 </span>            :   final int statusCode;
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :   /// Constructor.
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :   PaginatedResponse({this.count, this.next, this.previous, this.results, this.error, this.totalAmount, this.statusCode});</span>
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            :   /// Returns [PaginatedResponse] object from [json].
+<span class="lineNum">      32 </span><span class="lineNoCov">          0 :   factory PaginatedResponse.fromJson(var json) {</span>
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :     return PaginatedResponse(</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :       count: json['count'],</span>
+<span class="lineNum">      35 </span><span class="lineNoCov">          0 :       next: json['next'],</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :       previous: json['previous'],</span>
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :       results: json['results'],</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :       totalAmount: json['total_amount'],</span>
+<span class="lineNum">      39 </span>            :     );
+<span class="lineNum">      40 </span>            :   }
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :   /// Returns [PaginatedResponse] object with an [error].
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :   factory PaginatedResponse.withError(String error, {int statusCode = -1}) {</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     return PaginatedResponse(error: error, statusCode: statusCode);</span>
+<span class="lineNum">      45 </span>            :   }
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :   List&lt;Object&gt; get props =&gt; [count, next, previous, results, totalAmount];</span>
+<span class="lineNum">      49 </span>            : }
 </pre>
       </td>
     </tr>

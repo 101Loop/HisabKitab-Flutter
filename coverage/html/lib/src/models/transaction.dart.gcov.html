@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">2</td>
-            <td class="headerCovTableEntry">36</td>
-            <td class="headerCovTableEntryLo">5.6 %</td>
+            <td class="headerCovTableEntry">32</td>
+            <td class="headerCovTableEntry">42</td>
+            <td class="headerCovTableEntryMed">76.2 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 16:57:11</td>
+            <td class="headerValue">2020-05-25 20:42:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -60,140 +60,151 @@
       <td>
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
-<a name="1"><span class="lineNum">       1 </span>            : /// Model class for [TransactionDetails].</a>
-<span class="lineNum">       2 </span>            : ///
-<span class="lineNum">       3 </span>            : /// Represents the transaction
-<span class="lineNum">       4 </span>            : class TransactionDetails {
-<span class="lineNum">       5 </span>            :   /// Unique identification of the transaction
-<span class="lineNum">       6 </span>            :   final int id;
-<span class="lineNum">       7 </span>            : 
-<span class="lineNum">       8 </span>            :   /// Mode of payment
-<span class="lineNum">       9 </span>            :   final mode;
-<span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span>            :   /// Contact details of the transaction
-<span class="lineNum">      12 </span>            :   final contact;
-<span class="lineNum">      13 </span>            : 
-<span class="lineNum">      14 </span>            :   /// Transaction's respective dates
-<span class="lineNum">      15 </span>            :   final String transactionDate;
-<span class="lineNum">      16 </span>            :   final String createDate;
-<span class="lineNum">      17 </span>            :   final String updateDate;
-<span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span>            :   /// Kind of transaction, either credit or debit
-<span class="lineNum">      20 </span>            :   final String category;
-<span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span>            :   /// Amount of transaction
-<span class="lineNum">      23 </span>            :   final amount;
-<span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span>            :   /// Comments on transaction
-<span class="lineNum">      26 </span>            :   final String comments;
-<span class="lineNum">      27 </span>            : 
-<span class="lineNum">      28 </span>            :   /// Status or message of the response, either added, updated or an error
-<span class="lineNum">      29 </span>            :   final String message;
-<span class="lineNum">      30 </span>            : 
-<span class="lineNum">      31 </span>            :   /// Status code of the response, while fetching the data from the server
-<span class="lineNum">      32 </span>            :   final int statusCode;
-<span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span>            :   /// Constructor
-<span class="lineNum">      35 </span><span class="lineCov">          1 :   TransactionDetails({</span>
-<span class="lineNum">      36 </span>            :     this.id,
-<span class="lineNum">      37 </span>            :     this.mode,
-<span class="lineNum">      38 </span>            :     this.contact,
-<span class="lineNum">      39 </span>            :     this.transactionDate,
-<span class="lineNum">      40 </span>            :     this.createDate,
-<span class="lineNum">      41 </span>            :     this.updateDate,
-<span class="lineNum">      42 </span>            :     this.category,
-<span class="lineNum">      43 </span>            :     this.amount,
-<span class="lineNum">      44 </span>            :     this.comments,
-<span class="lineNum">      45 </span>            :     this.message,
-<span class="lineNum">      46 </span>            :     this.statusCode,
-<span class="lineNum">      47 </span>            :   });
-<span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span>            :   /// Returns [TransactionDetails] object from [json].
-<span class="lineNum">      50 </span><span class="lineNoCov">          0 :   factory TransactionDetails.fromJson(var json, {String message}) {</span>
-<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     var mode = json['mode'];</span>
-<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     var contact = json['contact'];</span>
-<span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     if (mode is! int) {</span>
-<span class="lineNum">      55 </span><span class="lineNoCov">          0 :       mode = Mode.fromJson(json['mode']);</span>
-<span class="lineNum">      56 </span>            :     }
-<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     if (contact is! String) {</span>
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 :       contact = Contact.fromJson(json['contact']);</span>
-<span class="lineNum">      59 </span>            :     }
-<span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     return TransactionDetails(</span>
-<span class="lineNum">      62 </span><span class="lineNoCov">          0 :       id: json['id'],</span>
-<span class="lineNum">      63 </span>            :       mode: mode,
-<span class="lineNum">      64 </span>            :       contact: contact,
-<span class="lineNum">      65 </span><span class="lineNoCov">          0 :       transactionDate: json['transaction_date'],</span>
-<span class="lineNum">      66 </span><span class="lineNoCov">          0 :       createDate: json['create_date'],</span>
-<span class="lineNum">      67 </span><span class="lineNoCov">          0 :       updateDate: json['update_date'],</span>
-<span class="lineNum">      68 </span><span class="lineNoCov">          0 :       category: json['category'],</span>
-<span class="lineNum">      69 </span><span class="lineNoCov">          0 :       amount: json['amount'],</span>
-<span class="lineNum">      70 </span><span class="lineNoCov">          0 :       comments: json['comments'],</span>
-<span class="lineNum">      71 </span>            :       message: message,
-<span class="lineNum">      72 </span>            :       statusCode: 200,
-<span class="lineNum">      73 </span>            :     );
-<span class="lineNum">      74 </span>            :   }
-<span class="lineNum">      75 </span>            : 
-<span class="lineNum">      76 </span>            :   /// Returns [TransactionDetails] object with an [error].
-<span class="lineNum">      77 </span><span class="lineNoCov">          0 :   factory TransactionDetails.withError(String error, {int statusCode = -1}) {</span>
-<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     return TransactionDetails(message: error, statusCode: statusCode);</span>
-<span class="lineNum">      79 </span>            :   }
-<span class="lineNum">      80 </span>            : 
-<span class="lineNum">      81 </span>            :   /// Returns a map representation of [TransactionDetails] object.
-<span class="lineNum">      82 </span><span class="lineNoCov">          0 :   Map&lt;String, dynamic&gt; toMap() {</span>
-<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     var map = Map&lt;String, dynamic&gt;();</span>
-<span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     map['amount'] = amount;</span>
-<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     map['category'] = category;</span>
-<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     map['transaction_date'] = transactionDate;</span>
-<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     map['mode'] = mode;</span>
-<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     map['contact'] = contact;</span>
-<span class="lineNum">      90 </span>            : 
-<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     if (comments != null &amp;&amp; comments.isNotEmpty) map['comments'] = comments;</span>
+<a name="1"><span class="lineNum">       1 </span>            : import 'package:equatable/equatable.dart';</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : /// Model class for [TransactionDetails].
+<span class="lineNum">       4 </span>            : ///
+<span class="lineNum">       5 </span>            : /// Represents the transaction
+<span class="lineNum">       6 </span>            : class TransactionDetails extends Equatable {
+<span class="lineNum">       7 </span>            :   /// Unique identification of the transaction
+<span class="lineNum">       8 </span>            :   final int id;
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :   /// Mode of payment
+<span class="lineNum">      11 </span>            :   final mode;
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :   /// Contact details of the transaction
+<span class="lineNum">      14 </span>            :   final contact;
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :   /// Transaction's respective dates
+<span class="lineNum">      17 </span>            :   final String transactionDate;
+<span class="lineNum">      18 </span>            :   final String createDate;
+<span class="lineNum">      19 </span>            :   final String updateDate;
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            :   /// Kind of transaction, either credit or debit
+<span class="lineNum">      22 </span>            :   final String category;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :   /// Amount of transaction
+<span class="lineNum">      25 </span>            :   final amount;
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            :   /// Comments on transaction
+<span class="lineNum">      28 </span>            :   final String comments;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :   /// Status or message of the response, either added, updated or an error
+<span class="lineNum">      31 </span>            :   final String message;
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            :   /// Status code of the response, while fetching the data from the server
+<span class="lineNum">      34 </span>            :   final int statusCode;
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            :   /// Constructor
+<span class="lineNum">      37 </span><span class="lineCov">          2 :   TransactionDetails({</span>
+<span class="lineNum">      38 </span>            :     this.id,
+<span class="lineNum">      39 </span>            :     this.mode,
+<span class="lineNum">      40 </span>            :     this.contact,
+<span class="lineNum">      41 </span>            :     this.transactionDate,
+<span class="lineNum">      42 </span>            :     this.createDate,
+<span class="lineNum">      43 </span>            :     this.updateDate,
+<span class="lineNum">      44 </span>            :     this.category,
+<span class="lineNum">      45 </span>            :     this.amount,
+<span class="lineNum">      46 </span>            :     this.comments,
+<span class="lineNum">      47 </span>            :     this.message,
+<span class="lineNum">      48 </span>            :     this.statusCode,
+<span class="lineNum">      49 </span>            :   });
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            :   /// Returns [TransactionDetails] object from [json].
+<span class="lineNum">      52 </span><span class="lineCov">          1 :   factory TransactionDetails.fromJson(var json, {String message}) {</span>
+<span class="lineNum">      53 </span><span class="lineCov">          1 :     var mode = json['mode'];</span>
+<span class="lineNum">      54 </span><span class="lineCov">          1 :     var contact = json['contact'];</span>
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span><span class="lineCov">          1 :     if (mode is! int) {</span>
+<span class="lineNum">      57 </span><span class="lineCov">          2 :       mode = Mode.fromJson(json['mode']);</span>
+<span class="lineNum">      58 </span>            :     }
+<span class="lineNum">      59 </span><span class="lineCov">          1 :     if (contact is! String) {</span>
+<span class="lineNum">      60 </span><span class="lineCov">          2 :       contact = Contact.fromJson(json['contact']);</span>
+<span class="lineNum">      61 </span>            :     }
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineCov">          1 :     return TransactionDetails(</span>
+<span class="lineNum">      64 </span><span class="lineCov">          1 :       id: json['id'],</span>
+<span class="lineNum">      65 </span>            :       mode: mode,
+<span class="lineNum">      66 </span>            :       contact: contact,
+<span class="lineNum">      67 </span><span class="lineCov">          1 :       transactionDate: json['transaction_date'],</span>
+<span class="lineNum">      68 </span><span class="lineCov">          1 :       createDate: json['create_date'],</span>
+<span class="lineNum">      69 </span><span class="lineCov">          1 :       updateDate: json['update_date'],</span>
+<span class="lineNum">      70 </span><span class="lineCov">          1 :       category: json['category'],</span>
+<span class="lineNum">      71 </span><span class="lineCov">          1 :       amount: json['amount'],</span>
+<span class="lineNum">      72 </span><span class="lineCov">          1 :       comments: json['comments'],</span>
+<span class="lineNum">      73 </span>            :       message: message,
+<span class="lineNum">      74 </span>            :       statusCode: 200,
+<span class="lineNum">      75 </span>            :     );
+<span class="lineNum">      76 </span>            :   }
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :   /// Returns [TransactionDetails] object with an [error].
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :   factory TransactionDetails.withError(String error, {int statusCode = -1}) {</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     return TransactionDetails(message: error, statusCode: statusCode);</span>
+<span class="lineNum">      81 </span>            :   }
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            :   /// Returns a map representation of [TransactionDetails] object.
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :   Map&lt;String, dynamic&gt; toMap() {</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :     var map = Map&lt;String, dynamic&gt;();</span>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     map['amount'] = amount;</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :     map['category'] = category;</span>
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :     map['transaction_date'] = transactionDate;</span>
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     map['mode'] = mode;</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     map['contact'] = contact;</span>
 <span class="lineNum">      92 </span>            : 
-<span class="lineNum">      93 </span>            :     return map;
-<span class="lineNum">      94 </span>            :   }
-<span class="lineNum">      95 </span>            : }
-<span class="lineNum">      96 </span>            : 
-<span class="lineNum">      97 </span>            : /// Model class for [Mode].
-<span class="lineNum">      98 </span>            : ///
-<span class="lineNum">      99 </span>            : /// Represents mode of payment
-<span class="lineNum">     100 </span>            : class Mode {
-<span class="lineNum">     101 </span>            :   final int id;
-<span class="lineNum">     102 </span>            :   final String mode;
-<span class="lineNum">     103 </span>            : 
-<span class="lineNum">     104 </span>            :   /// Constructor.
-<span class="lineNum">     105 </span><span class="lineNoCov">          0 :   Mode({this.id, this.mode});</span>
-<span class="lineNum">     106 </span>            : 
-<span class="lineNum">     107 </span>            :   /// Returns [Mode] object from [json].
-<span class="lineNum">     108 </span><span class="lineNoCov">          0 :   factory Mode.fromJson(var json) {</span>
-<span class="lineNum">     109 </span><span class="lineNoCov">          0 :     return Mode(id: json['id'], mode: json['mode']);</span>
-<span class="lineNum">     110 </span>            :   }
-<span class="lineNum">     111 </span>            : }
-<span class="lineNum">     112 </span>            : 
-<span class="lineNum">     113 </span>            : /// Model class for [Contact].
-<span class="lineNum">     114 </span>            : ///
-<span class="lineNum">     115 </span>            : /// Represents contact details of a transaction
-<span class="lineNum">     116 </span>            : class Contact {
-<span class="lineNum">     117 </span>            :   final int id;
-<span class="lineNum">     118 </span>            :   final String name;
-<span class="lineNum">     119 </span>            :   final String email;
-<span class="lineNum">     120 </span>            :   final String mobile;
-<span class="lineNum">     121 </span>            : 
-<span class="lineNum">     122 </span>            :   /// Constructor.
-<span class="lineNum">     123 </span><span class="lineCov">          1 :   Contact({this.id, this.name, this.email, this.mobile});</span>
-<span class="lineNum">     124 </span>            : 
-<span class="lineNum">     125 </span>            :   /// Returns [Contact] object from [json].
-<span class="lineNum">     126 </span><span class="lineNoCov">          0 :   factory Contact.fromJson(var json) {</span>
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     return Contact(</span>
-<span class="lineNum">     128 </span><span class="lineNoCov">          0 :       id: json['id'],</span>
-<span class="lineNum">     129 </span><span class="lineNoCov">          0 :       name: json['name'],</span>
-<span class="lineNum">     130 </span><span class="lineNoCov">          0 :       email: json['email'],</span>
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 :       mobile: json['mobile'],</span>
-<span class="lineNum">     132 </span>            :     );
-<span class="lineNum">     133 </span>            :   }
-<span class="lineNum">     134 </span>            : }
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :     if (comments != null &amp;&amp; comments.isNotEmpty) map['comments'] = comments;</span>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            :     return map;
+<span class="lineNum">      96 </span>            :   }
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineCov">          1 :   @override</span>
+<span class="lineNum">      99 </span><span class="lineCov">         12 :   List&lt;Object&gt; get props =&gt; [id, mode, contact, transactionDate, createDate, updateDate, category, amount, comments, message, statusCode];</span>
+<span class="lineNum">     100 </span>            : }
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            : /// Model class for [Mode].
+<span class="lineNum">     103 </span>            : ///
+<span class="lineNum">     104 </span>            : /// Represents mode of payment
+<span class="lineNum">     105 </span>            : class Mode extends Equatable {
+<span class="lineNum">     106 </span>            :   final int id;
+<span class="lineNum">     107 </span>            :   final String mode;
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :   /// Constructor.
+<span class="lineNum">     110 </span><span class="lineCov">          1 :   Mode({this.id, this.mode});</span>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            :   /// Returns [Mode] object from [json].
+<span class="lineNum">     113 </span><span class="lineCov">          1 :   factory Mode.fromJson(var json) {</span>
+<span class="lineNum">     114 </span><span class="lineCov">          3 :     return Mode(id: json['id'], mode: json['mode']);</span>
+<span class="lineNum">     115 </span>            :   }
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span><span class="lineCov">          1 :   @override</span>
+<span class="lineNum">     118 </span><span class="lineCov">          3 :   List&lt;Object&gt; get props =&gt; [id, mode];</span>
+<span class="lineNum">     119 </span>            : }
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            : /// Model class for [Contact].
+<span class="lineNum">     122 </span>            : ///
+<span class="lineNum">     123 </span>            : /// Represents contact details of a transaction
+<span class="lineNum">     124 </span>            : class Contact extends Equatable{
+<span class="lineNum">     125 </span>            :   final int id;
+<span class="lineNum">     126 </span>            :   final String name;
+<span class="lineNum">     127 </span>            :   final String email;
+<span class="lineNum">     128 </span>            :   final String mobile;
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span>            :   /// Constructor.
+<span class="lineNum">     131 </span><span class="lineCov">          2 :   Contact({this.id, this.name, this.email, this.mobile});</span>
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :   /// Returns [Contact] object from [json].
+<span class="lineNum">     134 </span><span class="lineCov">          1 :   factory Contact.fromJson(var json) {</span>
+<span class="lineNum">     135 </span><span class="lineCov">          1 :     return Contact(</span>
+<span class="lineNum">     136 </span><span class="lineCov">          1 :       id: json['id'],</span>
+<span class="lineNum">     137 </span><span class="lineCov">          1 :       name: json['name'],</span>
+<span class="lineNum">     138 </span><span class="lineCov">          1 :       email: json['email'],</span>
+<span class="lineNum">     139 </span><span class="lineCov">          1 :       mobile: json['mobile'],</span>
+<span class="lineNum">     140 </span>            :     );
+<span class="lineNum">     141 </span>            :   }
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span><span class="lineCov">          1 :   @override</span>
+<span class="lineNum">     144 </span><span class="lineCov">          5 :   List&lt;Object&gt; get props =&gt; [id, name, email, mobile];</span>
+<span class="lineNum">     145 </span>            : }
 </pre>
       </td>
     </tr>

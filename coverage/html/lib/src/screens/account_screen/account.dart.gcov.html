@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">258</td>
+            <td class="headerCovTableEntry">259</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 16:57:11</td>
+            <td class="headerValue">2020-05-25 20:42:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -77,572 +77,577 @@
 <span class="lineNum">      15 </span>            : import 'package:hisabkitab/utils/const.dart' as Constants;
 <span class="lineNum">      16 </span>            : import 'package:hisabkitab/utils/utility.dart';
 <span class="lineNum">      17 </span>            : import 'package:provider/provider.dart';
-<span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span>            : class Account extends StatefulWidget {
-<span class="lineNum">      20 </span>            :   final Function languageUpdateCallback;
-<span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span><span class="lineNoCov">          0 :   Account({Key key, @required this.languageUpdateCallback}) : super(key: key);</span>
-<span class="lineNum">      23 </span>            : 
-<span class="lineNum">      24 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">      25 </span><span class="lineNoCov">          0 :   _AccountState createState() =&gt; _AccountState();</span>
-<span class="lineNum">      26 </span>            : }
-<span class="lineNum">      27 </span>            : 
-<span class="lineNum">      28 </span>            : class _AccountState extends State&lt;Account&gt; with ValidationMixin {
-<span class="lineNum">      29 </span>            :   /// Device's height and width
-<span class="lineNum">      30 </span>            :   double deviceHeight;
-<span class="lineNum">      31 </span>            :   double deviceWidth;
-<span class="lineNum">      32 </span>            : 
-<span class="lineNum">      33 </span>            :   /// Holds the app's state
-<span class="lineNum">      34 </span>            :   AppState provider;
-<span class="lineNum">      35 </span>            : 
-<span class="lineNum">      36 </span>            :   /// Global scaffold state key, to show the [SnackBar]
-<span class="lineNum">      37 </span>            :   final _scaffoldKey = GlobalKey&lt;ScaffoldState&gt;();
-<span class="lineNum">      38 </span>            : 
-<span class="lineNum">      39 </span>            :   /// Global form state key, used for validating the form
-<span class="lineNum">      40 </span>            :   final _formKey = GlobalKey&lt;FormState&gt;();
-<span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span>            :   /// Basic details of the user
-<span class="lineNum">      43 </span>            :   String _name;
-<span class="lineNum">      44 </span>            :   String _mobile;
-<span class="lineNum">      45 </span>            :   String _email;
-<span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span>            :   /// Text field's controllers
-<span class="lineNum">      48 </span>            :   TextEditingController _mobileController = TextEditingController();
-<span class="lineNum">      49 </span>            :   TextEditingController _emailController = TextEditingController();
-<span class="lineNum">      50 </span>            :   TextEditingController _nameController = TextEditingController();
-<span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span>            :   /// Instance of [AppLocalizations], to get the translated word
-<span class="lineNum">      53 </span>            :   AppLocalizations appLocalizations;
-<span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span>            :   /// List of the available languages
-<span class="lineNum">      56 </span>            :   ///
-<span class="lineNum">      57 </span>            :   /// See lang/langs.json
-<span class="lineNum">      58 </span>            :   List&lt;Map&lt;String, String&gt;&gt; availableLangList = List();
-<span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span>            :   /// Currently selected language
-<span class="lineNum">      61 </span>            :   String _currentSelectedLang = '';
-<span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">      64 </span>            :   void initState() {
-<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     super.initState();</span>
-<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     WidgetsBinding.instance.addPostFrameCallback((_) {</span>
-<span class="lineNum">      67 </span>            :       /// Gets the languages from the lang/langs.json
-<span class="lineNum">      68 </span><span class="lineNoCov">          0 :       _getAvailableLangs();</span>
-<span class="lineNum">      69 </span>            : 
-<span class="lineNum">      70 </span>            :       /// Sets the current language, based on the user's preference
-<span class="lineNum">      71 </span><span class="lineNoCov">          0 :       _currentSelectedLang = prefs.getString('languageCode');</span>
-<span class="lineNum">      72 </span>            : 
-<span class="lineNum">      73 </span><span class="lineNoCov">          0 :       AppState initStateProvider = Provider.of&lt;AppState&gt;(context, listen: false);</span>
-<span class="lineNum">      74 </span>            :       /// Gets the user's profile, if it's not already fetched and sets the details as well
-<span class="lineNum">      75 </span><span class="lineNoCov">          0 :       if (initStateProvider.userProfile == null)</span>
-<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         APIController.getUserProfile().then(</span>
-<span class="lineNum">      77 </span><span class="lineNoCov">          0 :           (response) {</span>
-<span class="lineNum">      78 </span>            :             if (response != null) {
-<span class="lineNum">      79 </span><span class="lineNoCov">          0 :               initStateProvider.setUserProfile(response, willNotify: false);</span>
-<span class="lineNum">      80 </span>            : 
-<span class="lineNum">      81 </span><span class="lineNoCov">          0 :               _nameController.text = response.name;</span>
-<span class="lineNum">      82 </span><span class="lineNoCov">          0 :               _emailController.text = response.email;</span>
-<span class="lineNum">      83 </span><span class="lineNoCov">          0 :               _mobileController.text = response.mobile;</span>
-<span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineNoCov">          0 :               List&lt;String&gt; name = response.name?.split(' ');</span>
-<span class="lineNum">      86 </span>            :               if (name != null) {
-<span class="lineNum">      87 </span><span class="lineNoCov">          0 :                 if (name.length == 1) {</span>
-<span class="lineNum">      88 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials(name[0][0].toUpperCase());</span>
-<span class="lineNum">      89 </span><span class="lineNoCov">          0 :                 } else if (name.length &gt; 1) {</span>
-<span class="lineNum">      90 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());</span>
-<span class="lineNum">      91 </span>            :                 }
-<span class="lineNum">      92 </span>            :               }
-<span class="lineNum">      93 </span>            :             }
-<span class="lineNum">      94 </span>            :           },
-<span class="lineNum">      95 </span>            :         );
-<span class="lineNum">      96 </span>            :       /// Sets the user profile's details, if it's already fetched
-<span class="lineNum">      97 </span>            :       else {
-<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         UserProfile userProfile = initStateProvider.userProfile;</span>
-<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         _nameController.text = userProfile.name;</span>
-<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         _emailController.text = userProfile.email;</span>
-<span class="lineNum">     101 </span><span class="lineNoCov">          0 :         _mobileController.text = userProfile.mobile;</span>
-<span class="lineNum">     102 </span>            : 
-<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         List&lt;String&gt; name = userProfile.name?.split(' ');</span>
-<span class="lineNum">     104 </span>            :         if (name != null) {
-<span class="lineNum">     105 </span><span class="lineNoCov">          0 :           if (name.length == 1) {</span>
-<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             initStateProvider.setInitials(name[0][0].toUpperCase());</span>
-<span class="lineNum">     107 </span><span class="lineNoCov">          0 :           } else if (name.length &gt; 1) {</span>
-<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());</span>
-<span class="lineNum">     109 </span>            :           }
-<span class="lineNum">     110 </span>            :         }
-<span class="lineNum">     111 </span>            :       }
-<span class="lineNum">     112 </span>            :     });
-<span class="lineNum">     113 </span>            :   }
-<span class="lineNum">     114 </span>            : 
-<span class="lineNum">     115 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">     116 </span>            :   Widget build(BuildContext context) {
-<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     appLocalizations = AppLocalizations.of(context);</span>
-<span class="lineNum">     118 </span><span class="lineNoCov">          0 :     provider = Provider.of&lt;AppState&gt;(context);</span>
-<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     deviceHeight = MediaQuery.of(context).size.height;</span>
-<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     deviceWidth = MediaQuery.of(context).size.width;</span>
-<span class="lineNum">     121 </span>            : 
-<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     return SafeArea(</span>
-<span class="lineNum">     123 </span><span class="lineNoCov">          0 :       child: Scaffold(</span>
-<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         key: _scaffoldKey,</span>
-<span class="lineNum">     125 </span>            :         backgroundColor: Constants.profileBG,
-<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         body: Stack(</span>
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :           children: &lt;Widget&gt;[</span>
-<span class="lineNum">     128 </span><span class="lineNoCov">          0 :             Container(</span>
-<span class="lineNum">     129 </span><span class="lineNoCov">          0 :               padding: EdgeInsets.all(10.0),</span>
-<span class="lineNum">     130 </span><span class="lineNoCov">          0 :               child: SingleChildScrollView(</span>
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 :                 physics: BouncingScrollPhysics(),</span>
-<span class="lineNum">     132 </span><span class="lineNoCov">          0 :                 child: Column(</span>
-<span class="lineNum">     133 </span><span class="lineNoCov">          0 :                   children: &lt;Widget&gt;[</span>
-<span class="lineNum">     134 </span><span class="lineNoCov">          0 :                     Row(</span>
-<span class="lineNum">     135 </span>            :                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :                       children: &lt;Widget&gt;[</span>
-<span class="lineNum">     137 </span><span class="lineNoCov">          0 :                         Align(</span>
-<span class="lineNum">     138 </span>            :                           alignment: Alignment.centerLeft,
-<span class="lineNum">     139 </span><span class="lineNoCov">          0 :                           child: Padding(</span>
-<span class="lineNum">     140 </span>            :                             padding: const EdgeInsets.all(15.0),
-<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                             child: Text(</span>
-<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                               appLocalizations.translate('profile'),</span>
-<span class="lineNum">     143 </span><span class="lineNoCov">          0 :                               style: GoogleFonts.roboto(</span>
-<span class="lineNum">     144 </span>            :                                 fontSize: 18.0,
-<span class="lineNum">     145 </span>            :                                 fontWeight: FontWeight.w500,
-<span class="lineNum">     146 </span>            :                               ),
-<span class="lineNum">     147 </span>            :                             ),
-<span class="lineNum">     148 </span>            :                           ),
-<span class="lineNum">     149 </span>            :                         ),
-<span class="lineNum">     150 </span><span class="lineNoCov">          0 :                         GestureDetector(</span>
-<span class="lineNum">     151 </span><span class="lineNoCov">          0 :                           onTap: () {</span>
-<span class="lineNum">     152 </span><span class="lineNoCov">          0 :                             _showLanguageChangeDialog();</span>
-<span class="lineNum">     153 </span>            :                           },
-<span class="lineNum">     154 </span><span class="lineNoCov">          0 :                           child: LanguageBtn(),</span>
-<span class="lineNum">     155 </span>            :                         )
-<span class="lineNum">     156 </span>            :                       ],
-<span class="lineNum">     157 </span>            :                     ),
-<span class="lineNum">     158 </span><span class="lineNoCov">          0 :                     SizedBox(height: 50.0),</span>
-<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                     Container(</span>
-<span class="lineNum">     160 </span><span class="lineNoCov">          0 :                       padding: EdgeInsets.all(3.0),</span>
-<span class="lineNum">     161 </span><span class="lineNoCov">          0 :                       width: deviceWidth,</span>
-<span class="lineNum">     162 </span>            :                       height: 110.0,
-<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                       decoration: BoxDecoration(</span>
-<span class="lineNum">     164 </span><span class="lineNoCov">          0 :                           image: DecorationImage(</span>
-<span class="lineNum">     165 </span>            :                         fit: BoxFit.contain,
-<span class="lineNum">     166 </span><span class="lineNoCov">          0 :                         image: AssetImage('assets/images/hisabkitabUIProfile.png'),</span>
-<span class="lineNum">     167 </span>            :                       )),
-<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                       child: CircleAvatar(</span>
-<span class="lineNum">     169 </span>            :                         radius: 45.0,
-<span class="lineNum">     170 </span><span class="lineNoCov">          0 :                         backgroundColor: Constants.lightGreen.withRed(210),</span>
-<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                         child: Center(</span>
-<span class="lineNum">     172 </span><span class="lineNoCov">          0 :                           child: HeaderWidget(</span>
-<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                             headerText: provider.initials,</span>
-<span class="lineNum">     174 </span>            :                             maxFontSize: 32,
-<span class="lineNum">     175 </span>            :                             minFontSize: 30,
-<span class="lineNum">     176 </span>            :                             textColor: Constants.primaryColor,
-<span class="lineNum">     177 </span>            :                           ),
-<span class="lineNum">     178 </span>            :                         ),
-<span class="lineNum">     179 </span>            :                       ),
-<span class="lineNum">     180 </span>            :                     ),
-<span class="lineNum">     181 </span><span class="lineNoCov">          0 :                     SizedBox(height: 10.0),</span>
-<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                     HeaderWidget(</span>
-<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                       headerText: provider.userProfile?.name ?? appLocalizations.translate('unknown'),</span>
-<span class="lineNum">     184 </span>            :                       maxFontSize: 22,
-<span class="lineNum">     185 </span>            :                       minFontSize: 20,
-<span class="lineNum">     186 </span>            :                       textColor: Colors.black,
-<span class="lineNum">     187 </span>            :                     ),
-<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                     SizedBox(</span>
-<span class="lineNum">     189 </span>            :                       height: 30.0,
-<span class="lineNum">     190 </span>            :                     ),
-<span class="lineNum">     191 </span><span class="lineNoCov">          0 :                     Container(</span>
-<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                       width: deviceWidth,</span>
-<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                       decoration: BoxDecoration(</span>
-<span class="lineNum">     194 </span>            :                         color: Colors.white,
-<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                         borderRadius: BorderRadius.circular(20.0),</span>
-<span class="lineNum">     196 </span>            :                       ),
-<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                       child: Form(</span>
-<span class="lineNum">     198 </span><span class="lineNoCov">          0 :                         key: _formKey,</span>
-<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                         child: Column(</span>
-<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                           children: &lt;Widget&gt;[</span>
-<span class="lineNum">     201 </span><span class="lineNoCov">          0 :                             Container(</span>
-<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                               margin: EdgeInsets.all(15.0),</span>
-<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                               padding: EdgeInsets.all(8.0),</span>
-<span class="lineNum">     204 </span><span class="lineNoCov">          0 :                               child: TextFormField(</span>
-<span class="lineNum">     205 </span><span class="lineNoCov">          0 :                                 controller: _nameController,</span>
-<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                                 onSaved: (value) {</span>
-<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                                   _name = value;</span>
-<span class="lineNum">     208 </span>            :                                 },
-<span class="lineNum">     209 </span>            :                                 cursorColor: Constants.primaryColor,
-<span class="lineNum">     210 </span>            :                                 textAlign: TextAlign.left,
-<span class="lineNum">     211 </span>            :                                 keyboardType: TextInputType.text,
-<span class="lineNum">     212 </span><span class="lineNoCov">          0 :                                 decoration: InputDecoration(</span>
-<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),</span>
-<span class="lineNum">     214 </span>            :                                   fillColor: Colors.white,
-<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                                   hintText: appLocalizations.translate('name'),</span>
-<span class="lineNum">     216 </span>            :                                   alignLabelWithHint: true,
-<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                                   hintStyle: GoogleFonts.nunito(</span>
-<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                                     color: Colors.grey.shade400,</span>
-<span class="lineNum">     219 </span>            :                                     fontSize: 14,
-<span class="lineNum">     220 </span>            :                                   ),
-<span class="lineNum">     221 </span><span class="lineNoCov">          0 :                                   border: OutlineInputBorder(</span>
-<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                                     borderRadius: BorderRadius.circular(10.0),</span>
-<span class="lineNum">     223 </span>            :                                   ),
-<span class="lineNum">     224 </span>            :                                 ),
-<span class="lineNum">     225 </span>            :                               ),
-<span class="lineNum">     226 </span>            :                             ),
-<span class="lineNum">     227 </span><span class="lineNoCov">          0 :                             Container(</span>
-<span class="lineNum">     228 </span><span class="lineNoCov">          0 :                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),</span>
-<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                               padding: EdgeInsets.all(8.0),</span>
-<span class="lineNum">     230 </span><span class="lineNoCov">          0 :                               child: TextFormField(</span>
-<span class="lineNum">     231 </span><span class="lineNoCov">          0 :                                 controller: _mobileController,</span>
-<span class="lineNum">     232 </span><span class="lineNoCov">          0 :                                 onSaved: (value) {</span>
-<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                                   _mobile = value;</span>
-<span class="lineNum">     234 </span>            :                                 },
-<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                                 validator: (value) {</span>
-<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                                   String result = ValidationMixin.validateMobile(value);</span>
-<span class="lineNum">     237 </span>            :                                   if (result != null)
-<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                                     return appLocalizations.translate(result);</span>
-<span class="lineNum">     239 </span>            :                                   else
-<span class="lineNum">     240 </span>            :                                     return result;
-<span class="lineNum">     241 </span>            :                                 },
-<span class="lineNum">     242 </span>            :                                 cursorColor: Constants.primaryColor,
-<span class="lineNum">     243 </span>            :                                 textAlign: TextAlign.left,
-<span class="lineNum">     244 </span>            :                                 keyboardType: TextInputType.phone,
-<span class="lineNum">     245 </span><span class="lineNoCov">          0 :                                 decoration: InputDecoration(</span>
-<span class="lineNum">     246 </span><span class="lineNoCov">          0 :                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),</span>
-<span class="lineNum">     247 </span>            :                                   fillColor: Colors.white,
-<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                                   hintText: appLocalizations.translate('mobile'),</span>
-<span class="lineNum">     249 </span>            :                                   alignLabelWithHint: true,
-<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                                   hintStyle: GoogleFonts.nunito(</span>
-<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                                     color: Colors.grey.shade400,</span>
-<span class="lineNum">     252 </span>            :                                     fontSize: 14,
-<span class="lineNum">     253 </span>            :                                   ),
-<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                                   border: OutlineInputBorder(</span>
-<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                                     borderRadius: BorderRadius.circular(10.0),</span>
-<span class="lineNum">     256 </span>            :                                   ),
-<span class="lineNum">     257 </span>            :                                 ),
-<span class="lineNum">     258 </span>            :                               ),
-<span class="lineNum">     259 </span>            :                             ),
-<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                             Container(</span>
-<span class="lineNum">     261 </span><span class="lineNoCov">          0 :                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),</span>
-<span class="lineNum">     262 </span><span class="lineNoCov">          0 :                               padding: EdgeInsets.all(8.0),</span>
-<span class="lineNum">     263 </span><span class="lineNoCov">          0 :                               child: TextFormField(</span>
-<span class="lineNum">     264 </span><span class="lineNoCov">          0 :                                 controller: _emailController,</span>
-<span class="lineNum">     265 </span><span class="lineNoCov">          0 :                                 onSaved: (value) {</span>
-<span class="lineNum">     266 </span><span class="lineNoCov">          0 :                                   _email = value;</span>
-<span class="lineNum">     267 </span>            :                                 },
-<span class="lineNum">     268 </span><span class="lineNoCov">          0 :                                 validator: (value) {</span>
-<span class="lineNum">     269 </span><span class="lineNoCov">          0 :                                   String result = ValidationMixin.validateEmail(value);</span>
-<span class="lineNum">     270 </span>            :                                   if (result != null)
-<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                                     return appLocalizations.translate(result);</span>
-<span class="lineNum">     272 </span>            :                                   else
-<span class="lineNum">     273 </span>            :                                     return result;
-<span class="lineNum">     274 </span>            :                                 },
-<span class="lineNum">     275 </span>            :                                 cursorColor: Constants.primaryColor,
-<span class="lineNum">     276 </span>            :                                 textAlign: TextAlign.left,
-<span class="lineNum">     277 </span>            :                                 keyboardType: TextInputType.emailAddress,
-<span class="lineNum">     278 </span><span class="lineNoCov">          0 :                                 decoration: InputDecoration(</span>
-<span class="lineNum">     279 </span><span class="lineNoCov">          0 :                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),</span>
-<span class="lineNum">     280 </span>            :                                   fillColor: Colors.white,
-<span class="lineNum">     281 </span><span class="lineNoCov">          0 :                                   hintText: appLocalizations.translate('emailId'),</span>
-<span class="lineNum">     282 </span>            :                                   alignLabelWithHint: true,
-<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                                   hintStyle: GoogleFonts.nunito(</span>
-<span class="lineNum">     284 </span><span class="lineNoCov">          0 :                                     color: Colors.grey.shade400,</span>
-<span class="lineNum">     285 </span>            :                                     fontSize: 14,
-<span class="lineNum">     286 </span>            :                                   ),
-<span class="lineNum">     287 </span><span class="lineNoCov">          0 :                                   border: OutlineInputBorder(</span>
-<span class="lineNum">     288 </span><span class="lineNoCov">          0 :                                     borderRadius: BorderRadius.circular(10.0),</span>
-<span class="lineNum">     289 </span>            :                                   ),
-<span class="lineNum">     290 </span>            :                                 ),
-<span class="lineNum">     291 </span>            :                               ),
-<span class="lineNum">     292 </span>            :                             ),
-<span class="lineNum">     293 </span>            :                           ],
-<span class="lineNum">     294 </span>            :                         ),
-<span class="lineNum">     295 </span>            :                       ),
-<span class="lineNum">     296 </span>            :                     ),
-<span class="lineNum">     297 </span><span class="lineNoCov">          0 :                     SizedBox(height: 20.0),</span>
-<span class="lineNum">     298 </span><span class="lineNoCov">          0 :                     Container(</span>
-<span class="lineNum">     299 </span><span class="lineNoCov">          0 :                       width: deviceWidth * 0.75,</span>
-<span class="lineNum">     300 </span>            :                       height: 45.0,
-<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                       child: RaisedButton(</span>
-<span class="lineNum">     302 </span><span class="lineNoCov">          0 :                         onPressed: () {</span>
-<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                           _submit();</span>
-<span class="lineNum">     304 </span>            :                         },
-<span class="lineNum">     305 </span><span class="lineNoCov">          0 :                         child: HeaderWidget(</span>
-<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                           headerText: appLocalizations.translate('updateProfile'),</span>
-<span class="lineNum">     307 </span>            :                           maxFontSize: 20,
-<span class="lineNum">     308 </span>            :                           minFontSize: 18,
-<span class="lineNum">     309 </span>            :                           textColor: Colors.white,
-<span class="lineNum">     310 </span>            :                         ),
-<span class="lineNum">     311 </span>            :                         color: Constants.buttonColor,
-<span class="lineNum">     312 </span><span class="lineNoCov">          0 :                         shape: RoundedRectangleBorder(</span>
-<span class="lineNum">     313 </span><span class="lineNoCov">          0 :                           borderRadius: BorderRadius.circular(25.0),</span>
-<span class="lineNum">     314 </span><span class="lineNoCov">          0 :                           side: BorderSide(</span>
-<span class="lineNum">     315 </span>            :                             color: Constants.buttonColor,
-<span class="lineNum">     316 </span>            :                           ),
-<span class="lineNum">     317 </span>            :                         ),
-<span class="lineNum">     318 </span>            :                       ),
-<span class="lineNum">     319 </span>            :                     ),
-<span class="lineNum">     320 </span><span class="lineNoCov">          0 :                     GestureDetector(</span>
-<span class="lineNum">     321 </span><span class="lineNoCov">          0 :                       onTap: () {</span>
-<span class="lineNum">     322 </span><span class="lineNoCov">          0 :                         Navigator.of(context).push(</span>
-<span class="lineNum">     323 </span><span class="lineNoCov">          0 :                           MaterialPageRoute(</span>
-<span class="lineNum">     324 </span><span class="lineNoCov">          0 :                             builder: (context) =&gt; ChangePasswordScreen(),</span>
-<span class="lineNum">     325 </span>            :                           ),
-<span class="lineNum">     326 </span>            :                         );
-<span class="lineNum">     327 </span>            :                       },
-<span class="lineNum">     328 </span><span class="lineNoCov">          0 :                       child: Container(</span>
-<span class="lineNum">     329 </span><span class="lineNoCov">          0 :                         margin: EdgeInsets.only(top: 20.0, bottom: 20.0),</span>
-<span class="lineNum">     330 </span><span class="lineNoCov">          0 :                         child: Text(</span>
-<span class="lineNum">     331 </span><span class="lineNoCov">          0 :                           appLocalizations.translate('changePassword') + ' ?',</span>
-<span class="lineNum">     332 </span><span class="lineNoCov">          0 :                           style: GoogleFonts.nunito(</span>
-<span class="lineNum">     333 </span>            :                             fontSize: 16.0,
-<span class="lineNum">     334 </span>            :                             wordSpacing: 1,
-<span class="lineNum">     335 </span>            :                             color: Colors.black54,
-<span class="lineNum">     336 </span>            :                           ),
-<span class="lineNum">     337 </span>            :                         ),
-<span class="lineNum">     338 </span>            :                       ),
-<span class="lineNum">     339 </span>            :                     ),
-<span class="lineNum">     340 </span><span class="lineNoCov">          0 :                     SizedBox(height: 20.0),</span>
-<span class="lineNum">     341 </span><span class="lineNoCov">          0 :                     Container(</span>
-<span class="lineNum">     342 </span><span class="lineNoCov">          0 :                       width: deviceWidth * 0.75,</span>
-<span class="lineNum">     343 </span>            :                       height: 45.0,
-<span class="lineNum">     344 </span><span class="lineNoCov">          0 :                       child: OutlineButton(</span>
-<span class="lineNum">     345 </span><span class="lineNoCov">          0 :                         borderSide: BorderSide(</span>
-<span class="lineNum">     346 </span>            :                           color: Constants.primaryColor,
-<span class="lineNum">     347 </span>            :                         ),
-<span class="lineNum">     348 </span><span class="lineNoCov">          0 :                         onPressed: () {</span>
-<span class="lineNum">     349 </span><span class="lineNoCov">          0 :                           _logout();</span>
-<span class="lineNum">     350 </span>            :                         },
-<span class="lineNum">     351 </span><span class="lineNoCov">          0 :                         child: HeaderWidget(</span>
-<span class="lineNum">     352 </span><span class="lineNoCov">          0 :                           headerText: appLocalizations.translate('logout'),</span>
-<span class="lineNum">     353 </span>            :                           maxFontSize: 20,
-<span class="lineNum">     354 </span>            :                           minFontSize: 18,
-<span class="lineNum">     355 </span>            :                           textColor: Constants.primaryColor,
-<span class="lineNum">     356 </span>            :                         ),
-<span class="lineNum">     357 </span>            :                         color: Constants.primaryColor,
-<span class="lineNum">     358 </span><span class="lineNoCov">          0 :                         splashColor: Constants.lightGreen.withRed(210),</span>
-<span class="lineNum">     359 </span><span class="lineNoCov">          0 :                         shape: RoundedRectangleBorder(</span>
-<span class="lineNum">     360 </span><span class="lineNoCov">          0 :                           borderRadius: BorderRadius.circular(25.0),</span>
+<span class="lineNum">      18 </span>            : import 'package:shared_preferences/shared_preferences.dart';
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : class Account extends StatefulWidget {
+<span class="lineNum">      21 </span>            :   final Function languageUpdateCallback;
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :   Account({Key key, @required this.languageUpdateCallback}) : super(key: key);</span>
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :   _AccountState createState() =&gt; _AccountState();</span>
+<span class="lineNum">      27 </span>            : }
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : class _AccountState extends State&lt;Account&gt; with ValidationMixin {
+<span class="lineNum">      30 </span>            :   /// Device's height and width
+<span class="lineNum">      31 </span>            :   double deviceHeight;
+<span class="lineNum">      32 </span>            :   double deviceWidth;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            :   /// Holds the app's state
+<span class="lineNum">      35 </span>            :   AppState provider;
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            :   /// Global scaffold state key, to show the [SnackBar]
+<span class="lineNum">      38 </span>            :   final _scaffoldKey = GlobalKey&lt;ScaffoldState&gt;();
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :   /// Global form state key, used for validating the form
+<span class="lineNum">      41 </span>            :   final _formKey = GlobalKey&lt;FormState&gt;();
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            :   /// Basic details of the user
+<span class="lineNum">      44 </span>            :   String _name;
+<span class="lineNum">      45 </span>            :   String _mobile;
+<span class="lineNum">      46 </span>            :   String _email;
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :   /// Text field's controllers
+<span class="lineNum">      49 </span>            :   TextEditingController _mobileController = TextEditingController();
+<span class="lineNum">      50 </span>            :   TextEditingController _emailController = TextEditingController();
+<span class="lineNum">      51 </span>            :   TextEditingController _nameController = TextEditingController();
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            :   /// Instance of [AppLocalizations], to get the translated word
+<span class="lineNum">      54 </span>            :   AppLocalizations appLocalizations;
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :   /// List of the available languages
+<span class="lineNum">      57 </span>            :   ///
+<span class="lineNum">      58 </span>            :   /// See lang/langs.json
+<span class="lineNum">      59 </span>            :   List&lt;Map&lt;String, String&gt;&gt; availableLangList = List();
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            :   /// Currently selected language
+<span class="lineNum">      62 </span>            :   String _currentSelectedLang = '';
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :   @override
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :   void initState() async {</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     super.initState();</span>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :     if (prefs == null)
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :       prefs = await SharedPreferences.getInstance();</span>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     WidgetsBinding.instance.addPostFrameCallback((_) {</span>
+<span class="lineNum">      72 </span>            :       /// Gets the languages from the lang/langs.json
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :       _getAvailableLangs();</span>
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :       /// Sets the current language, based on the user's preference
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :       _currentSelectedLang = prefs.getString('languageCode');</span>
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :       AppState initStateProvider = Provider.of&lt;AppState&gt;(context, listen: false);</span>
+<span class="lineNum">      79 </span>            :       /// Gets the user's profile, if it's not already fetched and sets the details as well
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :       if (initStateProvider.userProfile == null)</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         APIController.getUserProfile().then(</span>
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :           (response) {</span>
+<span class="lineNum">      83 </span>            :             if (response != null) {
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :               initStateProvider.setUserProfile(response, willNotify: false);</span>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :               _nameController.text = response.name;</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :               _emailController.text = response.email;</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :               _mobileController.text = response.mobile;</span>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :               List&lt;String&gt; name = response.name?.split(' ');</span>
+<span class="lineNum">      91 </span>            :               if (name != null) {
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                 if (name.length == 1) {</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials(name[0][0].toUpperCase());</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :                 } else if (name.length &gt; 1) {</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());</span>
+<span class="lineNum">      96 </span>            :                 }
+<span class="lineNum">      97 </span>            :               }
+<span class="lineNum">      98 </span>            :             }
+<span class="lineNum">      99 </span>            :           },
+<span class="lineNum">     100 </span>            :         );
+<span class="lineNum">     101 </span>            :       /// Sets the user profile's details, if it's already fetched
+<span class="lineNum">     102 </span>            :       else {
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         UserProfile userProfile = initStateProvider.userProfile;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         _nameController.text = userProfile.name;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         _emailController.text = userProfile.email;</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :         _mobileController.text = userProfile.mobile;</span>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :         List&lt;String&gt; name = userProfile.name?.split(' ');</span>
+<span class="lineNum">     109 </span>            :         if (name != null) {
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :           if (name.length == 1) {</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :             initStateProvider.setInitials(name[0][0].toUpperCase());</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :           } else if (name.length &gt; 1) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :             initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());</span>
+<span class="lineNum">     114 </span>            :           }
+<span class="lineNum">     115 </span>            :         }
+<span class="lineNum">     116 </span>            :       }
+<span class="lineNum">     117 </span>            :     });
+<span class="lineNum">     118 </span>            :   }
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">     121 </span>            :   Widget build(BuildContext context) {
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     appLocalizations = AppLocalizations.of(context);</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     provider = Provider.of&lt;AppState&gt;(context);</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     deviceHeight = MediaQuery.of(context).size.height;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     deviceWidth = MediaQuery.of(context).size.width;</span>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     return SafeArea(</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :       child: Scaffold(</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         key: _scaffoldKey,</span>
+<span class="lineNum">     130 </span>            :         backgroundColor: Constants.profileBG,
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         body: Stack(</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :           children: &lt;Widget&gt;[</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :             Container(</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :               padding: EdgeInsets.all(10.0),</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :               child: SingleChildScrollView(</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :                 physics: BouncingScrollPhysics(),</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :                 child: Column(</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                   children: &lt;Widget&gt;[</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :                     Row(</span>
+<span class="lineNum">     140 </span>            :                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :                       children: &lt;Widget&gt;[</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :                         Align(</span>
+<span class="lineNum">     143 </span>            :                           alignment: Alignment.centerLeft,
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :                           child: Padding(</span>
+<span class="lineNum">     145 </span>            :                             padding: const EdgeInsets.all(15.0),
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                             child: Text(</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :                               appLocalizations.translate('profile'),</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :                               style: GoogleFonts.roboto(</span>
+<span class="lineNum">     149 </span>            :                                 fontSize: 18.0,
+<span class="lineNum">     150 </span>            :                                 fontWeight: FontWeight.w500,
+<span class="lineNum">     151 </span>            :                               ),
+<span class="lineNum">     152 </span>            :                             ),
+<span class="lineNum">     153 </span>            :                           ),
+<span class="lineNum">     154 </span>            :                         ),
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                         GestureDetector(</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :                           onTap: () {</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                             _showLanguageChangeDialog();</span>
+<span class="lineNum">     158 </span>            :                           },
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :                           child: LanguageBtn(),</span>
+<span class="lineNum">     160 </span>            :                         )
+<span class="lineNum">     161 </span>            :                       ],
+<span class="lineNum">     162 </span>            :                     ),
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :                     SizedBox(height: 50.0),</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :                     Container(</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :                       padding: EdgeInsets.all(3.0),</span>
+<span class="lineNum">     166 </span><span class="lineNoCov">          0 :                       width: deviceWidth,</span>
+<span class="lineNum">     167 </span>            :                       height: 110.0,
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :                       decoration: BoxDecoration(</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                           image: DecorationImage(</span>
+<span class="lineNum">     170 </span>            :                         fit: BoxFit.contain,
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                         image: AssetImage('assets/images/hisabkitabUIProfile.png'),</span>
+<span class="lineNum">     172 </span>            :                       )),
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                       child: CircleAvatar(</span>
+<span class="lineNum">     174 </span>            :                         radius: 45.0,
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :                         backgroundColor: Constants.lightGreen.withRed(210),</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                         child: Center(</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :                           child: HeaderWidget(</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                             headerText: provider.initials,</span>
+<span class="lineNum">     179 </span>            :                             maxFontSize: 32,
+<span class="lineNum">     180 </span>            :                             minFontSize: 30,
+<span class="lineNum">     181 </span>            :                             textColor: Constants.primaryColor,
+<span class="lineNum">     182 </span>            :                           ),
+<span class="lineNum">     183 </span>            :                         ),
+<span class="lineNum">     184 </span>            :                       ),
+<span class="lineNum">     185 </span>            :                     ),
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :                     SizedBox(height: 10.0),</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :                     HeaderWidget(</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                       headerText: provider.userProfile?.name ?? appLocalizations.translate('unknown'),</span>
+<span class="lineNum">     189 </span>            :                       maxFontSize: 22,
+<span class="lineNum">     190 </span>            :                       minFontSize: 20,
+<span class="lineNum">     191 </span>            :                       textColor: Colors.black,
+<span class="lineNum">     192 </span>            :                     ),
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                     SizedBox(</span>
+<span class="lineNum">     194 </span>            :                       height: 30.0,
+<span class="lineNum">     195 </span>            :                     ),
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :                     Container(</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :                       width: deviceWidth,</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :                       decoration: BoxDecoration(</span>
+<span class="lineNum">     199 </span>            :                         color: Colors.white,
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                         borderRadius: BorderRadius.circular(20.0),</span>
+<span class="lineNum">     201 </span>            :                       ),
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :                       child: Form(</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                         key: _formKey,</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :                         child: Column(</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :                           children: &lt;Widget&gt;[</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                             Container(</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                               margin: EdgeInsets.all(15.0),</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :                               padding: EdgeInsets.all(8.0),</span>
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :                               child: TextFormField(</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :                                 controller: _nameController,</span>
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :                                 onSaved: (value) {</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 :                                   _name = value;</span>
+<span class="lineNum">     213 </span>            :                                 },
+<span class="lineNum">     214 </span>            :                                 cursorColor: Constants.primaryColor,
+<span class="lineNum">     215 </span>            :                                 textAlign: TextAlign.left,
+<span class="lineNum">     216 </span>            :                                 keyboardType: TextInputType.text,
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                                 decoration: InputDecoration(</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),</span>
+<span class="lineNum">     219 </span>            :                                   fillColor: Colors.white,
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :                                   hintText: appLocalizations.translate('name'),</span>
+<span class="lineNum">     221 </span>            :                                   alignLabelWithHint: true,
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                                   hintStyle: GoogleFonts.nunito(</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :                                     color: Colors.grey.shade400,</span>
+<span class="lineNum">     224 </span>            :                                     fontSize: 14,
+<span class="lineNum">     225 </span>            :                                   ),
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :                                   border: OutlineInputBorder(</span>
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :                                     borderRadius: BorderRadius.circular(10.0),</span>
+<span class="lineNum">     228 </span>            :                                   ),
+<span class="lineNum">     229 </span>            :                                 ),
+<span class="lineNum">     230 </span>            :                               ),
+<span class="lineNum">     231 </span>            :                             ),
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :                             Container(</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :                               padding: EdgeInsets.all(8.0),</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                               child: TextFormField(</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                                 controller: _mobileController,</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                                 onSaved: (value) {</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                                   _mobile = value;</span>
+<span class="lineNum">     239 </span>            :                                 },
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :                                 validator: (value) {</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :                                   String result = ValidationMixin.validateMobile(value);</span>
+<span class="lineNum">     242 </span>            :                                   if (result != null)
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :                                     return appLocalizations.translate(result);</span>
+<span class="lineNum">     244 </span>            :                                   else
+<span class="lineNum">     245 </span>            :                                     return result;
+<span class="lineNum">     246 </span>            :                                 },
+<span class="lineNum">     247 </span>            :                                 cursorColor: Constants.primaryColor,
+<span class="lineNum">     248 </span>            :                                 textAlign: TextAlign.left,
+<span class="lineNum">     249 </span>            :                                 keyboardType: TextInputType.phone,
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                                 decoration: InputDecoration(</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),</span>
+<span class="lineNum">     252 </span>            :                                   fillColor: Colors.white,
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                                   hintText: appLocalizations.translate('mobile'),</span>
+<span class="lineNum">     254 </span>            :                                   alignLabelWithHint: true,
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                                   hintStyle: GoogleFonts.nunito(</span>
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :                                     color: Colors.grey.shade400,</span>
+<span class="lineNum">     257 </span>            :                                     fontSize: 14,
+<span class="lineNum">     258 </span>            :                                   ),
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :                                   border: OutlineInputBorder(</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                                     borderRadius: BorderRadius.circular(10.0),</span>
+<span class="lineNum">     261 </span>            :                                   ),
+<span class="lineNum">     262 </span>            :                                 ),
+<span class="lineNum">     263 </span>            :                               ),
+<span class="lineNum">     264 </span>            :                             ),
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :                             Container(</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :                               margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :                               padding: EdgeInsets.all(8.0),</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :                               child: TextFormField(</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :                                 controller: _emailController,</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :                                 onSaved: (value) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :                                   _email = value;</span>
+<span class="lineNum">     272 </span>            :                                 },
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :                                 validator: (value) {</span>
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :                                   String result = ValidationMixin.validateEmail(value);</span>
+<span class="lineNum">     275 </span>            :                                   if (result != null)
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :                                     return appLocalizations.translate(result);</span>
+<span class="lineNum">     277 </span>            :                                   else
+<span class="lineNum">     278 </span>            :                                     return result;
+<span class="lineNum">     279 </span>            :                                 },
+<span class="lineNum">     280 </span>            :                                 cursorColor: Constants.primaryColor,
+<span class="lineNum">     281 </span>            :                                 textAlign: TextAlign.left,
+<span class="lineNum">     282 </span>            :                                 keyboardType: TextInputType.emailAddress,
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :                                 decoration: InputDecoration(</span>
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),</span>
+<span class="lineNum">     285 </span>            :                                   fillColor: Colors.white,
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :                                   hintText: appLocalizations.translate('emailId'),</span>
+<span class="lineNum">     287 </span>            :                                   alignLabelWithHint: true,
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :                                   hintStyle: GoogleFonts.nunito(</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :                                     color: Colors.grey.shade400,</span>
+<span class="lineNum">     290 </span>            :                                     fontSize: 14,
+<span class="lineNum">     291 </span>            :                                   ),
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :                                   border: OutlineInputBorder(</span>
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :                                     borderRadius: BorderRadius.circular(10.0),</span>
+<span class="lineNum">     294 </span>            :                                   ),
+<span class="lineNum">     295 </span>            :                                 ),
+<span class="lineNum">     296 </span>            :                               ),
+<span class="lineNum">     297 </span>            :                             ),
+<span class="lineNum">     298 </span>            :                           ],
+<span class="lineNum">     299 </span>            :                         ),
+<span class="lineNum">     300 </span>            :                       ),
+<span class="lineNum">     301 </span>            :                     ),
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :                     SizedBox(height: 20.0),</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                     Container(</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :                       width: deviceWidth * 0.75,</span>
+<span class="lineNum">     305 </span>            :                       height: 45.0,
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                       child: RaisedButton(</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :                         onPressed: () {</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :                           _submit();</span>
+<span class="lineNum">     309 </span>            :                         },
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :                         child: HeaderWidget(</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :                           headerText: appLocalizations.translate('updateProfile'),</span>
+<span class="lineNum">     312 </span>            :                           maxFontSize: 20,
+<span class="lineNum">     313 </span>            :                           minFontSize: 18,
+<span class="lineNum">     314 </span>            :                           textColor: Colors.white,
+<span class="lineNum">     315 </span>            :                         ),
+<span class="lineNum">     316 </span>            :                         color: Constants.buttonColor,
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :                         shape: RoundedRectangleBorder(</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :                           borderRadius: BorderRadius.circular(25.0),</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :                           side: BorderSide(</span>
+<span class="lineNum">     320 </span>            :                             color: Constants.buttonColor,
+<span class="lineNum">     321 </span>            :                           ),
+<span class="lineNum">     322 </span>            :                         ),
+<span class="lineNum">     323 </span>            :                       ),
+<span class="lineNum">     324 </span>            :                     ),
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :                     GestureDetector(</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :                       onTap: () {</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :                         Navigator.of(context).push(</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :                           MaterialPageRoute(</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :                             builder: (context) =&gt; ChangePasswordScreen(),</span>
+<span class="lineNum">     330 </span>            :                           ),
+<span class="lineNum">     331 </span>            :                         );
+<span class="lineNum">     332 </span>            :                       },
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :                       child: Container(</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :                         margin: EdgeInsets.only(top: 20.0, bottom: 20.0),</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :                         child: Text(</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :                           appLocalizations.translate('changePassword') + ' ?',</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :                           style: GoogleFonts.nunito(</span>
+<span class="lineNum">     338 </span>            :                             fontSize: 16.0,
+<span class="lineNum">     339 </span>            :                             wordSpacing: 1,
+<span class="lineNum">     340 </span>            :                             color: Colors.black54,
+<span class="lineNum">     341 </span>            :                           ),
+<span class="lineNum">     342 </span>            :                         ),
+<span class="lineNum">     343 </span>            :                       ),
+<span class="lineNum">     344 </span>            :                     ),
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :                     SizedBox(height: 20.0),</span>
+<span class="lineNum">     346 </span><span class="lineNoCov">          0 :                     Container(</span>
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :                       width: deviceWidth * 0.75,</span>
+<span class="lineNum">     348 </span>            :                       height: 45.0,
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :                       child: OutlineButton(</span>
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :                         borderSide: BorderSide(</span>
+<span class="lineNum">     351 </span>            :                           color: Constants.primaryColor,
+<span class="lineNum">     352 </span>            :                         ),
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :                         onPressed: () {</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :                           _logout();</span>
+<span class="lineNum">     355 </span>            :                         },
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :                         child: HeaderWidget(</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :                           headerText: appLocalizations.translate('logout'),</span>
+<span class="lineNum">     358 </span>            :                           maxFontSize: 20,
+<span class="lineNum">     359 </span>            :                           minFontSize: 18,
+<span class="lineNum">     360 </span>            :                           textColor: Constants.primaryColor,
 <span class="lineNum">     361 </span>            :                         ),
-<span class="lineNum">     362 </span>            :                       ),
-<span class="lineNum">     363 </span>            :                     ),
-<span class="lineNum">     364 </span><span class="lineNoCov">          0 :                     SizedBox(height: 20.0),</span>
-<span class="lineNum">     365 </span>            :                   ],
-<span class="lineNum">     366 </span>            :                 ),
-<span class="lineNum">     367 </span>            :               ),
-<span class="lineNum">     368 </span>            :             ),
-<span class="lineNum">     369 </span><span class="lineNoCov">          0 :             provider.isLoading</span>
-<span class="lineNum">     370 </span><span class="lineNoCov">          0 :                 ? Center(</span>
-<span class="lineNum">     371 </span><span class="lineNoCov">          0 :                     child: CircularProgressIndicator(</span>
-<span class="lineNum">     372 </span><span class="lineNoCov">          0 :                       valueColor: AlwaysStoppedAnimation&lt;Color&gt;(Constants.primaryColor),</span>
-<span class="lineNum">     373 </span>            :                     ),
-<span class="lineNum">     374 </span>            :                   )
-<span class="lineNum">     375 </span><span class="lineNoCov">          0 :                 : Container(),</span>
-<span class="lineNum">     376 </span>            :           ],
-<span class="lineNum">     377 </span>            :         ),
-<span class="lineNum">     378 </span>            :       ),
-<span class="lineNum">     379 </span>            :     );
-<span class="lineNum">     380 </span>            :   }
-<span class="lineNum">     381 </span>            : 
-<span class="lineNum">     382 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">     383 </span>            :   void deactivate() {
-<span class="lineNum">     384 </span><span class="lineNoCov">          0 :     super.deactivate();</span>
-<span class="lineNum">     385 </span>            : 
-<span class="lineNum">     386 </span>            :     /// Makes the loader's state to not loading and hides the [SnackBar] on being removed from the widget tree
-<span class="lineNum">     387 </span><span class="lineNoCov">          0 :     provider.setLoading(false, willNotify: false);</span>
-<span class="lineNum">     388 </span><span class="lineNoCov">          0 :     _scaffoldKey.currentState.hideCurrentSnackBar();</span>
-<span class="lineNum">     389 </span>            :   }
+<span class="lineNum">     362 </span>            :                         color: Constants.primaryColor,
+<span class="lineNum">     363 </span><span class="lineNoCov">          0 :                         splashColor: Constants.lightGreen.withRed(210),</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :                         shape: RoundedRectangleBorder(</span>
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 :                           borderRadius: BorderRadius.circular(25.0),</span>
+<span class="lineNum">     366 </span>            :                         ),
+<span class="lineNum">     367 </span>            :                       ),
+<span class="lineNum">     368 </span>            :                     ),
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :                     SizedBox(height: 20.0),</span>
+<span class="lineNum">     370 </span>            :                   ],
+<span class="lineNum">     371 </span>            :                 ),
+<span class="lineNum">     372 </span>            :               ),
+<span class="lineNum">     373 </span>            :             ),
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :             provider.isLoading</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :                 ? Center(</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :                     child: CircularProgressIndicator(</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :                       valueColor: AlwaysStoppedAnimation&lt;Color&gt;(Constants.primaryColor),</span>
+<span class="lineNum">     378 </span>            :                     ),
+<span class="lineNum">     379 </span>            :                   )
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :                 : Container(),</span>
+<span class="lineNum">     381 </span>            :           ],
+<span class="lineNum">     382 </span>            :         ),
+<span class="lineNum">     383 </span>            :       ),
+<span class="lineNum">     384 </span>            :     );
+<span class="lineNum">     385 </span>            :   }
+<span class="lineNum">     386 </span>            : 
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">     388 </span>            :   void deactivate() {
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :     super.deactivate();</span>
 <span class="lineNum">     390 </span>            : 
-<span class="lineNum">     391 </span>            :   /// Shows a [SnackBar], displaying [message]
-<span class="lineNum">     392 </span><span class="lineNoCov">          0 :   void _showSnackBar(String message) {</span>
-<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     _scaffoldKey.currentState.showSnackBar(</span>
-<span class="lineNum">     394 </span><span class="lineNoCov">          0 :       SnackBar(content: Text(message)),</span>
-<span class="lineNum">     395 </span>            :     );
-<span class="lineNum">     396 </span>            :   }
-<span class="lineNum">     397 </span>            : 
-<span class="lineNum">     398 </span>            :   /// Validates the input data and updates the user profile, if the input is valid
-<span class="lineNum">     399 </span><span class="lineNoCov">          0 :   void _submit() {</span>
-<span class="lineNum">     400 </span>            :     /// Removes the text field focus
-<span class="lineNum">     401 </span><span class="lineNoCov">          0 :     FocusScope.of(context).unfocus();</span>
+<span class="lineNum">     391 </span>            :     /// Makes the loader's state to not loading and hides the [SnackBar] on being removed from the widget tree
+<span class="lineNum">     392 </span><span class="lineNoCov">          0 :     provider.setLoading(false, willNotify: false);</span>
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :     _scaffoldKey.currentState.hideCurrentSnackBar();</span>
+<span class="lineNum">     394 </span>            :   }
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span>            :   /// Shows a [SnackBar], displaying [message]
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :   void _showSnackBar(String message) {</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :     _scaffoldKey.currentState.showSnackBar(</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :       SnackBar(content: Text(message)),</span>
+<span class="lineNum">     400 </span>            :     );
+<span class="lineNum">     401 </span>            :   }
 <span class="lineNum">     402 </span>            : 
-<span class="lineNum">     403 </span><span class="lineNoCov">          0 :     final _formState = _formKey.currentState;</span>
-<span class="lineNum">     404 </span>            : 
-<span class="lineNum">     405 </span>            :     /// Checks if the inputs are valid
-<span class="lineNum">     406 </span><span class="lineNoCov">          0 :     if (_formState.validate()) {</span>
-<span class="lineNum">     407 </span>            :       /// Save the text field's data... this internally calls the onSaved() method in the [TextFormField]
-<span class="lineNum">     408 </span><span class="lineNoCov">          0 :       _formState.save();</span>
+<span class="lineNum">     403 </span>            :   /// Validates the input data and updates the user profile, if the input is valid
+<span class="lineNum">     404 </span><span class="lineNoCov">          0 :   void _submit() {</span>
+<span class="lineNum">     405 </span>            :     /// Removes the text field focus
+<span class="lineNum">     406 </span><span class="lineNoCov">          0 :     FocusScope.of(context).unfocus();</span>
+<span class="lineNum">     407 </span>            : 
+<span class="lineNum">     408 </span><span class="lineNoCov">          0 :     final _formState = _formKey.currentState;</span>
 <span class="lineNum">     409 </span>            : 
-<span class="lineNum">     410 </span><span class="lineNoCov">          0 :       if ((_name != null &amp;&amp; _name.isNotEmpty) || (_mobile != null &amp;&amp; _mobile.isNotEmpty) || (_email != null &amp;&amp; _email.isNotEmpty)) {</span>
-<span class="lineNum">     411 </span>            :         /// Makes the loader to rotate
-<span class="lineNum">     412 </span><span class="lineNoCov">          0 :         provider.setLoading(true);</span>
-<span class="lineNum">     413 </span>            : 
-<span class="lineNum">     414 </span>            :         /// Creates an instance of [UserProfile]
-<span class="lineNum">     415 </span><span class="lineNoCov">          0 :         UserProfile userProfile = UserProfile(name: _name, mobile: _mobile, email: _email);</span>
-<span class="lineNum">     416 </span>            : 
-<span class="lineNum">     417 </span>            :         /// Calls the user profile update API and handles the response
-<span class="lineNum">     418 </span><span class="lineNoCov">          0 :         APIController.updateUserProfile(userProfile).then((response) {</span>
-<span class="lineNum">     419 </span>            :           /// Makes the loader to stop rotating
-<span class="lineNum">     420 </span><span class="lineNoCov">          0 :           provider.setLoading(false);</span>
+<span class="lineNum">     410 </span>            :     /// Checks if the inputs are valid
+<span class="lineNum">     411 </span><span class="lineNoCov">          0 :     if (_formState.validate()) {</span>
+<span class="lineNum">     412 </span>            :       /// Save the text field's data... this internally calls the onSaved() method in the [TextFormField]
+<span class="lineNum">     413 </span><span class="lineNoCov">          0 :       _formState.save();</span>
+<span class="lineNum">     414 </span>            : 
+<span class="lineNum">     415 </span><span class="lineNoCov">          0 :       if ((_name != null &amp;&amp; _name.isNotEmpty) || (_mobile != null &amp;&amp; _mobile.isNotEmpty) || (_email != null &amp;&amp; _email.isNotEmpty)) {</span>
+<span class="lineNum">     416 </span>            :         /// Makes the loader to rotate
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :         provider.setLoading(true);</span>
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span>            :         /// Creates an instance of [UserProfile]
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :         UserProfile userProfile = UserProfile(name: _name, mobile: _mobile, email: _email);</span>
 <span class="lineNum">     421 </span>            : 
-<span class="lineNum">     422 </span>            :           /// Mainly handles the error response here
-<span class="lineNum">     423 </span><span class="lineNoCov">          0 :           if (response.error?.isNotEmpty ?? false) {</span>
-<span class="lineNum">     424 </span><span class="lineNoCov">          0 :             if (response.error.contains('This mobile number is already registered')) {</span>
-<span class="lineNum">     425 </span><span class="lineNoCov">          0 :               _showSnackBar(appLocalizations.translate('alreadyExistingError'));</span>
-<span class="lineNum">     426 </span>            :             } else {
-<span class="lineNum">     427 </span><span class="lineNoCov">          0 :               String error = response.error;</span>
-<span class="lineNum">     428 </span><span class="lineNoCov">          0 :               if (response.statusCode == 0) error = appLocalizations.translate(error);</span>
-<span class="lineNum">     429 </span>            : 
-<span class="lineNum">     430 </span><span class="lineNoCov">          0 :               _showSnackBar(error);</span>
-<span class="lineNum">     431 </span>            :             }
-<span class="lineNum">     432 </span>            :           }
-<span class="lineNum">     433 </span>            :           /// Handles the successful API response and updates the UI
-<span class="lineNum">     434 </span>            :           else {
-<span class="lineNum">     435 </span><span class="lineNoCov">          0 :             _showSnackBar(appLocalizations.translate('profileUpdated'));</span>
-<span class="lineNum">     436 </span>            : 
-<span class="lineNum">     437 </span><span class="lineNoCov">          0 :             List&lt;String&gt; name = response.name?.split(' ');</span>
-<span class="lineNum">     438 </span>            :             if (name != null) {
-<span class="lineNum">     439 </span><span class="lineNoCov">          0 :               if (name.length == 1) {</span>
-<span class="lineNum">     440 </span><span class="lineNoCov">          0 :                 provider.setInitials(name[0][0].toUpperCase(), willNotify: false);</span>
-<span class="lineNum">     441 </span><span class="lineNoCov">          0 :               } else if (name.length &gt; 1) {</span>
-<span class="lineNum">     442 </span><span class="lineNoCov">          0 :                 provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);</span>
-<span class="lineNum">     443 </span>            :               }
-<span class="lineNum">     444 </span>            :             }
-<span class="lineNum">     445 </span>            : 
-<span class="lineNum">     446 </span><span class="lineNoCov">          0 :             provider.setUserProfile(response);</span>
-<span class="lineNum">     447 </span>            :           }
-<span class="lineNum">     448 </span>            :         });
-<span class="lineNum">     449 </span>            :       }
-<span class="lineNum">     450 </span>            :     }
-<span class="lineNum">     451 </span>            :   }
-<span class="lineNum">     452 </span>            : 
-<span class="lineNum">     453 </span>            :   /// Clears provider and preference's data and navigates to welcome screen
-<span class="lineNum">     454 </span><span class="lineNoCov">          0 :   void _logout() {</span>
-<span class="lineNum">     455 </span><span class="lineNoCov">          0 :     provider.clearData();</span>
-<span class="lineNum">     456 </span><span class="lineNoCov">          0 :     Utility.deleteToken();</span>
-<span class="lineNum">     457 </span><span class="lineNoCov">          0 :     prefs.clear();</span>
-<span class="lineNum">     458 </span>            : 
-<span class="lineNum">     459 </span><span class="lineNoCov">          0 :     Navigator.of(context).pushReplacement(</span>
-<span class="lineNum">     460 </span><span class="lineNoCov">          0 :       MaterialPageRoute(</span>
-<span class="lineNum">     461 </span><span class="lineNoCov">          0 :         builder: (context) =&gt; WelcomeScreen(),</span>
-<span class="lineNum">     462 </span>            :       ),
-<span class="lineNum">     463 </span>            :     );
-<span class="lineNum">     464 </span>            :   }
-<span class="lineNum">     465 </span>            : 
-<span class="lineNum">     466 </span>            :   /// Displays dialog to change location
-<span class="lineNum">     467 </span><span class="lineNoCov">          0 :   Future&lt;bool&gt; _showLanguageChangeDialog() {</span>
-<span class="lineNum">     468 </span><span class="lineNoCov">          0 :     return showDialog(</span>
-<span class="lineNum">     469 </span><span class="lineNoCov">          0 :           context: context,</span>
-<span class="lineNum">     470 </span><span class="lineNoCov">          0 :           builder: (BuildContext context) {</span>
-<span class="lineNum">     471 </span><span class="lineNoCov">          0 :             return AlertDialog(</span>
-<span class="lineNum">     472 </span><span class="lineNoCov">          0 :               shape: RoundedRectangleBorder(</span>
-<span class="lineNum">     473 </span><span class="lineNoCov">          0 :                 borderRadius: BorderRadius.circular(20.0),</span>
-<span class="lineNum">     474 </span>            :               ),
-<span class="lineNum">     475 </span><span class="lineNoCov">          0 :               title: Text(appLocalizations.translate('changeLanguage')),</span>
-<span class="lineNum">     476 </span>            :               contentPadding: const EdgeInsets.all(5.0),
-<span class="lineNum">     477 </span><span class="lineNoCov">          0 :               content: Column(</span>
-<span class="lineNum">     478 </span>            :                 mainAxisSize: MainAxisSize.min,
-<span class="lineNum">     479 </span><span class="lineNoCov">          0 :                 children: &lt;Widget&gt;[</span>
-<span class="lineNum">     480 </span><span class="lineNoCov">          0 :                   SizedBox(height: 10),</span>
-<span class="lineNum">     481 </span><span class="lineNoCov">          0 :                   Container(</span>
-<span class="lineNum">     482 </span>            :                     width: 300,
-<span class="lineNum">     483 </span>            :                     height: 150,
-<span class="lineNum">     484 </span><span class="lineNoCov">          0 :                     child: ListView.builder(</span>
-<span class="lineNum">     485 </span>            :                       shrinkWrap: true,
-<span class="lineNum">     486 </span><span class="lineNoCov">          0 :                       physics: BouncingScrollPhysics(),</span>
-<span class="lineNum">     487 </span><span class="lineNoCov">          0 :                       itemCount: availableLangList.length,</span>
-<span class="lineNum">     488 </span><span class="lineNoCov">          0 :                       itemBuilder: _langOptionItemBuilder,</span>
-<span class="lineNum">     489 </span>            :                     ),
-<span class="lineNum">     490 </span>            :                   ),
-<span class="lineNum">     491 </span>            :                 ],
-<span class="lineNum">     492 </span>            :               ),
-<span class="lineNum">     493 </span><span class="lineNoCov">          0 :               actions: &lt;Widget&gt;[</span>
-<span class="lineNum">     494 </span><span class="lineNoCov">          0 :                 FlatButton(</span>
-<span class="lineNum">     495 </span>            :                   padding: const EdgeInsets.all(0),
-<span class="lineNum">     496 </span><span class="lineNoCov">          0 :                   onPressed: () =&gt; Navigator.of(context).pop(false),</span>
-<span class="lineNum">     497 </span><span class="lineNoCov">          0 :                   child: Text(appLocalizations.translate('cancel')),</span>
-<span class="lineNum">     498 </span>            :                 ),
-<span class="lineNum">     499 </span>            :               ],
-<span class="lineNum">     500 </span>            :             );
-<span class="lineNum">     501 </span>            :           },
-<span class="lineNum">     502 </span>            :         ) ??
-<span class="lineNum">     503 </span>            :         false;
-<span class="lineNum">     504 </span>            :   }
-<span class="lineNum">     505 </span>            : 
-<span class="lineNum">     506 </span>            :   /// Gets available languages from langs.json file
-<span class="lineNum">     507 </span><span class="lineNoCov">          0 :   void _getAvailableLangs() async {</span>
-<span class="lineNum">     508 </span><span class="lineNoCov">          0 :     availableLangList.clear();</span>
-<span class="lineNum">     509 </span><span class="lineNoCov">          0 :     var langJsonString = await rootBundle.loadString('lang/langs.json');</span>
-<span class="lineNum">     510 </span><span class="lineNoCov">          0 :     List langList = json.decode(langJsonString);</span>
-<span class="lineNum">     511 </span><span class="lineNoCov">          0 :     langList.forEach((item) {</span>
-<span class="lineNum">     512 </span><span class="lineNoCov">          0 :       Map&lt;String, String&gt; map = (item as Map).map((key, value) =&gt; MapEntry(key, value != null ? value.toString() : null));</span>
-<span class="lineNum">     513 </span><span class="lineNoCov">          0 :       availableLangList.add(map);</span>
-<span class="lineNum">     514 </span>            :     });
-<span class="lineNum">     515 </span>            :   }
-<span class="lineNum">     516 </span>            : 
-<span class="lineNum">     517 </span>            :   /// Item widget builder, creates a LanguageOption widget
-<span class="lineNum">     518 </span><span class="lineNoCov">          0 :   Widget _langOptionItemBuilder(BuildContext context, int index) {</span>
-<span class="lineNum">     519 </span><span class="lineNoCov">          0 :     String language = availableLangList[index]['language'];</span>
-<span class="lineNum">     520 </span><span class="lineNoCov">          0 :     String languageCode = availableLangList[index]['languageCode'];</span>
+<span class="lineNum">     422 </span>            :         /// Calls the user profile update API and handles the response
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :         APIController.updateUserProfile(userProfile).then((response) {</span>
+<span class="lineNum">     424 </span>            :           /// Makes the loader to stop rotating
+<span class="lineNum">     425 </span><span class="lineNoCov">          0 :           provider.setLoading(false);</span>
+<span class="lineNum">     426 </span>            : 
+<span class="lineNum">     427 </span>            :           /// Mainly handles the error response here
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :           if (response.error?.isNotEmpty ?? false) {</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :             if (response.error.contains('This mobile number is already registered')) {</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :               _showSnackBar(appLocalizations.translate('alreadyExistingError'));</span>
+<span class="lineNum">     431 </span>            :             } else {
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :               String error = response.error;</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :               if (response.statusCode == 0) error = appLocalizations.translate(error);</span>
+<span class="lineNum">     434 </span>            : 
+<span class="lineNum">     435 </span><span class="lineNoCov">          0 :               _showSnackBar(error);</span>
+<span class="lineNum">     436 </span>            :             }
+<span class="lineNum">     437 </span>            :           }
+<span class="lineNum">     438 </span>            :           /// Handles the successful API response and updates the UI
+<span class="lineNum">     439 </span>            :           else {
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :             _showSnackBar(appLocalizations.translate('profileUpdated'));</span>
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span><span class="lineNoCov">          0 :             List&lt;String&gt; name = response.name?.split(' ');</span>
+<span class="lineNum">     443 </span>            :             if (name != null) {
+<span class="lineNum">     444 </span><span class="lineNoCov">          0 :               if (name.length == 1) {</span>
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :                 provider.setInitials(name[0][0].toUpperCase(), willNotify: false);</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :               } else if (name.length &gt; 1) {</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :                 provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);</span>
+<span class="lineNum">     448 </span>            :               }
+<span class="lineNum">     449 </span>            :             }
+<span class="lineNum">     450 </span>            : 
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :             provider.setUserProfile(response);</span>
+<span class="lineNum">     452 </span>            :           }
+<span class="lineNum">     453 </span>            :         });
+<span class="lineNum">     454 </span>            :       }
+<span class="lineNum">     455 </span>            :     }
+<span class="lineNum">     456 </span>            :   }
+<span class="lineNum">     457 </span>            : 
+<span class="lineNum">     458 </span>            :   /// Clears provider and preference's data and navigates to welcome screen
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :   void _logout() {</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :     provider.clearData();</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     Utility.deleteToken();</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     prefs.clear();</span>
+<span class="lineNum">     463 </span>            : 
+<span class="lineNum">     464 </span><span class="lineNoCov">          0 :     Navigator.of(context).pushReplacement(</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :       MaterialPageRoute(</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         builder: (context) =&gt; WelcomeScreen(),</span>
+<span class="lineNum">     467 </span>            :       ),
+<span class="lineNum">     468 </span>            :     );
+<span class="lineNum">     469 </span>            :   }
+<span class="lineNum">     470 </span>            : 
+<span class="lineNum">     471 </span>            :   /// Displays dialog to change location
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :   Future&lt;bool&gt; _showLanguageChangeDialog() {</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     return showDialog(</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :           context: context,</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :           builder: (BuildContext context) {</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :             return AlertDialog(</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :               shape: RoundedRectangleBorder(</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :                 borderRadius: BorderRadius.circular(20.0),</span>
+<span class="lineNum">     479 </span>            :               ),
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :               title: Text(appLocalizations.translate('changeLanguage')),</span>
+<span class="lineNum">     481 </span>            :               contentPadding: const EdgeInsets.all(5.0),
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :               content: Column(</span>
+<span class="lineNum">     483 </span>            :                 mainAxisSize: MainAxisSize.min,
+<span class="lineNum">     484 </span><span class="lineNoCov">          0 :                 children: &lt;Widget&gt;[</span>
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :                   SizedBox(height: 10),</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :                   Container(</span>
+<span class="lineNum">     487 </span>            :                     width: 300,
+<span class="lineNum">     488 </span>            :                     height: 150,
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :                     child: ListView.builder(</span>
+<span class="lineNum">     490 </span>            :                       shrinkWrap: true,
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :                       physics: BouncingScrollPhysics(),</span>
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :                       itemCount: availableLangList.length,</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :                       itemBuilder: _langOptionItemBuilder,</span>
+<span class="lineNum">     494 </span>            :                     ),
+<span class="lineNum">     495 </span>            :                   ),
+<span class="lineNum">     496 </span>            :                 ],
+<span class="lineNum">     497 </span>            :               ),
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :               actions: &lt;Widget&gt;[</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :                 FlatButton(</span>
+<span class="lineNum">     500 </span>            :                   padding: const EdgeInsets.all(0),
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :                   onPressed: () =&gt; Navigator.of(context).pop(false),</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :                   child: Text(appLocalizations.translate('cancel')),</span>
+<span class="lineNum">     503 </span>            :                 ),
+<span class="lineNum">     504 </span>            :               ],
+<span class="lineNum">     505 </span>            :             );
+<span class="lineNum">     506 </span>            :           },
+<span class="lineNum">     507 </span>            :         ) ??
+<span class="lineNum">     508 </span>            :         false;
+<span class="lineNum">     509 </span>            :   }
+<span class="lineNum">     510 </span>            : 
+<span class="lineNum">     511 </span>            :   /// Gets available languages from langs.json file
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :   void _getAvailableLangs() async {</span>
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     availableLangList.clear();</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :     var langJsonString = await rootBundle.loadString('lang/langs.json');</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :     List langList = json.decode(langJsonString);</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :     langList.forEach((item) {</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :       Map&lt;String, String&gt; map = (item as Map).map((key, value) =&gt; MapEntry(key, value != null ? value.toString() : null));</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :       availableLangList.add(map);</span>
+<span class="lineNum">     519 </span>            :     });
+<span class="lineNum">     520 </span>            :   }
 <span class="lineNum">     521 </span>            : 
-<span class="lineNum">     522 </span><span class="lineNoCov">          0 :     return Column(</span>
-<span class="lineNum">     523 </span><span class="lineNoCov">          0 :       children: &lt;Widget&gt;[</span>
-<span class="lineNum">     524 </span><span class="lineNoCov">          0 :         GestureDetector(</span>
-<span class="lineNum">     525 </span><span class="lineNoCov">          0 :           onTap: () {</span>
-<span class="lineNum">     526 </span><span class="lineNoCov">          0 :             _currentSelectedLang = languageCode;</span>
-<span class="lineNum">     527 </span><span class="lineNoCov">          0 :             prefs.setString('languageCode', languageCode);</span>
-<span class="lineNum">     528 </span><span class="lineNoCov">          0 :             appLocalizations.load();</span>
-<span class="lineNum">     529 </span><span class="lineNoCov">          0 :             setState(() {});</span>
-<span class="lineNum">     530 </span><span class="lineNoCov">          0 :             widget.languageUpdateCallback();</span>
-<span class="lineNum">     531 </span><span class="lineNoCov">          0 :             Navigator.of(context).pop();</span>
-<span class="lineNum">     532 </span>            :           },
-<span class="lineNum">     533 </span><span class="lineNoCov">          0 :           child: LanguageOption(language: language, isSelected: languageCode == _currentSelectedLang),</span>
-<span class="lineNum">     534 </span>            :         ),
-<span class="lineNum">     535 </span><span class="lineNoCov">          0 :         index != availableLangList.length - 1 ? Divider() : Container()</span>
-<span class="lineNum">     536 </span>            :       ],
-<span class="lineNum">     537 </span>            :     );
-<span class="lineNum">     538 </span>            :   }
-<span class="lineNum">     539 </span>            : }
-<span class="lineNum">     540 </span>            : 
-<span class="lineNum">     541 </span>            : /// Stateless widget for language option
-<span class="lineNum">     542 </span>            : ///
-<span class="lineNum">     543 </span>            : /// Returns language option widget
-<span class="lineNum">     544 </span>            : class LanguageOption extends StatelessWidget {
-<span class="lineNum">     545 </span>            :   /// Language to be shown
-<span class="lineNum">     546 </span>            :   final String language;
-<span class="lineNum">     547 </span>            : 
-<span class="lineNum">     548 </span>            :   /// Is the language selected?
-<span class="lineNum">     549 </span>            :   final bool isSelected;
-<span class="lineNum">     550 </span>            : 
-<span class="lineNum">     551 </span><span class="lineNoCov">          0 :   LanguageOption({this.language, this.isSelected = false});</span>
+<span class="lineNum">     522 </span>            :   /// Item widget builder, creates a LanguageOption widget
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :   Widget _langOptionItemBuilder(BuildContext context, int index) {</span>
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :     String language = availableLangList[index]['language'];</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :     String languageCode = availableLangList[index]['languageCode'];</span>
+<span class="lineNum">     526 </span>            : 
+<span class="lineNum">     527 </span><span class="lineNoCov">          0 :     return Column(</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :       children: &lt;Widget&gt;[</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :         GestureDetector(</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :           onTap: () {</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :             _currentSelectedLang = languageCode;</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :             prefs.setString('languageCode', languageCode);</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :             appLocalizations.load();</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :             setState(() {});</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :             widget.languageUpdateCallback();</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :             Navigator.of(context).pop();</span>
+<span class="lineNum">     537 </span>            :           },
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 :           child: LanguageOption(language: language, isSelected: languageCode == _currentSelectedLang),</span>
+<span class="lineNum">     539 </span>            :         ),
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :         index != availableLangList.length - 1 ? Divider() : Container()</span>
+<span class="lineNum">     541 </span>            :       ],
+<span class="lineNum">     542 </span>            :     );
+<span class="lineNum">     543 </span>            :   }
+<span class="lineNum">     544 </span>            : }
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span>            : /// Stateless widget for language option
+<span class="lineNum">     547 </span>            : ///
+<span class="lineNum">     548 </span>            : /// Returns language option widget
+<span class="lineNum">     549 </span>            : class LanguageOption extends StatelessWidget {
+<span class="lineNum">     550 </span>            :   /// Language to be shown
+<span class="lineNum">     551 </span>            :   final String language;
 <span class="lineNum">     552 </span>            : 
-<span class="lineNum">     553 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">     554 </span>            :   Widget build(BuildContext context) {
-<span class="lineNum">     555 </span><span class="lineNoCov">          0 :     return Container(</span>
-<span class="lineNum">     556 </span><span class="lineNoCov">          0 :       width: MediaQuery.of(context).size.width * 0.7,</span>
-<span class="lineNum">     557 </span>            :       color: Colors.transparent,
-<span class="lineNum">     558 </span><span class="lineNoCov">          0 :       child: Padding(</span>
-<span class="lineNum">     559 </span>            :         padding: const EdgeInsets.all(5.0),
-<span class="lineNum">     560 </span><span class="lineNoCov">          0 :         child: Align(</span>
-<span class="lineNum">     561 </span>            :           alignment: Alignment.center,
-<span class="lineNum">     562 </span>            :           heightFactor: 1.5,
-<span class="lineNum">     563 </span>            :           widthFactor: 1.5,
-<span class="lineNum">     564 </span><span class="lineNoCov">          0 :           child: Text(</span>
-<span class="lineNum">     565 </span><span class="lineNoCov">          0 :             language,</span>
-<span class="lineNum">     566 </span><span class="lineNoCov">          0 :             style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),</span>
-<span class="lineNum">     567 </span>            :           ),
-<span class="lineNum">     568 </span>            :         ),
-<span class="lineNum">     569 </span>            :       ),
-<span class="lineNum">     570 </span>            :     );
-<span class="lineNum">     571 </span>            :   }
-<span class="lineNum">     572 </span>            : }
-<span class="lineNum">     573 </span>            : 
-<span class="lineNum">     574 </span>            : /// Returns a stateless widget for language change button
-<span class="lineNum">     575 </span>            : class LanguageBtn extends StatelessWidget {
-<span class="lineNum">     576 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">     577 </span>            :   Widget build(BuildContext context) {
-<span class="lineNum">     578 </span><span class="lineNoCov">          0 :     return Icon(</span>
-<span class="lineNum">     579 </span>            :       Icons.language,
-<span class="lineNum">     580 </span>            :       color: Colors.black54,
-<span class="lineNum">     581 </span>            :     );
-<span class="lineNum">     582 </span>            :   }
-<span class="lineNum">     583 </span>            : }
+<span class="lineNum">     553 </span>            :   /// Is the language selected?
+<span class="lineNum">     554 </span>            :   final bool isSelected;
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :   LanguageOption({this.language, this.isSelected = false});</span>
+<span class="lineNum">     557 </span>            : 
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">     559 </span>            :   Widget build(BuildContext context) {
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :     return Container(</span>
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :       width: MediaQuery.of(context).size.width * 0.7,</span>
+<span class="lineNum">     562 </span>            :       color: Colors.transparent,
+<span class="lineNum">     563 </span><span class="lineNoCov">          0 :       child: Padding(</span>
+<span class="lineNum">     564 </span>            :         padding: const EdgeInsets.all(5.0),
+<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         child: Align(</span>
+<span class="lineNum">     566 </span>            :           alignment: Alignment.center,
+<span class="lineNum">     567 </span>            :           heightFactor: 1.5,
+<span class="lineNum">     568 </span>            :           widthFactor: 1.5,
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :           child: Text(</span>
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :             language,</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :             style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),</span>
+<span class="lineNum">     572 </span>            :           ),
+<span class="lineNum">     573 </span>            :         ),
+<span class="lineNum">     574 </span>            :       ),
+<span class="lineNum">     575 </span>            :     );
+<span class="lineNum">     576 </span>            :   }
+<span class="lineNum">     577 </span>            : }
+<span class="lineNum">     578 </span>            : 
+<span class="lineNum">     579 </span>            : /// Returns a stateless widget for language change button
+<span class="lineNum">     580 </span>            : class LanguageBtn extends StatelessWidget {
+<span class="lineNum">     581 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">     582 </span>            :   Widget build(BuildContext context) {
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     return Icon(</span>
+<span class="lineNum">     584 </span>            :       Icons.language,
+<span class="lineNum">     585 </span>            :       color: Colors.black54,
+<span class="lineNum">     586 </span>            :     );
+<span class="lineNum">     587 </span>            :   }
+<span class="lineNum">     588 </span>            : }
 </pre>
       </td>
     </tr>

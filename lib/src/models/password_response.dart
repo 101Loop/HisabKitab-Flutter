@@ -11,6 +11,10 @@ class PasswordResponse extends Equatable {
   /// Constructor.
   PasswordResponse({this.data, this.statusCode});
 
+  factory PasswordResponse.fromJson(var json) {
+    return PasswordResponse(data: json['data'], statusCode: json['statusCode']);
+  }
+
   @override
   List<Object> get props => [data, statusCode];
 }
