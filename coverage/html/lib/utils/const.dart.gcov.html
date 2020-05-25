@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - lib/utils/const.dart</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">lib/utils</a> - const.dart<span style="font-size: 80%;"> (source / <a href="const.dart.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-05-25 16:57:11</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : import 'package:flutter/material.dart';</a>
+<span class="lineNum">       2 </span>            : import 'package:flutter/painting.dart';
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : ///urls
+<span class="lineNum">       5 </span>            : const String sentryDsn =
+<span class="lineNum">       6 </span>            :     'https://06e738a025b54c5ca1de346d01f9db5d@sentry.101loop.com/28';
+<span class="lineNum">       7 </span>            : const String BASE_URL = 'https://admin.hisabkitab.in/api/';
+<span class="lineNum">       8 </span>            : const String USERS_URL = BASE_URL + 'users/';
+<span class="lineNum">       9 </span>            : const String LOGIN_OTP_URL = USERS_URL + 'loginotp/';
+<span class="lineNum">      10 </span>            : const String LOGIN_URL = USERS_URL + 'login/';
+<span class="lineNum">      11 </span>            : const String REGISTER_URL = USERS_URL + 'register/';
+<span class="lineNum">      12 </span>            : const String PROFILE_URL = USERS_URL + 'userprofile/';
+<span class="lineNum">      13 </span>            : const String UPDATE_PROFILE_URL = USERS_URL + 'updateprofile/';
+<span class="lineNum">      14 </span>            : const String UPDATE_PASSWORD_URL = USERS_URL + 'changepassword/';
+<span class="lineNum">      15 </span>            : const String ACCOUNT_URL = BASE_URL + 'account/';
+<span class="lineNum">      16 </span>            : const String CREDIT_URL = ACCOUNT_URL + 'credit/';
+<span class="lineNum">      17 </span>            : const String DEBIT_URL = ACCOUNT_URL + 'debit/';
+<span class="lineNum">      18 </span>            : const String SHOW_CREDIT_URL = CREDIT_URL + 'show/';
+<span class="lineNum">      19 </span>            : const String ADD_CREDIT_URL = CREDIT_URL + 'add/';
+<span class="lineNum">      20 </span>            : const String SHOW_DEBIT_URL = DEBIT_URL + 'show/';
+<span class="lineNum">      21 </span>            : const String ADD_DEBIT_URL = DEBIT_URL + 'add/';
+<span class="lineNum">      22 </span>            : const String TRANSACTION_URL = BASE_URL + 'transactions/';
+<span class="lineNum">      23 </span>            : const String GET_TRANSACTION_URL = TRANSACTION_URL + 'show/';
+<span class="lineNum">      24 </span>            : const String ADD_TRANSACTION_URL = TRANSACTION_URL + 'add/';
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : /// Strings
+<span class="lineNum">      27 </span>            : const String appName = 'Hisab Kitab';
+<span class="lineNum">      28 </span>            : const String name = &quot;name&quot;;
+<span class="lineNum">      29 </span>            : const String email = &quot;email&quot;;
+<span class="lineNum">      30 </span>            : const String mobile = &quot;mobile&quot;;
+<span class="lineNum">      31 </span>            : const String username = &quot;username&quot;;
+<span class="lineNum">      32 </span>            : const String password = &quot;password&quot;;
+<span class="lineNum">      33 </span>            : const String TOKEN = &quot;token&quot;;
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : ///http codes
+<span class="lineNum">      36 </span>            : const int HTTP_200_OK = 200;
+<span class="lineNum">      37 </span>            : const int HTTP_201_CREATED = 201;
+<span class="lineNum">      38 </span>            : const int HTTP_202_ACCEPTED = 202;
+<span class="lineNum">      39 </span>            : const int HTTP_204_NO_CONTENT = 204;
+<span class="lineNum">      40 </span>            : const int HTTP_403_FORBIDDEN = 403;
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : /// color codes
+<span class="lineNum">      43 </span>            : const Color primaryColor = Color(0xff59c7ba);
+<span class="lineNum">      44 </span>            : const Color buttonColor = Color(0xffe9c33e);
+<span class="lineNum">      45 </span>            : const Color lightGreen = Color(0xffecf8f8);
+<span class="lineNum">      46 </span>            : const Color profileBG = Color(0xfff3f6fc);
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : MaterialColor primarySwatch = MaterialColor(0xff59c7ba, primaryColorMap);</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 : Map&lt;int, Color&gt; primaryColorMap = {</span>
+<span class="lineNum">      49 </span>            :   50: Color.fromRGBO(89, 199, 186, .1),
+<span class="lineNum">      50 </span>            :   100: Color.fromRGBO(89, 199, 186, .2),
+<span class="lineNum">      51 </span>            :   200: Color.fromRGBO(89, 199, 186, .3),
+<span class="lineNum">      52 </span>            :   300: Color.fromRGBO(89, 199, 186, .4),
+<span class="lineNum">      53 </span>            :   400: Color.fromRGBO(89, 199, 186, .5),
+<span class="lineNum">      54 </span>            :   500: Color.fromRGBO(89, 199, 186, .6),
+<span class="lineNum">      55 </span>            :   600: Color.fromRGBO(89, 199, 186, .7),
+<span class="lineNum">      56 </span>            :   700: Color.fromRGBO(89, 199, 186, .8),
+<span class="lineNum">      57 </span>            :   800: Color.fromRGBO(89, 199, 186, .9),
+<span class="lineNum">      58 </span>            :   900: Color.fromRGBO(89, 199, 186, 1),
+<span class="lineNum">      59 </span>            : };
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            : /// List of dropdowns
+<span class="lineNum">      62 </span>            : const List&lt;String&gt; paymentList = [
+<span class="lineNum">      63 </span>            :   'Cash',
+<span class="lineNum">      64 </span>            :   'Cheque',
+<span class="lineNum">      65 </span>            :   'Account Transfer',
+<span class="lineNum">      66 </span>            :   'Card',
+<span class="lineNum">      67 </span>            : ];
+<span class="lineNum">      68 </span>            : const List&lt;String&gt; categoryList = ['credit', 'debit'];
+<span class="lineNum">      69 </span>            : const Map&lt;String, String&gt; paymentMap = {
+<span class="lineNum">      70 </span>            :   'cash': '1',
+<span class="lineNum">      71 </span>            :   'cheque': '2',
+<span class="lineNum">      72 </span>            :   'accountTransfer': '3',
+<span class="lineNum">      73 </span>            :   'card': '5',
+<span class="lineNum">      74 </span>            : };
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span>            : ///static vars
+<span class="lineNum">      77 </span>            : const String CREDIT = 'C';
+<span class="lineNum">      78 </span>            : const String DEBIT = 'D';
+<span class="lineNum">      79 </span>            : const String ALL_TRANSACTIONS = 'A';
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

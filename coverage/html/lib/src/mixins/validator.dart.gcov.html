@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - lib/src/mixins/validator.dart</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">lib/src/mixins</a> - validator.dart<span style="font-size: 80%;"> (source / <a href="validator.dart.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">40</td>
+            <td class="headerCovTableEntry">40</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2020-05-25 16:57:11</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : class ValidationMixin {</a>
+<span class="lineNum">       2 </span>            :   static const String IS_EMPTY = 'isEmpty';
+<span class="lineNum">       3 </span>            :   static const String INVALID_PASSWORD = 'invalidPasswordMessage';
+<span class="lineNum">       4 </span>            :   static const String INVALID_EMAIL = 'invalidEmail';
+<span class="lineNum">       5 </span>            :   static const String IS_EMOJI = 'isEmojiMessage';
+<span class="lineNum">       6 </span>            :   static const String INVALID_OTP = 'invalidOTP';
+<span class="lineNum">       7 </span>            :   static const String INVALID_MOBILE = 'invalidMobileMessage';
+<span class="lineNum">       8 </span>            :   static const String IS_NEGATIVE_VALUE = 'isNegativeValue';
+<span class="lineNum">       9 </span>            :   static const String IS_LARGE_VALUE = 'isLargeValue';
+<span class="lineNum">      10 </span>            :   static const String INVALID_VALUE = 'invalidValue';
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :   /// Validates password
+<span class="lineNum">      13 </span><span class="lineCov">          1 :   static String validatePassword(String value) {</span>
+<span class="lineNum">      14 </span><span class="lineCov">          1 :     String result = validateNonEmoji(value);</span>
+<span class="lineNum">      15 </span>            :     if (result != null) return result;
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :     String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&amp;*~]).{8,}$';
+<span class="lineNum">      18 </span><span class="lineCov">          1 :     RegExp regExp = RegExp(pattern);</span>
+<span class="lineNum">      19 </span><span class="lineCov">          1 :     if (!regExp.hasMatch(value)) {</span>
+<span class="lineNum">      20 </span>            :       return INVALID_PASSWORD;
+<span class="lineNum">      21 </span>            :     } else {
+<span class="lineNum">      22 </span>            :       return null;
+<span class="lineNum">      23 </span>            :     }
+<span class="lineNum">      24 </span>            :   }
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :   /// Validates email
+<span class="lineNum">      27 </span><span class="lineCov">          1 :   static String validateEmail(String value) {</span>
+<span class="lineNum">      28 </span><span class="lineCov">          1 :     String result = validateNonEmoji(value);</span>
+<span class="lineNum">      29 </span>            :     if (result != null) return result;
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            :     String pattern = r&quot;^[a-zA-Z0-9.a-zA-Z0-9.!#$%&amp;'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+&quot;;
+<span class="lineNum">      32 </span><span class="lineCov">          1 :     RegExp regExp = RegExp(pattern);</span>
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span><span class="lineCov">          1 :     if (!regExp.hasMatch(value)) {</span>
+<span class="lineNum">      35 </span>            :       return INVALID_EMAIL;
+<span class="lineNum">      36 </span>            :     } else {
+<span class="lineNum">      37 </span>            :       return null;
+<span class="lineNum">      38 </span>            :     }
+<span class="lineNum">      39 </span>            :   }
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            :   /// Validates if the field is empty or not
+<span class="lineNum">      42 </span><span class="lineCov">          1 :   static String validateField(String value) {</span>
+<span class="lineNum">      43 </span><span class="lineCov">          1 :     String result = validateNonEmoji(value);</span>
+<span class="lineNum">      44 </span>            :     if (result != null) return result;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineCov">          2 :     if (value.length &lt; 1) {</span>
+<span class="lineNum">      47 </span>            :       return IS_EMPTY;
+<span class="lineNum">      48 </span>            :     } else {
+<span class="lineNum">      49 </span>            :       return null;
+<span class="lineNum">      50 </span>            :     }
+<span class="lineNum">      51 </span>            :   }
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            :   /// Validates the length of the OTP
+<span class="lineNum">      54 </span><span class="lineCov">          1 :   static String validateOTP(String value) {</span>
+<span class="lineNum">      55 </span><span class="lineCov">          1 :     String result = validateNonEmoji(value);</span>
+<span class="lineNum">      56 </span>            :     if (result != null) return result;
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineCov">          1 :     RegExp regExp = RegExp(r'\d{7,}');</span>
+<span class="lineNum">      59 </span><span class="lineCov">          1 :     if (!regExp.hasMatch(value)) {</span>
+<span class="lineNum">      60 </span>            :       return INVALID_OTP;
+<span class="lineNum">      61 </span>            :     } else {
+<span class="lineNum">      62 </span>            :       return null;
+<span class="lineNum">      63 </span>            :     }
+<span class="lineNum">      64 </span>            :   }
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            :   /// Validates mobile number
+<span class="lineNum">      67 </span><span class="lineCov">          1 :   static String validateMobile(String value) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">          1 :     String result = validateNonEmoji(value);</span>
+<span class="lineNum">      69 </span>            :     if (result != null) return result;
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            :     String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+<span class="lineNum">      72 </span><span class="lineCov">          1 :     RegExp regExp = RegExp(pattern);</span>
+<span class="lineNum">      73 </span><span class="lineCov">          1 :     if (!regExp.hasMatch(value)) {</span>
+<span class="lineNum">      74 </span>            :       return INVALID_MOBILE;
+<span class="lineNum">      75 </span>            :     } else {
+<span class="lineNum">      76 </span>            :       return null;
+<span class="lineNum">      77 </span>            :     }
+<span class="lineNum">      78 </span>            :   }
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :   /// Validates double value
+<span class="lineNum">      81 </span><span class="lineCov">          1 :   static String validateDoubleValue(String value) {</span>
+<span class="lineNum">      82 </span><span class="lineCov">          1 :     String result = validateNonEmoji(value);</span>
+<span class="lineNum">      83 </span>            :     if (result != null) return result;
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            :     try {
+<span class="lineNum">      86 </span><span class="lineCov">          1 :       double _value = double.parse(value);</span>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span><span class="lineCov">          1 :       if (_value &lt; 0)</span>
+<span class="lineNum">      89 </span>            :         return IS_NEGATIVE_VALUE;
+<span class="lineNum">      90 </span><span class="lineCov">          3 :       else if (_value.toString().length &gt; 20) return IS_LARGE_VALUE;</span>
+<span class="lineNum">      91 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span>
+<span class="lineNum">      92 </span>            :       return 'invalidValue';
+<span class="lineNum">      93 </span>            :     }
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            :     String pattern = r'^\d+\.\d*|\.?\d+';
+<span class="lineNum">      96 </span><span class="lineCov">          1 :     RegExp regExp = RegExp(pattern);</span>
+<span class="lineNum">      97 </span><span class="lineCov">          1 :     if (!regExp.hasMatch(value)) {</span>
+<span class="lineNum">      98 </span>            :       return 'invalidValue';
+<span class="lineNum">      99 </span>            :     } else {
+<span class="lineNum">     100 </span>            :       return null;
+<span class="lineNum">     101 </span>            :     }
+<span class="lineNum">     102 </span>            :   }
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            :   /// Validates either the value is null or a valid double value
+<span class="lineNum">     105 </span><span class="lineCov">          1 :   static String validateNullableDoubleValue(String value) {</span>
+<span class="lineNum">     106 </span><span class="lineCov">          2 :     if (value == null || value.trim().isEmpty) {</span>
+<span class="lineNum">     107 </span>            :       return null;
+<span class="lineNum">     108 </span>            :     }
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span><span class="lineCov">          1 :     String result = validateNonEmoji(value);</span>
+<span class="lineNum">     111 </span>            :     if (result != null) return result;
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            :     try {
+<span class="lineNum">     114 </span><span class="lineCov">          1 :       double _value = double.parse(value);</span>
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span><span class="lineCov">          1 :       if (_value &lt; 0) return IS_NEGATIVE_VALUE;</span>
+<span class="lineNum">     117 </span><span class="lineCov">          3 :       else if (_value.toString().length &gt; 20) return IS_LARGE_VALUE;</span>
+<span class="lineNum">     118 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span>
+<span class="lineNum">     119 </span>            :       return INVALID_VALUE;
+<span class="lineNum">     120 </span>            :     }
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span>            :     String pattern = r'^\d+\.\d*|\.?\d+';
+<span class="lineNum">     123 </span><span class="lineCov">          1 :     RegExp regExp = RegExp(pattern);</span>
+<span class="lineNum">     124 </span><span class="lineCov">          1 :     if (!regExp.hasMatch(value)) {</span>
+<span class="lineNum">     125 </span>            :       return INVALID_VALUE;
+<span class="lineNum">     126 </span>            :     } else {
+<span class="lineNum">     127 </span>            :       return null;
+<span class="lineNum">     128 </span>            :     }
+<span class="lineNum">     129 </span>            :   }
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            :   /// Validates if non-emoji is entered or not
+<span class="lineNum">     132 </span>            :   ///
+<span class="lineNum">     133 </span>            :   /// Returns null for non-emoji value
+<span class="lineNum">     134 </span><span class="lineCov">          1 :   static String validateNonEmoji(String value) {</span>
+<span class="lineNum">     135 </span><span class="lineCov">          2 :     if (value == null || value.trim().isEmpty) {</span>
+<span class="lineNum">     136 </span>            :       return IS_EMPTY;
+<span class="lineNum">     137 </span>            :     }
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span>            :     String pattern =
+<span class="lineNum">     140 </span>            :         r'^(?:(?!(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|\ud83c[\ude32-\ude3a]|\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff]))[^`☺]){1,255}$';
+<span class="lineNum">     141 </span><span class="lineCov">          1 :     RegExp regExp = RegExp(pattern);</span>
+<span class="lineNum">     142 </span><span class="lineCov">          1 :     if (!regExp.hasMatch(value)) {</span>
+<span class="lineNum">     143 </span>            :       return IS_EMOJI;
+<span class="lineNum">     144 </span>            :     } else {
+<span class="lineNum">     145 </span>            :       return null;
+<span class="lineNum">     146 </span>            :     }
+<span class="lineNum">     147 </span>            :   }
+<span class="lineNum">     148 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
