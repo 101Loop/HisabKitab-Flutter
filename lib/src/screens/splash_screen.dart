@@ -4,6 +4,7 @@ import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/utility.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -16,7 +17,10 @@ class _SplashScreenState extends State<SplashScreen> {
   double deviceWidth;
 
   @override
-  void initState() {
+  void initState() async {
+    if (prefs == null)
+      prefs = await SharedPreferences.getInstance();
+
     /// Gets and sets the token
     String token = prefs.getString(Constants.TOKEN);
     Utility.saveToken(token);

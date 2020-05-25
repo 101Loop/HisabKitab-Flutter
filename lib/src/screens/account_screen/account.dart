@@ -15,6 +15,7 @@ import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/utility.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Account extends StatefulWidget {
   final Function languageUpdateCallback;
@@ -61,8 +62,12 @@ class _AccountState extends State<Account> with ValidationMixin {
   String _currentSelectedLang = '';
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+
+    if (prefs == null)
+      prefs = await SharedPreferences.getInstance();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       /// Gets the languages from the lang/langs.json
       _getAvailableLangs();

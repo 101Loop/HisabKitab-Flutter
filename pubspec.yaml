@@ -28,6 +28,7 @@ dependencies:
   shared_preferences:
   sentry: ^3.0.1
   url_launcher: ^5.4.2
+  equatable: ^1.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
