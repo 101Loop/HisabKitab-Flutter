@@ -162,7 +162,7 @@ class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin
                             onPressed: () async {
                               provider.setTransactionType('A', willNotify: false);
                               _clearFilter();
-                              _submit();
+                              _refreshScreen();
                             },
                             color: Constants.lightGreen.withRed(210),
                             padding: EdgeInsets.all(0),
