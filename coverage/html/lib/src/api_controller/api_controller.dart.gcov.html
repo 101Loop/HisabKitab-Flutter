@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 20:42:15</td>
+            <td class="headerValue">2020-05-26 14:10:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -69,7 +69,7 @@
 <span class="lineNum">       7 </span>            : import 'package:hisabkitab/src/models/user_account.dart';
 <span class="lineNum">       8 </span>            : import 'package:hisabkitab/src/models/user_profile.dart';
 <span class="lineNum">       9 </span>            : import 'package:hisabkitab/utils/const.dart' as Constants;
-<span class="lineNum">      10 </span>            : import 'package:hisabkitab/utils/utility.dart';
+<span class="lineNum">      10 </span>            : import 'package:hisabkitab/utils/shared_prefs.dart';
 <span class="lineNum">      11 </span>            : import 'package:http/http.dart' as http;
 <span class="lineNum">      12 </span>            : 
 <span class="lineNum">      13 </span>            : 
@@ -95,7 +95,7 @@
 <span class="lineNum">      33 </span>            : 
 <span class="lineNum">      34 </span><span class="lineNoCov">          0 :       User user = User.fromJson(parsedResponse);</span>
 <span class="lineNum">      35 </span><span class="lineNoCov">          0 :       String _token = user.data.token;</span>
-<span class="lineNum">      36 </span><span class="lineNoCov">          0 :       Utility.saveToken(_token);</span>
+<span class="lineNum">      36 </span><span class="lineNoCov">          0 :       SharedPrefs.saveToken(_token);</span>
 <span class="lineNum">      37 </span><span class="lineNoCov">          0 :       print(_token);</span>
 <span class="lineNum">      38 </span>            :       return user;
 <span class="lineNum">      39 </span>            :     } else {
@@ -127,7 +127,7 @@
 <span class="lineNum">      65 </span>            : 
 <span class="lineNum">      66 </span>            :   /// Calls user profile API
 <span class="lineNum">      67 </span><span class="lineNoCov">          0 :   static Future&lt;UserProfile&gt; getUserProfile() async {</span>
-<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: Utility.token};</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: SharedPrefs.token};</span>
 <span class="lineNum">      69 </span>            : 
 <span class="lineNum">      70 </span>            :     var response;
 <span class="lineNum">      71 </span>            : 
@@ -178,7 +178,7 @@
 <span class="lineNum">     116 </span>            : 
 <span class="lineNum">     117 </span>            :   /// Updates user profile
 <span class="lineNum">     118 </span><span class="lineNoCov">          0 :   static Future&lt;UserProfile&gt; updateUserProfile(UserProfile data) async {</span>
-<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: Utility.token};</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :     Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: SharedPrefs.token};</span>
 <span class="lineNum">     120 </span>            : 
 <span class="lineNum">     121 </span>            :     var response;
 <span class="lineNum">     122 </span>            : 
@@ -231,7 +231,7 @@
 <span class="lineNum">     169 </span>            : 
 <span class="lineNum">     170 </span>            :   /// Updates password
 <span class="lineNum">     171 </span><span class="lineNoCov">          0 :   static Future&lt;PasswordResponse&gt; updatePassword(String password) async {</span>
-<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: Utility.token};</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :     Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: SharedPrefs.token};</span>
 <span class="lineNum">     173 </span>            : 
 <span class="lineNum">     174 </span>            :     var response;
 <span class="lineNum">     175 </span>            : 
@@ -399,7 +399,7 @@
 <span class="lineNum">     337 </span>            : 
 <span class="lineNum">     338 </span><span class="lineNoCov">          0 :     print('query params: $queryParams');</span>
 <span class="lineNum">     339 </span>            : 
-<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     final Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: Utility.token};</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :     final Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: SharedPrefs.token};</span>
 <span class="lineNum">     341 </span>            : 
 <span class="lineNum">     342 </span>            :     var response;
 <span class="lineNum">     343 </span>            :     try {
@@ -441,7 +441,7 @@
 <span class="lineNum">     379 </span>            : 
 <span class="lineNum">     380 </span>            :   /// Adds or updates a transaction
 <span class="lineNum">     381 </span><span class="lineNoCov">          0 :   static Future&lt;TransactionDetails&gt; addUpdateTransaction(TransactionDetails data, int id) async {</span>
-<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     final Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: Utility.token};</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :     final Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: SharedPrefs.token};</span>
 <span class="lineNum">     383 </span>            : 
 <span class="lineNum">     384 </span>            :     var response;
 <span class="lineNum">     385 </span>            :     try {
@@ -493,7 +493,7 @@
 <span class="lineNum">     431 </span>            : 
 <span class="lineNum">     432 </span>            :   /// Deletes transaction
 <span class="lineNum">     433 </span><span class="lineNoCov">          0 :   static void deleteTransaction(int transactionId) async {</span>
-<span class="lineNum">     434 </span><span class="lineNoCov">          0 :     final Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: Utility.token};</span>
+<span class="lineNum">     434 </span><span class="lineNoCov">          0 :     final Map&lt;String, String&gt; headers = {&quot;Content-Type&quot;: &quot;application/json&quot;, &quot;Authorization&quot;: SharedPrefs.token};</span>
 <span class="lineNum">     435 </span>            :     try {
 <span class="lineNum">     436 </span><span class="lineNoCov">          0 :       http.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);</span>
 <span class="lineNum">     437 </span>            :     } catch (_) {

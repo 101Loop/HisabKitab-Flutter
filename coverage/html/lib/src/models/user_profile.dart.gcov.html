@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">9</td>
             <td class="headerCovTableEntry">14</td>
-            <td class="headerCovTableEntryLo">64.3 %</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 20:42:15</td>
+            <td class="headerValue">2020-05-26 14:10:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -90,23 +90,24 @@
 <span class="lineNum">      28 </span><span class="lineCov">          1 :       name: json['name'],</span>
 <span class="lineNum">      29 </span><span class="lineCov">          1 :       email: json['email'],</span>
 <span class="lineNum">      30 </span><span class="lineCov">          1 :       mobile: json['mobile'],</span>
-<span class="lineNum">      31 </span>            :     );
-<span class="lineNum">      32 </span>            :   }
-<span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span>            :   /// Returns map representation of [UserProfile] object.
-<span class="lineNum">      35 </span><span class="lineNoCov">          0 :   Map&lt;String, String&gt; toMap() {</span>
-<span class="lineNum">      36 </span><span class="lineNoCov">          0 :     var map = Map&lt;String, String&gt;();</span>
-<span class="lineNum">      37 </span>            : 
-<span class="lineNum">      38 </span><span class="lineNoCov">          0 :     if (name?.isNotEmpty ?? false) map['name'] = name;</span>
-<span class="lineNum">      39 </span><span class="lineNoCov">          0 :     if (email?.isNotEmpty ?? false) map['email'] = email;</span>
-<span class="lineNum">      40 </span><span class="lineNoCov">          0 :     if (mobile?.isNotEmpty ?? false) map['mobile'] = mobile;</span>
-<span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span>            :     return map;
-<span class="lineNum">      43 </span>            :   }
-<span class="lineNum">      44 </span>            : 
-<span class="lineNum">      45 </span><span class="lineCov">          1 :   @override</span>
-<span class="lineNum">      46 </span><span class="lineCov">          7 :   List&lt;Object&gt; get props =&gt; [id, name, email, mobile, statusCode, error];</span>
-<span class="lineNum">      47 </span>            : }
+<span class="lineNum">      31 </span>            :       statusCode: 200,
+<span class="lineNum">      32 </span>            :     );
+<span class="lineNum">      33 </span>            :   }
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            :   /// Returns map representation of [UserProfile] object.
+<span class="lineNum">      36 </span><span class="lineCov">          1 :   Map&lt;String, String&gt; toMap() {</span>
+<span class="lineNum">      37 </span><span class="lineCov">          1 :     var map = Map&lt;String, String&gt;();</span>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineCov">          4 :     if (name?.isNotEmpty ?? false) map['name'] = name;</span>
+<span class="lineNum">      40 </span><span class="lineCov">          4 :     if (email?.isNotEmpty ?? false) map['email'] = email;</span>
+<span class="lineNum">      41 </span><span class="lineCov">          4 :     if (mobile?.isNotEmpty ?? false) map['mobile'] = mobile;</span>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            :     return map;
+<span class="lineNum">      44 </span>            :   }
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineCov">          1 :   @override</span>
+<span class="lineNum">      47 </span><span class="lineCov">          7 :   List&lt;Object&gt; get props =&gt; [id, name, email, mobile, statusCode, error];</span>
+<span class="lineNum">      48 </span>            : }
 </pre>
       </td>
     </tr>

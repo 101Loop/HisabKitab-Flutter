@@ -28,6 +28,7 @@ class UserProfile extends Equatable {
       name: json['name'],
       email: json['email'],
       mobile: json['mobile'],
+      statusCode: 200,
     );
   }
 

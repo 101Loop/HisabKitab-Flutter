@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 20:42:15</td>
+            <td class="headerValue">2020-05-26 14:10:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -75,91 +75,91 @@
 <span class="lineNum">      13 </span>            : import 'package:hisabkitab/utils/app_localizations.dart';
 <span class="lineNum">      14 </span>            : import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 <span class="lineNum">      15 </span>            : import 'package:hisabkitab/utils/const.dart' as Constants;
-<span class="lineNum">      16 </span>            : import 'package:hisabkitab/utils/utility.dart';
+<span class="lineNum">      16 </span>            : import 'package:hisabkitab/utils/shared_prefs.dart';
 <span class="lineNum">      17 </span>            : import 'package:provider/provider.dart';
-<span class="lineNum">      18 </span>            : import 'package:shared_preferences/shared_preferences.dart';
-<span class="lineNum">      19 </span>            : 
-<span class="lineNum">      20 </span>            : class Account extends StatefulWidget {
-<span class="lineNum">      21 </span>            :   final Function languageUpdateCallback;
-<span class="lineNum">      22 </span>            : 
-<span class="lineNum">      23 </span><span class="lineNoCov">          0 :   Account({Key key, @required this.languageUpdateCallback}) : super(key: key);</span>
-<span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">      26 </span><span class="lineNoCov">          0 :   _AccountState createState() =&gt; _AccountState();</span>
-<span class="lineNum">      27 </span>            : }
-<span class="lineNum">      28 </span>            : 
-<span class="lineNum">      29 </span>            : class _AccountState extends State&lt;Account&gt; with ValidationMixin {
-<span class="lineNum">      30 </span>            :   /// Device's height and width
-<span class="lineNum">      31 </span>            :   double deviceHeight;
-<span class="lineNum">      32 </span>            :   double deviceWidth;
-<span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span>            :   /// Holds the app's state
-<span class="lineNum">      35 </span>            :   AppState provider;
-<span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span>            :   /// Global scaffold state key, to show the [SnackBar]
-<span class="lineNum">      38 </span>            :   final _scaffoldKey = GlobalKey&lt;ScaffoldState&gt;();
-<span class="lineNum">      39 </span>            : 
-<span class="lineNum">      40 </span>            :   /// Global form state key, used for validating the form
-<span class="lineNum">      41 </span>            :   final _formKey = GlobalKey&lt;FormState&gt;();
-<span class="lineNum">      42 </span>            : 
-<span class="lineNum">      43 </span>            :   /// Basic details of the user
-<span class="lineNum">      44 </span>            :   String _name;
-<span class="lineNum">      45 </span>            :   String _mobile;
-<span class="lineNum">      46 </span>            :   String _email;
-<span class="lineNum">      47 </span>            : 
-<span class="lineNum">      48 </span>            :   /// Text field's controllers
-<span class="lineNum">      49 </span>            :   TextEditingController _mobileController = TextEditingController();
-<span class="lineNum">      50 </span>            :   TextEditingController _emailController = TextEditingController();
-<span class="lineNum">      51 </span>            :   TextEditingController _nameController = TextEditingController();
-<span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span>            :   /// Instance of [AppLocalizations], to get the translated word
-<span class="lineNum">      54 </span>            :   AppLocalizations appLocalizations;
-<span class="lineNum">      55 </span>            : 
-<span class="lineNum">      56 </span>            :   /// List of the available languages
-<span class="lineNum">      57 </span>            :   ///
-<span class="lineNum">      58 </span>            :   /// See lang/langs.json
-<span class="lineNum">      59 </span>            :   List&lt;Map&lt;String, String&gt;&gt; availableLangList = List();
-<span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span>            :   /// Currently selected language
-<span class="lineNum">      62 </span>            :   String _currentSelectedLang = '';
-<span class="lineNum">      63 </span>            : 
-<span class="lineNum">      64 </span>            :   @override
-<span class="lineNum">      65 </span><span class="lineNoCov">          0 :   void initState() async {</span>
-<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     super.initState();</span>
-<span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span>            :     if (prefs == null)
-<span class="lineNum">      69 </span><span class="lineNoCov">          0 :       prefs = await SharedPreferences.getInstance();</span>
-<span class="lineNum">      70 </span>            : 
-<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     WidgetsBinding.instance.addPostFrameCallback((_) {</span>
-<span class="lineNum">      72 </span>            :       /// Gets the languages from the lang/langs.json
-<span class="lineNum">      73 </span><span class="lineNoCov">          0 :       _getAvailableLangs();</span>
-<span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span>            :       /// Sets the current language, based on the user's preference
-<span class="lineNum">      76 </span><span class="lineNoCov">          0 :       _currentSelectedLang = prefs.getString('languageCode');</span>
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : class Account extends StatefulWidget {
+<span class="lineNum">      20 </span>            :   final Function languageUpdateCallback;
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :   Account({Key key, @required this.languageUpdateCallback}) : super(key: key);</span>
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :   _AccountState createState() =&gt; _AccountState();</span>
+<span class="lineNum">      26 </span>            : }
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : class _AccountState extends State&lt;Account&gt; with ValidationMixin {
+<span class="lineNum">      29 </span>            :   /// Device's height and width
+<span class="lineNum">      30 </span>            :   double deviceHeight;
+<span class="lineNum">      31 </span>            :   double deviceWidth;
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            :   /// Holds the app's state
+<span class="lineNum">      34 </span>            :   AppState provider;
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            :   /// Global scaffold state key, to show the [SnackBar]
+<span class="lineNum">      37 </span>            :   final _scaffoldKey = GlobalKey&lt;ScaffoldState&gt;();
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            :   /// Global form state key, used for validating the form
+<span class="lineNum">      40 </span>            :   final _formKey = GlobalKey&lt;FormState&gt;();
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :   /// Basic details of the user
+<span class="lineNum">      43 </span>            :   String _name;
+<span class="lineNum">      44 </span>            :   String _mobile;
+<span class="lineNum">      45 </span>            :   String _email;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            :   /// Text field's controllers
+<span class="lineNum">      48 </span>            :   TextEditingController _mobileController = TextEditingController();
+<span class="lineNum">      49 </span>            :   TextEditingController _emailController = TextEditingController();
+<span class="lineNum">      50 </span>            :   TextEditingController _nameController = TextEditingController();
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            :   /// Instance of [AppLocalizations], to get the translated word
+<span class="lineNum">      53 </span>            :   AppLocalizations appLocalizations;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            :   /// List of the available languages
+<span class="lineNum">      56 </span>            :   ///
+<span class="lineNum">      57 </span>            :   /// See lang/langs.json
+<span class="lineNum">      58 </span>            :   List&lt;Map&lt;String, String&gt;&gt; availableLangList = List();
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            :   /// Currently selected language
+<span class="lineNum">      61 </span>            :   String _currentSelectedLang = '';
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">      64 </span>            :   void initState() {
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     super.initState();</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     if (prefs == null) SharedPrefs.initialize();</span>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :     WidgetsBinding.instance.addPostFrameCallback((_) {</span>
+<span class="lineNum">      70 </span>            :       /// Gets the languages from the lang/langs.json
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :       _getAvailableLangs();</span>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :       /// Sets the current language, based on the user's preference
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :       _currentSelectedLang = prefs.getString('languageCode');</span>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :       AppState initStateProvider = Provider.of&lt;AppState&gt;(context, listen: false);</span>
 <span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span><span class="lineNoCov">          0 :       AppState initStateProvider = Provider.of&lt;AppState&gt;(context, listen: false);</span>
-<span class="lineNum">      79 </span>            :       /// Gets the user's profile, if it's not already fetched and sets the details as well
-<span class="lineNum">      80 </span><span class="lineNoCov">          0 :       if (initStateProvider.userProfile == null)</span>
-<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         APIController.getUserProfile().then(</span>
-<span class="lineNum">      82 </span><span class="lineNoCov">          0 :           (response) {</span>
-<span class="lineNum">      83 </span>            :             if (response != null) {
-<span class="lineNum">      84 </span><span class="lineNoCov">          0 :               initStateProvider.setUserProfile(response, willNotify: false);</span>
-<span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span><span class="lineNoCov">          0 :               _nameController.text = response.name;</span>
-<span class="lineNum">      87 </span><span class="lineNoCov">          0 :               _emailController.text = response.email;</span>
-<span class="lineNum">      88 </span><span class="lineNoCov">          0 :               _mobileController.text = response.mobile;</span>
-<span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineNoCov">          0 :               List&lt;String&gt; name = response.name?.split(' ');</span>
-<span class="lineNum">      91 </span>            :               if (name != null) {
-<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                 if (name.length == 1) {</span>
-<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials(name[0][0].toUpperCase());</span>
-<span class="lineNum">      94 </span><span class="lineNoCov">          0 :                 } else if (name.length &gt; 1) {</span>
-<span class="lineNum">      95 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());</span>
-<span class="lineNum">      96 </span>            :                 }
-<span class="lineNum">      97 </span>            :               }
-<span class="lineNum">      98 </span>            :             }
-<span class="lineNum">      99 </span>            :           },
-<span class="lineNum">     100 </span>            :         );
+<span class="lineNum">      78 </span>            :       /// Gets the user's profile, if it's not already fetched and sets the details as well
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :       if (initStateProvider.userProfile == null)</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         APIController.getUserProfile().then(</span>
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :           (response) {</span>
+<span class="lineNum">      82 </span>            :             if (response != null) {
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :               initStateProvider.setUserProfile(response, willNotify: false);</span>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :               _nameController.text = response.name;</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :               _emailController.text = response.email;</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :               _mobileController.text = response.mobile;</span>
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :               List&lt;String&gt; name = response.name?.split(' ');</span>
+<span class="lineNum">      90 </span>            :               if (name != null) {
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :                 if (name.length == 1) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials(name[0][0].toUpperCase());</span>
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 :                 } else if (name.length &gt; 1) {</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :                   initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());</span>
+<span class="lineNum">      95 </span>            :                 }
+<span class="lineNum">      96 </span>            :               }
+<span class="lineNum">      97 </span>            :             }
+<span class="lineNum">      98 </span>            :           },
+<span class="lineNum">      99 </span>            :         );
+<span class="lineNum">     100 </span>            : 
 <span class="lineNum">     101 </span>            :       /// Sets the user profile's details, if it's already fetched
 <span class="lineNum">     102 </span>            :       else {
 <span class="lineNum">     103 </span><span class="lineNoCov">          0 :         UserProfile userProfile = initStateProvider.userProfile;</span>
@@ -497,157 +497,158 @@
 <span class="lineNum">     435 </span><span class="lineNoCov">          0 :               _showSnackBar(error);</span>
 <span class="lineNum">     436 </span>            :             }
 <span class="lineNum">     437 </span>            :           }
-<span class="lineNum">     438 </span>            :           /// Handles the successful API response and updates the UI
-<span class="lineNum">     439 </span>            :           else {
-<span class="lineNum">     440 </span><span class="lineNoCov">          0 :             _showSnackBar(appLocalizations.translate('profileUpdated'));</span>
-<span class="lineNum">     441 </span>            : 
-<span class="lineNum">     442 </span><span class="lineNoCov">          0 :             List&lt;String&gt; name = response.name?.split(' ');</span>
-<span class="lineNum">     443 </span>            :             if (name != null) {
-<span class="lineNum">     444 </span><span class="lineNoCov">          0 :               if (name.length == 1) {</span>
-<span class="lineNum">     445 </span><span class="lineNoCov">          0 :                 provider.setInitials(name[0][0].toUpperCase(), willNotify: false);</span>
-<span class="lineNum">     446 </span><span class="lineNoCov">          0 :               } else if (name.length &gt; 1) {</span>
-<span class="lineNum">     447 </span><span class="lineNoCov">          0 :                 provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);</span>
-<span class="lineNum">     448 </span>            :               }
-<span class="lineNum">     449 </span>            :             }
-<span class="lineNum">     450 </span>            : 
-<span class="lineNum">     451 </span><span class="lineNoCov">          0 :             provider.setUserProfile(response);</span>
-<span class="lineNum">     452 </span>            :           }
-<span class="lineNum">     453 </span>            :         });
-<span class="lineNum">     454 </span>            :       }
-<span class="lineNum">     455 </span>            :     }
-<span class="lineNum">     456 </span>            :   }
-<span class="lineNum">     457 </span>            : 
-<span class="lineNum">     458 </span>            :   /// Clears provider and preference's data and navigates to welcome screen
-<span class="lineNum">     459 </span><span class="lineNoCov">          0 :   void _logout() {</span>
-<span class="lineNum">     460 </span><span class="lineNoCov">          0 :     provider.clearData();</span>
-<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     Utility.deleteToken();</span>
-<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     prefs.clear();</span>
-<span class="lineNum">     463 </span>            : 
-<span class="lineNum">     464 </span><span class="lineNoCov">          0 :     Navigator.of(context).pushReplacement(</span>
-<span class="lineNum">     465 </span><span class="lineNoCov">          0 :       MaterialPageRoute(</span>
-<span class="lineNum">     466 </span><span class="lineNoCov">          0 :         builder: (context) =&gt; WelcomeScreen(),</span>
-<span class="lineNum">     467 </span>            :       ),
-<span class="lineNum">     468 </span>            :     );
-<span class="lineNum">     469 </span>            :   }
-<span class="lineNum">     470 </span>            : 
-<span class="lineNum">     471 </span>            :   /// Displays dialog to change location
-<span class="lineNum">     472 </span><span class="lineNoCov">          0 :   Future&lt;bool&gt; _showLanguageChangeDialog() {</span>
-<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     return showDialog(</span>
-<span class="lineNum">     474 </span><span class="lineNoCov">          0 :           context: context,</span>
-<span class="lineNum">     475 </span><span class="lineNoCov">          0 :           builder: (BuildContext context) {</span>
-<span class="lineNum">     476 </span><span class="lineNoCov">          0 :             return AlertDialog(</span>
-<span class="lineNum">     477 </span><span class="lineNoCov">          0 :               shape: RoundedRectangleBorder(</span>
-<span class="lineNum">     478 </span><span class="lineNoCov">          0 :                 borderRadius: BorderRadius.circular(20.0),</span>
-<span class="lineNum">     479 </span>            :               ),
-<span class="lineNum">     480 </span><span class="lineNoCov">          0 :               title: Text(appLocalizations.translate('changeLanguage')),</span>
-<span class="lineNum">     481 </span>            :               contentPadding: const EdgeInsets.all(5.0),
-<span class="lineNum">     482 </span><span class="lineNoCov">          0 :               content: Column(</span>
-<span class="lineNum">     483 </span>            :                 mainAxisSize: MainAxisSize.min,
-<span class="lineNum">     484 </span><span class="lineNoCov">          0 :                 children: &lt;Widget&gt;[</span>
-<span class="lineNum">     485 </span><span class="lineNoCov">          0 :                   SizedBox(height: 10),</span>
-<span class="lineNum">     486 </span><span class="lineNoCov">          0 :                   Container(</span>
-<span class="lineNum">     487 </span>            :                     width: 300,
-<span class="lineNum">     488 </span>            :                     height: 150,
-<span class="lineNum">     489 </span><span class="lineNoCov">          0 :                     child: ListView.builder(</span>
-<span class="lineNum">     490 </span>            :                       shrinkWrap: true,
-<span class="lineNum">     491 </span><span class="lineNoCov">          0 :                       physics: BouncingScrollPhysics(),</span>
-<span class="lineNum">     492 </span><span class="lineNoCov">          0 :                       itemCount: availableLangList.length,</span>
-<span class="lineNum">     493 </span><span class="lineNoCov">          0 :                       itemBuilder: _langOptionItemBuilder,</span>
-<span class="lineNum">     494 </span>            :                     ),
-<span class="lineNum">     495 </span>            :                   ),
-<span class="lineNum">     496 </span>            :                 ],
-<span class="lineNum">     497 </span>            :               ),
-<span class="lineNum">     498 </span><span class="lineNoCov">          0 :               actions: &lt;Widget&gt;[</span>
-<span class="lineNum">     499 </span><span class="lineNoCov">          0 :                 FlatButton(</span>
-<span class="lineNum">     500 </span>            :                   padding: const EdgeInsets.all(0),
-<span class="lineNum">     501 </span><span class="lineNoCov">          0 :                   onPressed: () =&gt; Navigator.of(context).pop(false),</span>
-<span class="lineNum">     502 </span><span class="lineNoCov">          0 :                   child: Text(appLocalizations.translate('cancel')),</span>
-<span class="lineNum">     503 </span>            :                 ),
-<span class="lineNum">     504 </span>            :               ],
-<span class="lineNum">     505 </span>            :             );
-<span class="lineNum">     506 </span>            :           },
-<span class="lineNum">     507 </span>            :         ) ??
-<span class="lineNum">     508 </span>            :         false;
-<span class="lineNum">     509 </span>            :   }
-<span class="lineNum">     510 </span>            : 
-<span class="lineNum">     511 </span>            :   /// Gets available languages from langs.json file
-<span class="lineNum">     512 </span><span class="lineNoCov">          0 :   void _getAvailableLangs() async {</span>
-<span class="lineNum">     513 </span><span class="lineNoCov">          0 :     availableLangList.clear();</span>
-<span class="lineNum">     514 </span><span class="lineNoCov">          0 :     var langJsonString = await rootBundle.loadString('lang/langs.json');</span>
-<span class="lineNum">     515 </span><span class="lineNoCov">          0 :     List langList = json.decode(langJsonString);</span>
-<span class="lineNum">     516 </span><span class="lineNoCov">          0 :     langList.forEach((item) {</span>
-<span class="lineNum">     517 </span><span class="lineNoCov">          0 :       Map&lt;String, String&gt; map = (item as Map).map((key, value) =&gt; MapEntry(key, value != null ? value.toString() : null));</span>
-<span class="lineNum">     518 </span><span class="lineNoCov">          0 :       availableLangList.add(map);</span>
-<span class="lineNum">     519 </span>            :     });
-<span class="lineNum">     520 </span>            :   }
-<span class="lineNum">     521 </span>            : 
-<span class="lineNum">     522 </span>            :   /// Item widget builder, creates a LanguageOption widget
-<span class="lineNum">     523 </span><span class="lineNoCov">          0 :   Widget _langOptionItemBuilder(BuildContext context, int index) {</span>
-<span class="lineNum">     524 </span><span class="lineNoCov">          0 :     String language = availableLangList[index]['language'];</span>
-<span class="lineNum">     525 </span><span class="lineNoCov">          0 :     String languageCode = availableLangList[index]['languageCode'];</span>
-<span class="lineNum">     526 </span>            : 
-<span class="lineNum">     527 </span><span class="lineNoCov">          0 :     return Column(</span>
-<span class="lineNum">     528 </span><span class="lineNoCov">          0 :       children: &lt;Widget&gt;[</span>
-<span class="lineNum">     529 </span><span class="lineNoCov">          0 :         GestureDetector(</span>
-<span class="lineNum">     530 </span><span class="lineNoCov">          0 :           onTap: () {</span>
-<span class="lineNum">     531 </span><span class="lineNoCov">          0 :             _currentSelectedLang = languageCode;</span>
-<span class="lineNum">     532 </span><span class="lineNoCov">          0 :             prefs.setString('languageCode', languageCode);</span>
-<span class="lineNum">     533 </span><span class="lineNoCov">          0 :             appLocalizations.load();</span>
-<span class="lineNum">     534 </span><span class="lineNoCov">          0 :             setState(() {});</span>
-<span class="lineNum">     535 </span><span class="lineNoCov">          0 :             widget.languageUpdateCallback();</span>
-<span class="lineNum">     536 </span><span class="lineNoCov">          0 :             Navigator.of(context).pop();</span>
-<span class="lineNum">     537 </span>            :           },
-<span class="lineNum">     538 </span><span class="lineNoCov">          0 :           child: LanguageOption(language: language, isSelected: languageCode == _currentSelectedLang),</span>
-<span class="lineNum">     539 </span>            :         ),
-<span class="lineNum">     540 </span><span class="lineNoCov">          0 :         index != availableLangList.length - 1 ? Divider() : Container()</span>
-<span class="lineNum">     541 </span>            :       ],
-<span class="lineNum">     542 </span>            :     );
-<span class="lineNum">     543 </span>            :   }
-<span class="lineNum">     544 </span>            : }
-<span class="lineNum">     545 </span>            : 
-<span class="lineNum">     546 </span>            : /// Stateless widget for language option
-<span class="lineNum">     547 </span>            : ///
-<span class="lineNum">     548 </span>            : /// Returns language option widget
-<span class="lineNum">     549 </span>            : class LanguageOption extends StatelessWidget {
-<span class="lineNum">     550 </span>            :   /// Language to be shown
-<span class="lineNum">     551 </span>            :   final String language;
-<span class="lineNum">     552 </span>            : 
-<span class="lineNum">     553 </span>            :   /// Is the language selected?
-<span class="lineNum">     554 </span>            :   final bool isSelected;
-<span class="lineNum">     555 </span>            : 
-<span class="lineNum">     556 </span><span class="lineNoCov">          0 :   LanguageOption({this.language, this.isSelected = false});</span>
-<span class="lineNum">     557 </span>            : 
-<span class="lineNum">     558 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">     559 </span>            :   Widget build(BuildContext context) {
-<span class="lineNum">     560 </span><span class="lineNoCov">          0 :     return Container(</span>
-<span class="lineNum">     561 </span><span class="lineNoCov">          0 :       width: MediaQuery.of(context).size.width * 0.7,</span>
-<span class="lineNum">     562 </span>            :       color: Colors.transparent,
-<span class="lineNum">     563 </span><span class="lineNoCov">          0 :       child: Padding(</span>
-<span class="lineNum">     564 </span>            :         padding: const EdgeInsets.all(5.0),
-<span class="lineNum">     565 </span><span class="lineNoCov">          0 :         child: Align(</span>
-<span class="lineNum">     566 </span>            :           alignment: Alignment.center,
-<span class="lineNum">     567 </span>            :           heightFactor: 1.5,
-<span class="lineNum">     568 </span>            :           widthFactor: 1.5,
-<span class="lineNum">     569 </span><span class="lineNoCov">          0 :           child: Text(</span>
-<span class="lineNum">     570 </span><span class="lineNoCov">          0 :             language,</span>
-<span class="lineNum">     571 </span><span class="lineNoCov">          0 :             style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),</span>
-<span class="lineNum">     572 </span>            :           ),
-<span class="lineNum">     573 </span>            :         ),
-<span class="lineNum">     574 </span>            :       ),
-<span class="lineNum">     575 </span>            :     );
-<span class="lineNum">     576 </span>            :   }
-<span class="lineNum">     577 </span>            : }
-<span class="lineNum">     578 </span>            : 
-<span class="lineNum">     579 </span>            : /// Returns a stateless widget for language change button
-<span class="lineNum">     580 </span>            : class LanguageBtn extends StatelessWidget {
-<span class="lineNum">     581 </span><span class="lineNoCov">          0 :   @override</span>
-<span class="lineNum">     582 </span>            :   Widget build(BuildContext context) {
-<span class="lineNum">     583 </span><span class="lineNoCov">          0 :     return Icon(</span>
-<span class="lineNum">     584 </span>            :       Icons.language,
-<span class="lineNum">     585 </span>            :       color: Colors.black54,
-<span class="lineNum">     586 </span>            :     );
-<span class="lineNum">     587 </span>            :   }
-<span class="lineNum">     588 </span>            : }
+<span class="lineNum">     438 </span>            : 
+<span class="lineNum">     439 </span>            :           /// Handles the successful API response and updates the UI
+<span class="lineNum">     440 </span>            :           else {
+<span class="lineNum">     441 </span><span class="lineNoCov">          0 :             _showSnackBar(appLocalizations.translate('profileUpdated'));</span>
+<span class="lineNum">     442 </span>            : 
+<span class="lineNum">     443 </span><span class="lineNoCov">          0 :             List&lt;String&gt; name = response.name?.split(' ');</span>
+<span class="lineNum">     444 </span>            :             if (name != null) {
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 :               if (name.length == 1) {</span>
+<span class="lineNum">     446 </span><span class="lineNoCov">          0 :                 provider.setInitials(name[0][0].toUpperCase(), willNotify: false);</span>
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 :               } else if (name.length &gt; 1) {</span>
+<span class="lineNum">     448 </span><span class="lineNoCov">          0 :                 provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);</span>
+<span class="lineNum">     449 </span>            :               }
+<span class="lineNum">     450 </span>            :             }
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :             provider.setUserProfile(response);</span>
+<span class="lineNum">     453 </span>            :           }
+<span class="lineNum">     454 </span>            :         });
+<span class="lineNum">     455 </span>            :       }
+<span class="lineNum">     456 </span>            :     }
+<span class="lineNum">     457 </span>            :   }
+<span class="lineNum">     458 </span>            : 
+<span class="lineNum">     459 </span>            :   /// Clears provider and preference's data and navigates to welcome screen
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :   void _logout() {</span>
+<span class="lineNum">     461 </span><span class="lineNoCov">          0 :     provider.clearData();</span>
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     SharedPrefs.deleteToken();</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :     prefs.clear();</span>
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :     Navigator.of(context).pushReplacement(</span>
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :       MaterialPageRoute(</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :         builder: (context) =&gt; WelcomeScreen(),</span>
+<span class="lineNum">     468 </span>            :       ),
+<span class="lineNum">     469 </span>            :     );
+<span class="lineNum">     470 </span>            :   }
+<span class="lineNum">     471 </span>            : 
+<span class="lineNum">     472 </span>            :   /// Displays dialog to change location
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :   Future&lt;bool&gt; _showLanguageChangeDialog() {</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :     return showDialog(</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :           context: context,</span>
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :           builder: (BuildContext context) {</span>
+<span class="lineNum">     477 </span><span class="lineNoCov">          0 :             return AlertDialog(</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 :               shape: RoundedRectangleBorder(</span>
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :                 borderRadius: BorderRadius.circular(20.0),</span>
+<span class="lineNum">     480 </span>            :               ),
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :               title: Text(appLocalizations.translate('changeLanguage')),</span>
+<span class="lineNum">     482 </span>            :               contentPadding: const EdgeInsets.all(5.0),
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :               content: Column(</span>
+<span class="lineNum">     484 </span>            :                 mainAxisSize: MainAxisSize.min,
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :                 children: &lt;Widget&gt;[</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :                   SizedBox(height: 10),</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :                   Container(</span>
+<span class="lineNum">     488 </span>            :                     width: 300,
+<span class="lineNum">     489 </span>            :                     height: 150,
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :                     child: ListView.builder(</span>
+<span class="lineNum">     491 </span>            :                       shrinkWrap: true,
+<span class="lineNum">     492 </span><span class="lineNoCov">          0 :                       physics: BouncingScrollPhysics(),</span>
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :                       itemCount: availableLangList.length,</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :                       itemBuilder: _langOptionItemBuilder,</span>
+<span class="lineNum">     495 </span>            :                     ),
+<span class="lineNum">     496 </span>            :                   ),
+<span class="lineNum">     497 </span>            :                 ],
+<span class="lineNum">     498 </span>            :               ),
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :               actions: &lt;Widget&gt;[</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :                 FlatButton(</span>
+<span class="lineNum">     501 </span>            :                   padding: const EdgeInsets.all(0),
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :                   onPressed: () =&gt; Navigator.of(context).pop(false),</span>
+<span class="lineNum">     503 </span><span class="lineNoCov">          0 :                   child: Text(appLocalizations.translate('cancel')),</span>
+<span class="lineNum">     504 </span>            :                 ),
+<span class="lineNum">     505 </span>            :               ],
+<span class="lineNum">     506 </span>            :             );
+<span class="lineNum">     507 </span>            :           },
+<span class="lineNum">     508 </span>            :         ) ??
+<span class="lineNum">     509 </span>            :         false;
+<span class="lineNum">     510 </span>            :   }
+<span class="lineNum">     511 </span>            : 
+<span class="lineNum">     512 </span>            :   /// Gets available languages from langs.json file
+<span class="lineNum">     513 </span><span class="lineNoCov">          0 :   void _getAvailableLangs() async {</span>
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :     availableLangList.clear();</span>
+<span class="lineNum">     515 </span><span class="lineNoCov">          0 :     var langJsonString = await rootBundle.loadString('lang/langs.json');</span>
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :     List langList = json.decode(langJsonString);</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :     langList.forEach((item) {</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :       Map&lt;String, String&gt; map = (item as Map).map((key, value) =&gt; MapEntry(key, value != null ? value.toString() : null));</span>
+<span class="lineNum">     519 </span><span class="lineNoCov">          0 :       availableLangList.add(map);</span>
+<span class="lineNum">     520 </span>            :     });
+<span class="lineNum">     521 </span>            :   }
+<span class="lineNum">     522 </span>            : 
+<span class="lineNum">     523 </span>            :   /// Item widget builder, creates a LanguageOption widget
+<span class="lineNum">     524 </span><span class="lineNoCov">          0 :   Widget _langOptionItemBuilder(BuildContext context, int index) {</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :     String language = availableLangList[index]['language'];</span>
+<span class="lineNum">     526 </span><span class="lineNoCov">          0 :     String languageCode = availableLangList[index]['languageCode'];</span>
+<span class="lineNum">     527 </span>            : 
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 :     return Column(</span>
+<span class="lineNum">     529 </span><span class="lineNoCov">          0 :       children: &lt;Widget&gt;[</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :         GestureDetector(</span>
+<span class="lineNum">     531 </span><span class="lineNoCov">          0 :           onTap: () {</span>
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :             _currentSelectedLang = languageCode;</span>
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 :             prefs.setString('languageCode', languageCode);</span>
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :             appLocalizations.load();</span>
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :             setState(() {});</span>
+<span class="lineNum">     536 </span><span class="lineNoCov">          0 :             widget.languageUpdateCallback();</span>
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :             Navigator.of(context).pop();</span>
+<span class="lineNum">     538 </span>            :           },
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :           child: LanguageOption(language: language, isSelected: languageCode == _currentSelectedLang),</span>
+<span class="lineNum">     540 </span>            :         ),
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :         index != availableLangList.length - 1 ? Divider() : Container()</span>
+<span class="lineNum">     542 </span>            :       ],
+<span class="lineNum">     543 </span>            :     );
+<span class="lineNum">     544 </span>            :   }
+<span class="lineNum">     545 </span>            : }
+<span class="lineNum">     546 </span>            : 
+<span class="lineNum">     547 </span>            : /// Stateless widget for language option
+<span class="lineNum">     548 </span>            : ///
+<span class="lineNum">     549 </span>            : /// Returns language option widget
+<span class="lineNum">     550 </span>            : class LanguageOption extends StatelessWidget {
+<span class="lineNum">     551 </span>            :   /// Language to be shown
+<span class="lineNum">     552 </span>            :   final String language;
+<span class="lineNum">     553 </span>            : 
+<span class="lineNum">     554 </span>            :   /// Is the language selected?
+<span class="lineNum">     555 </span>            :   final bool isSelected;
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :   LanguageOption({this.language, this.isSelected = false});</span>
+<span class="lineNum">     558 </span>            : 
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">     560 </span>            :   Widget build(BuildContext context) {
+<span class="lineNum">     561 </span><span class="lineNoCov">          0 :     return Container(</span>
+<span class="lineNum">     562 </span><span class="lineNoCov">          0 :       width: MediaQuery.of(context).size.width * 0.7,</span>
+<span class="lineNum">     563 </span>            :       color: Colors.transparent,
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :       child: Padding(</span>
+<span class="lineNum">     565 </span>            :         padding: const EdgeInsets.all(5.0),
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :         child: Align(</span>
+<span class="lineNum">     567 </span>            :           alignment: Alignment.center,
+<span class="lineNum">     568 </span>            :           heightFactor: 1.5,
+<span class="lineNum">     569 </span>            :           widthFactor: 1.5,
+<span class="lineNum">     570 </span><span class="lineNoCov">          0 :           child: Text(</span>
+<span class="lineNum">     571 </span><span class="lineNoCov">          0 :             language,</span>
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :             style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),</span>
+<span class="lineNum">     573 </span>            :           ),
+<span class="lineNum">     574 </span>            :         ),
+<span class="lineNum">     575 </span>            :       ),
+<span class="lineNum">     576 </span>            :     );
+<span class="lineNum">     577 </span>            :   }
+<span class="lineNum">     578 </span>            : }
+<span class="lineNum">     579 </span>            : 
+<span class="lineNum">     580 </span>            : /// Returns a stateless widget for language change button
+<span class="lineNum">     581 </span>            : class LanguageBtn extends StatelessWidget {
+<span class="lineNum">     582 </span><span class="lineNoCov">          0 :   @override</span>
+<span class="lineNum">     583 </span>            :   Widget build(BuildContext context) {
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :     return Icon(</span>
+<span class="lineNum">     585 </span>            :       Icons.language,
+<span class="lineNum">     586 </span>            :       color: Colors.black54,
+<span class="lineNum">     587 </span>            :     );
+<span class="lineNum">     588 </span>            :   }
+<span class="lineNum">     589 </span>            : }
 </pre>
       </td>
     </tr>

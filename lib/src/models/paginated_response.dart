@@ -36,6 +36,7 @@ class PaginatedResponse extends Equatable {
       previous: json['previous'],
       results: json['results'],
       totalAmount: json['total_amount'],
+      statusCode: 200
     );
   }
 

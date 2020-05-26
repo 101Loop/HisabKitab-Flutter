@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2020-05-25 20:42:15</td>
+            <td class="headerValue">2020-05-26 14:10:28</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -71,7 +71,7 @@
 <span class="lineNum">       9 </span>            : import 'package:hisabkitab/utils/app_localizations.dart';
 <span class="lineNum">      10 </span>            : import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 <span class="lineNum">      11 </span>            : import 'package:hisabkitab/utils/const.dart';
-<span class="lineNum">      12 </span>            : import 'package:hisabkitab/utils/utility.dart';
+<span class="lineNum">      12 </span>            : import 'package:hisabkitab/utils/shared_prefs.dart';
 <span class="lineNum">      13 </span>            : import 'package:provider/provider.dart';
 <span class="lineNum">      14 </span>            : 
 <span class="lineNum">      15 </span>            : class OTPLoginScreen extends StatefulWidget {
@@ -339,7 +339,7 @@
 <span class="lineNum">     277 </span><span class="lineNoCov">          0 :           provider.setOTPRequested(true);</span>
 <span class="lineNum">     278 </span>            :         });
 <span class="lineNum">     279 </span><span class="lineNoCov">          0 :       } else if (response.statusCode == HTTP_200_OK &amp;&amp; response.data.split('.').length == 3) {</span>
-<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         Utility.saveToken(response.data);</span>
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         SharedPrefs.saveToken(response.data);</span>
 <span class="lineNum">     281 </span><span class="lineNoCov">          0 :         provider.setNeedsUpdate(true, willNotify: false);</span>
 <span class="lineNum">     282 </span><span class="lineNoCov">          0 :         Navigator.of(context).pushReplacement(</span>
 <span class="lineNum">     283 </span><span class="lineNoCov">          0 :           MaterialPageRoute(</span>
