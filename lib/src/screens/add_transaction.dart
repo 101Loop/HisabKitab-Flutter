@@ -70,24 +70,6 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
   /// Used to prevent unnecessary UI builds
   bool isFirstBuild = true;
 
-  /// Displays and sets the date
-  Future<Null> selectDate(BuildContext context) async {
-    /// Gets the selected date from the date picker
-    final DateTime pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now().subtract(
-        Duration(days: 30),
-      ),
-      lastDate: DateTime.now(),
-    );
-
-    /// Sets the date in the app's state
-    if (pickedDate != null) {
-      provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -96,6 +78,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
     _transaction = widget.transaction;
 
     AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+
     /// Sets the details in the placeholders, if the transaction details is passed
     if (_transaction != null) {
       initStateProvider.setDateTime(_transaction.transactionDate, willNotify: false);
@@ -111,10 +94,12 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
         initStateProvider.setCategory('debit', willNotify: false);
       }
     }
+
     /// Sets the category and date, if a new transaction is to be added
     else {
       initStateProvider.setCategory(widget.category, willNotify: false);
-      initStateProvider.setDateTime('', willNotify: false);
+      initStateProvider.setMode('cash', willNotify: false);
+      initStateProvider.setDateTime(DateFormat('yyyy-MM-dd').format(DateTime.now()).toString());
     }
   }
 
@@ -288,60 +273,6 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                           ),
                           SizedBox(height: 5.0),
                           HeaderWidget(
-                            headerText: appLocalizations.translate('category') + ' *',
-                            maxFontSize: 18.0,
-                            minFontSize: 16,
-                            textColor: Colors.black,
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
-                            padding: EdgeInsets.only(bottom: 8, right: 8, top: 8),
-                            width: deviceWidth,
-                            height: 67,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: Color(0xffecf8f8).withRed(210),
-                            ),
-                            child: IgnorePointer(
-                              ignoring: _transaction != null ? false : true,
-                              child: SizedBox(
-                                child: ButtonTheme(
-                                  alignedDropdown: true,
-                                  child: DropdownButton(
-                                    icon: _transaction != null
-                                        ? Icon(
-                                            Icons.arrow_drop_down,
-                                            color: Colors.black45,
-                                            size: 30.0,
-                                          )
-                                        : Icon(
-                                            Icons.list,
-                                            color: Colors.black45,
-                                            size: 28.0,
-                                          ),
-                                    isExpanded: true,
-                                    underline: Container(),
-                                    value: provider.category,
-                                    onChanged: (value) {
-                                      FocusScope.of(context).requestFocus(FocusNode());
-                                      provider.setCategory(value);
-                                    },
-                                    items: Constant.categoryList.map((category) {
-                                      return DropdownMenuItem(
-                                        child: Text(appLocalizations.translate(category)),
-                                        value: category,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 5.0),
-                          HeaderWidget(
                             headerText: appLocalizations.translate('date') + ' *',
                             maxFontSize: 18.0,
                             minFontSize: 16.0,
@@ -474,6 +405,60 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                               ),
                             ),
                           ),
+                          SizedBox(height: 5.0),
+                          HeaderWidget(
+                            headerText: appLocalizations.translate('category') + ' *',
+                            maxFontSize: 18.0,
+                            minFontSize: 16,
+                            textColor: Colors.black,
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 15.0, right: 15.0),
+                            padding: EdgeInsets.only(bottom: 8, right: 8, top: 8),
+                            width: deviceWidth,
+                            height: 67,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Color(0xffecf8f8).withRed(210),
+                            ),
+                            child: IgnorePointer(
+                              ignoring: _transaction != null ? false : true,
+                              child: SizedBox(
+                                child: ButtonTheme(
+                                  alignedDropdown: true,
+                                  child: DropdownButton(
+                                    icon: _transaction != null
+                                        ? Icon(
+                                            Icons.arrow_drop_down,
+                                            color: Colors.black45,
+                                            size: 30.0,
+                                          )
+                                        : Icon(
+                                            Icons.list,
+                                            color: Colors.black45,
+                                            size: 28.0,
+                                          ),
+                                    isExpanded: true,
+                                    underline: Container(),
+                                    value: provider.category,
+                                    onChanged: (value) {
+                                      FocusScope.of(context).requestFocus(FocusNode());
+                                      provider.setCategory(value);
+                                    },
+                                    items: Constant.categoryList.map((category) {
+                                      return DropdownMenuItem(
+                                        child: Text(appLocalizations.translate(category)),
+                                        value: category,
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             height: 20.0,
                           ),
@@ -544,7 +529,6 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
     /// Validates the form details and the other details as well
     if (_formState.validate() && (provider?.dateTime?.isNotEmpty ?? false) && (provider?.mode?.isNotEmpty ?? false)) {
-
       /// Displays the progress loader
       provider.setLoading(true);
 
@@ -553,7 +537,12 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
       /// Creates an instance of [TransactionDetails] from the entered fields
       TransactionDetails transactionDetails = TransactionDetails(
-          amount: double.parse(_amount), category: provider.category[0].toUpperCase(), transactionDate: provider.dateTime, mode: Constant.paymentMap[provider.mode], contact: _contact, comments: _comment);
+          amount: double.parse(_amount),
+          category: provider.category[0].toUpperCase(),
+          transactionDate: provider.dateTime,
+          mode: Constant.paymentMap[provider.mode],
+          contact: _contact,
+          comments: _comment);
 
       /// Calls the API and handles the response
       APIController.addUpdateTransaction(transactionDetails, _transaction?.id ?? -1).then((response) {
@@ -608,5 +597,23 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
       return 'accountTransfer';
     else
       return mode.toLowerCase();
+  }
+
+  /// Displays and sets the date
+  Future<Null> selectDate(BuildContext context) async {
+    /// Gets the selected date from the date picker
+    final DateTime pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(
+        Duration(days: 30),
+      ),
+      lastDate: DateTime.now(),
+    );
+
+    /// Sets the date in the app's state
+    if (pickedDate != null) {
+      provider.setDateTime(DateFormat('yyyy-MM-dd').format(pickedDate).toString());
+    }
   }
 }
