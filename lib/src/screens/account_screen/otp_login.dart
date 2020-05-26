@@ -9,7 +9,7 @@ import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
-import 'package:hisabkitab/utils/utility.dart';
+import 'package:hisabkitab/utils/shared_prefs.dart';
 import 'package:provider/provider.dart';
 
 class OTPLoginScreen extends StatefulWidget {
@@ -277,7 +277,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
           provider.setOTPRequested(true);
         });
       } else if (response.statusCode == HTTP_200_OK && response.data.split('.').length == 3) {
-        Utility.saveToken(response.data);
+        SharedPrefs.saveToken(response.data);
         provider.setNeedsUpdate(true, willNotify: false);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(

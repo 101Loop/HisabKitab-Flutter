@@ -13,9 +13,8 @@ import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
-import 'package:hisabkitab/utils/utility.dart';
+import 'package:hisabkitab/utils/shared_prefs.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Account extends StatefulWidget {
   final Function languageUpdateCallback;
@@ -62,11 +61,10 @@ class _AccountState extends State<Account> with ValidationMixin {
   String _currentSelectedLang = '';
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
 
-    if (prefs == null)
-      prefs = await SharedPreferences.getInstance();
+    if (prefs == null) SharedPrefs.initialize();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       /// Gets the languages from the lang/langs.json
@@ -76,6 +74,7 @@ class _AccountState extends State<Account> with ValidationMixin {
       _currentSelectedLang = prefs.getString('languageCode');
 
       AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+
       /// Gets the user's profile, if it's not already fetched and sets the details as well
       if (initStateProvider.userProfile == null)
         APIController.getUserProfile().then(
@@ -98,6 +97,7 @@ class _AccountState extends State<Account> with ValidationMixin {
             }
           },
         );
+
       /// Sets the user profile's details, if it's already fetched
       else {
         UserProfile userProfile = initStateProvider.userProfile;
@@ -435,6 +435,7 @@ class _AccountState extends State<Account> with ValidationMixin {
               _showSnackBar(error);
             }
           }
+
           /// Handles the successful API response and updates the UI
           else {
             _showSnackBar(appLocalizations.translate('profileUpdated'));
@@ -458,7 +459,7 @@ class _AccountState extends State<Account> with ValidationMixin {
   /// Clears provider and preference's data and navigates to welcome screen
   void _logout() {
     provider.clearData();
-    Utility.deleteToken();
+    SharedPrefs.deleteToken();
     prefs.clear();
 
     Navigator.of(context).pushReplacement(

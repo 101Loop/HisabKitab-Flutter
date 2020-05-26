@@ -7,7 +7,7 @@ import 'package:hisabkitab/src/models/user.dart';
 import 'package:hisabkitab/src/models/user_account.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
-import 'package:hisabkitab/utils/utility.dart';
+import 'package:hisabkitab/utils/shared_prefs.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -33,7 +33,7 @@ class APIController {
 
       User user = User.fromJson(parsedResponse);
       String _token = user.data.token;
-      Utility.saveToken(_token);
+      SharedPrefs.saveToken(_token);
       print(_token);
       return user;
     } else {
@@ -65,7 +65,7 @@ class APIController {
 
   /// Calls user profile API
   static Future<UserProfile> getUserProfile() async {
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
 
     var response;
 
@@ -116,7 +116,7 @@ class APIController {
 
   /// Updates user profile
   static Future<UserProfile> updateUserProfile(UserProfile data) async {
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
 
     var response;
 
@@ -169,7 +169,7 @@ class APIController {
 
   /// Updates password
   static Future<PasswordResponse> updatePassword(String password) async {
-    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
 
     var response;
 
@@ -337,7 +337,7 @@ class APIController {
 
     print('query params: $queryParams');
 
-    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
 
     var response;
     try {
@@ -379,7 +379,7 @@ class APIController {
 
   /// Adds or updates a transaction
   static Future<TransactionDetails> addUpdateTransaction(TransactionDetails data, int id) async {
-    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
 
     var response;
     try {
@@ -431,7 +431,7 @@ class APIController {
 
   /// Deletes transaction
   static void deleteTransaction(int transactionId) async {
-    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": Utility.token};
+    final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
     try {
       http.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
     } catch (_) {
