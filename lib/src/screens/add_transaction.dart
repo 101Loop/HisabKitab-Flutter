@@ -601,10 +601,15 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
 
   /// Displays and sets the date
   Future<Null> selectDate(BuildContext context) async {
+    /// Sets the initial date to be shown in the date picker
+    DateTime initDate = DateTime.now();
+    if(provider.dateTime != null && provider.dateTime.isNotEmpty)
+      initDate = DateFormat('yyyy-MM-dd').parse(provider.dateTime);
+
     /// Gets the selected date from the date picker
     final DateTime pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initDate,
       firstDate: DateTime.now().subtract(
         Duration(days: 30),
       ),
