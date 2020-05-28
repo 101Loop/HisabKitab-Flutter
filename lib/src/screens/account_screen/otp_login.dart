@@ -9,7 +9,7 @@ import 'package:hisabkitab/src/screens/main_screen.dart';
 import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart';
-import 'package:hisabkitab/utils/utility.dart';
+import 'package:hisabkitab/utils/shared_prefs.dart';
 import 'package:provider/provider.dart';
 
 class OTPLoginScreen extends StatefulWidget {
@@ -104,7 +104,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                 cursorColor: primaryColor,
                                 textAlign: TextAlign.left,
                                 validator: (value) {
-                                  String result = validateEmail(value);
+                                  String result = ValidationMixin.validateEmail(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -136,7 +136,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                       cursorColor: primaryColor,
                                       textAlign: TextAlign.left,
                                       validator: (value) {
-                                        String result = validateOTPLength(value);
+                                        String result = ValidationMixin.validateOTP(value);
                                         if (result != null)
                                           return appLocalizations.translate(result);
                                         else
@@ -271,13 +271,13 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
 
       /// Handles the response
       if (response.statusCode == HTTP_201_CREATED || response.statusCode == HTTP_202_ACCEPTED) {
-        _showSnackBar(response.data + appLocalizations.translate('checkEmail') ?? '');
+        _showSnackBar(appLocalizations.translate('checkEmail') ?? '');
         Future.delayed(Duration(seconds: 2), () {
           provider.setAutoValidate(false, willNotify: false);
           provider.setOTPRequested(true);
         });
       } else if (response.statusCode == HTTP_200_OK && response.data.split('.').length == 3) {
-        Utility.saveToken(response.data);
+        SharedPrefs.saveToken(response.data);
         provider.setNeedsUpdate(true, willNotify: false);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(

@@ -108,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
                                     validator: (value) {
-                                      String result = validateField(value);
+                                      String result = ValidationMixin.validateField(value);
                                       if (result != null)
                                         return appLocalizations.translate(result);
                                       else
@@ -139,7 +139,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
                                     validator: (value) {
-                                      String result = validateEmail(value);
+                                      String result = ValidationMixin.validateEmail(value);
                                       if (result != null)
                                         return appLocalizations.translate(result);
                                       else
@@ -170,7 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
                                     validator: (value) {
-                                      String result = validateMobile(value);
+                                      String result = ValidationMixin.validateMobile(value);
                                       if (result != null)
                                         return appLocalizations.translate(result);
                                       else
@@ -202,7 +202,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     textAlign: TextAlign.left,
                                     autovalidate: provider.autoValidate,
                                     validator: (value) {
-                                      String result = validatePassword(value);
+                                      String result = ValidationMixin.validatePassword(value);
                                       if (result != null)
                                         return appLocalizations.translate(result);
                                       else

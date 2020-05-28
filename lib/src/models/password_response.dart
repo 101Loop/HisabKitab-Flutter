@@ -1,5 +1,7 @@
+import 'package:equatable/equatable.dart';
+
 /// Model class for [PasswordResponse].
-class PasswordResponse {
+class PasswordResponse extends Equatable {
   /// Status of the response, Ex: updated, not updated etc.
   final String data;
 
@@ -8,4 +10,11 @@ class PasswordResponse {
 
   /// Constructor.
   PasswordResponse({this.data, this.statusCode});
+
+  factory PasswordResponse.fromJson(var json) {
+    return PasswordResponse(data: json['data'], statusCode: json['statusCode']);
+  }
+
+  @override
+  List<Object> get props => [data, statusCode];
 }

@@ -33,10 +33,11 @@ class Dashboard extends StatefulWidget {
   Dashboard({Key key}) : super(key: key);
 
   @override
-  _DashboardState createState() => _DashboardState();
+  DashboardState createState() => DashboardState();
 }
 
-class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
+@visibleForTesting
+class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
   /// Device's height and width
   double deviceHeight;
   double deviceWidth;
@@ -161,7 +162,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                             onPressed: () async {
                               provider.setTransactionType('A', willNotify: false);
                               _clearFilter();
-                              _submit();
+                              _refreshScreen();
                             },
                             color: Constants.lightGreen.withRed(210),
                             padding: EdgeInsets.all(0),
@@ -205,6 +206,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
                 : Container(),
             SizedBox(height: 10.0),
             HeaderWidget(
+              key: ValueKey('transactionType'),
               headerText: provider.transactionType == Constants.CREDIT
                   ? appLocalizations.translate('earnings')
                   : provider.transactionType == Constants.DEBIT ? appLocalizations.translate('expenditures') : appLocalizations.translate('allTransactions'),
@@ -394,6 +396,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
         return false;
       },
       child: ListView.builder(
+        key: ValueKey('transactionListview'),
         shrinkWrap: true,
         physics: BouncingScrollPhysics(),
         itemCount: provider.transactionList?.length,
@@ -478,7 +481,7 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
     return Center(child: Text(appLocalizations.translate('nothingToShow')));
   }
 
-  /// Sorts the transaction list, according to [value] received
+  /// Sorts the transaction list and updates the UI
   ///
   /// [value] is a nullable field, make it null to sort it by the previous scheme, if there's no previous scheme
   void _sortTransactionList([SortingItems value]) {
@@ -492,28 +495,30 @@ class _DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixi
       return;
     }
 
-    switch (value.sortScheme) {
+    _tempList = sortList(_tempList, value.sortScheme);
+    provider.setSortScheme(value.sortScheme, willNotify: false);
+    provider.setTransactionList(_tempList);
+  }
+
+  /// Returns the sorted list
+  List<TransactionDetails> sortList(List<TransactionDetails> list, int sortScheme) {
+    switch (sortScheme) {
       case 0: /// Name ascending
-        _tempList.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
-        provider.setSortScheme(value.sortScheme, willNotify: false);
-        provider.setTransactionList(_tempList);
+        list.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
         break;
       case 1: /// Name descending
-        _tempList.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
-        provider.setSortScheme(value.sortScheme, willNotify: false);
-        provider.setTransactionList(_tempList);
+        list.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
         break;
       case 2: /// Amount high to low
-        _tempList.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
-        provider.setSortScheme(value.sortScheme, willNotify: false);
-        provider.setTransactionList(_tempList);
+        list.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
         break;
       case 3: /// Amount low to high
-        _tempList.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
-        provider.setSortScheme(value.sortScheme, willNotify: false);
-        provider.setTransactionList(_tempList);
+        list.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
         break;
     }
+
+    /// Returns the sorted list
+    return list;
   }
 
   /// Loads more items on scrolling

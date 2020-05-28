@@ -1,7 +1,9 @@
+import 'package:equatable/equatable.dart';
+
 /// Model class for [PaginatedResponse]
 ///
 /// Represents a common for every paginated response.
-class PaginatedResponse {
+class PaginatedResponse extends Equatable {
   /// The length of the total items
   final int count;
 
@@ -34,6 +36,7 @@ class PaginatedResponse {
       previous: json['previous'],
       results: json['results'],
       totalAmount: json['total_amount'],
+      statusCode: 200
     );
   }
 
@@ -41,4 +44,7 @@ class PaginatedResponse {
   factory PaginatedResponse.withError(String error, {int statusCode = -1}) {
     return PaginatedResponse(error: error, statusCode: statusCode);
   }
+
+  @override
+  List<Object> get props => [count, next, previous, results, totalAmount];
 }

@@ -1,7 +1,9 @@
+import 'package:equatable/equatable.dart';
+
 /// Model class for [UserProfile].
 ///
 /// Represents user's profile
-class UserProfile {
+class UserProfile extends Equatable {
   /// Unique id of the user
   final int id;
 
@@ -26,6 +28,7 @@ class UserProfile {
       name: json['name'],
       email: json['email'],
       mobile: json['mobile'],
+      statusCode: 200,
     );
   }
 
@@ -39,4 +42,7 @@ class UserProfile {
 
     return map;
   }
+
+  @override
+  List<Object> get props => [id, name, email, mobile, statusCode, error];
 }

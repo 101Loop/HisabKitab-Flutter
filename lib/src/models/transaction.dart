@@ -1,7 +1,9 @@
+import 'package:equatable/equatable.dart';
+
 /// Model class for [TransactionDetails].
 ///
 /// Represents the transaction
-class TransactionDetails {
+class TransactionDetails extends Equatable {
   /// Unique identification of the transaction
   final int id;
 
@@ -92,12 +94,15 @@ class TransactionDetails {
 
     return map;
   }
+
+  @override
+  List<Object> get props => [id, mode, contact, transactionDate, createDate, updateDate, category, amount, comments, message, statusCode];
 }
 
 /// Model class for [Mode].
 ///
 /// Represents mode of payment
-class Mode {
+class Mode extends Equatable {
   final int id;
   final String mode;
 
@@ -108,12 +113,15 @@ class Mode {
   factory Mode.fromJson(var json) {
     return Mode(id: json['id'], mode: json['mode']);
   }
+
+  @override
+  List<Object> get props => [id, mode];
 }
 
 /// Model class for [Contact].
 ///
 /// Represents contact details of a transaction
-class Contact {
+class Contact extends Equatable{
   final int id;
   final String name;
   final String email;
@@ -131,4 +139,7 @@ class Contact {
       mobile: json['mobile'],
     );
   }
+
+  @override
+  List<Object> get props => [id, name, email, mobile];
 }

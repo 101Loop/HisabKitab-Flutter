@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:hisabkitab/utils/const.dart' as Key;
 
 /// Model class for [User].
 ///
 /// Represents the user's login details
-class User {
+class User extends Equatable {
   /// Unique username of the user, can be either email or username
   final String username;
 
@@ -40,12 +41,15 @@ class User {
 
     return map;
   }
+
+  @override
+  List<Object> get props => [username, password, data, error, statusCode];
 }
 
 /// Model class for [Data].
-class Data {
+class Data extends Equatable {
   /// Unique identification of a logged in user
-  String token;
+  final String token;
 
   /// Constructor.
   Data({this.token});
@@ -56,4 +60,7 @@ class Data {
       token: json['token'],
     );
   }
+
+  @override
+  List<Object> get props => [token];
 }

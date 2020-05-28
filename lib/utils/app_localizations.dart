@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:hisabkitab/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Class for handling localizations
 class AppLocalizations {
@@ -24,6 +25,9 @@ class AppLocalizations {
 
   /// Loads the json
   Future<bool> load() async {
+    if (prefs == null)
+      prefs = await SharedPreferences.getInstance();
+
     /// Get the language code from the device
     String languageCode = prefs.getString('languageCode');
 

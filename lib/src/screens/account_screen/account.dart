@@ -13,7 +13,7 @@ import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
 import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
-import 'package:hisabkitab/utils/utility.dart';
+import 'package:hisabkitab/utils/shared_prefs.dart';
 import 'package:provider/provider.dart';
 
 class Account extends StatefulWidget {
@@ -63,6 +63,9 @@ class _AccountState extends State<Account> with ValidationMixin {
   @override
   void initState() {
     super.initState();
+
+    if (prefs == null) SharedPrefs.initialize();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       /// Gets the languages from the lang/langs.json
       _getAvailableLangs();
@@ -71,6 +74,7 @@ class _AccountState extends State<Account> with ValidationMixin {
       _currentSelectedLang = prefs.getString('languageCode');
 
       AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+
       /// Gets the user's profile, if it's not already fetched and sets the details as well
       if (initStateProvider.userProfile == null)
         APIController.getUserProfile().then(
@@ -93,6 +97,7 @@ class _AccountState extends State<Account> with ValidationMixin {
             }
           },
         );
+
       /// Sets the user profile's details, if it's already fetched
       else {
         UserProfile userProfile = initStateProvider.userProfile;
@@ -233,7 +238,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                   _mobile = value;
                                 },
                                 validator: (value) {
-                                  String result = validateMobile(value);
+                                  String result = ValidationMixin.validateMobile(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -266,7 +271,7 @@ class _AccountState extends State<Account> with ValidationMixin {
                                   _email = value;
                                 },
                                 validator: (value) {
-                                  String result = validateEmail(value);
+                                  String result = ValidationMixin.validateEmail(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -430,6 +435,7 @@ class _AccountState extends State<Account> with ValidationMixin {
               _showSnackBar(error);
             }
           }
+
           /// Handles the successful API response and updates the UI
           else {
             _showSnackBar(appLocalizations.translate('profileUpdated'));
@@ -453,7 +459,7 @@ class _AccountState extends State<Account> with ValidationMixin {
   /// Clears provider and preference's data and navigates to welcome screen
   void _logout() {
     provider.clearData();
-    Utility.deleteToken();
+    SharedPrefs.deleteToken();
     prefs.clear();
 
     Navigator.of(context).pushReplacement(
