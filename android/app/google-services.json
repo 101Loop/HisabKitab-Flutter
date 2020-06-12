@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1011998306961",
+    "firebase_url": "https://hisabkitabin.firebaseio.com",
+    "project_id": "hisabkitabin",
+    "storage_bucket": "hisabkitabin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011998306961:android:565d2146eaa2acbe52c530",
+        "android_client_info": {
+          "package_name": "com.vitartha.hisabkitab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011998306961-58s6n3i495qacol80ahas2a3cobiao38.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxQxpyTtP2_VUPjeJOQHDR2QO8LFTejLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011998306961-eh6d6c94sk2qf7st6g4pcsku52nm29dr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
