@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -15,7 +14,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 SharedPreferences prefs;
 
 /// Instance of [SentryClient]
-final SentryClient sentry = SentryClient(dsn: Constants.sentryDsn, environmentAttributes: Event(environment: Constants.sentryDsn));
+final SentryClient sentry = SentryClient(
+    dsn: Constants.sentryDsn,
+    environmentAttributes: Event(environment: Constants.sentryDsn));
 
 void main() async {
   /// Ensures that widgets binding is done before running the app
@@ -25,7 +26,8 @@ void main() async {
   prefs = await SharedPreferences.getInstance();
 
   /// Catches and reports flutter error in sentry
-  runZoned(() => runApp(MyApp()), onError: (error, stackTrace) {
+  runZonedGuarded<Future<void>>(() async => runApp(MyApp()),
+      (error, stackTrace) {
     FlutterError.onError = (details, {bool forceReport = false}) {
       try {
         sentry.captureException(exception: error, stackTrace: stackTrace);
@@ -71,7 +73,8 @@ class MyApp extends StatelessWidget {
         localeResolutionCallback: (locale, supportedLocales) {
           /// Returns the device locale, if supported otherwise first supported language
           for (var currentLocale in supportedLocales) {
-            if (currentLocale.languageCode == locale.languageCode && currentLocale.countryCode == locale.countryCode)
+            if (currentLocale.languageCode == locale.languageCode &&
+                currentLocale.countryCode == locale.countryCode)
               return currentLocale;
           }
           return supportedLocales.first;
