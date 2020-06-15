@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1011998306961-pgsd2bti3lc901uj2hlt61de2kfd9ij3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vitartha.hisabkitab",
+            "certificate_hash": "8f1389f3efae77fe66147a2b3aa85af8b4d51369"
+          }
+        },
+        {
           "client_id": "1011998306961-58s6n3i495qacol80ahas2a3cobiao38.apps.googleusercontent.com",
           "client_type": 3
         }
