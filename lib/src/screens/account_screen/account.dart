@@ -9,7 +9,7 @@ import 'package:hisabkitab/src/mixins/validator.dart';
 import 'package:hisabkitab/src/models/user_profile.dart';
 import 'package:hisabkitab/src/provider/store.dart';
 import 'package:hisabkitab/src/screens/account_screen/change_password.dart';
-import 'package:hisabkitab/src/screens/account_screen/welcome_screen.dart';
+import 'package:hisabkitab/src/screens/splash_screen.dart';
 import 'package:hisabkitab/utils/app_localizations.dart';
 import 'package:hisabkitab/utils/common_widgets/header_text.dart';
 import 'package:hisabkitab/utils/const.dart' as Constants;
@@ -73,7 +73,8 @@ class _AccountState extends State<Account> with ValidationMixin {
       /// Sets the current language, based on the user's preference
       _currentSelectedLang = prefs.getString('languageCode');
 
-      AppState initStateProvider = Provider.of<AppState>(context, listen: false);
+      AppState initStateProvider =
+          Provider.of<AppState>(context, listen: false);
 
       /// Gets the user's profile, if it's not already fetched and sets the details as well
       if (initStateProvider.userProfile == null)
@@ -91,7 +92,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                 if (name.length == 1) {
                   initStateProvider.setInitials(name[0][0].toUpperCase());
                 } else if (name.length > 1) {
-                  initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+                  initStateProvider
+                      .setInitials((name[0][0] + name[1][0]).toUpperCase());
                 }
               }
             }
@@ -110,7 +112,8 @@ class _AccountState extends State<Account> with ValidationMixin {
           if (name.length == 1) {
             initStateProvider.setInitials(name[0][0].toUpperCase());
           } else if (name.length > 1) {
-            initStateProvider.setInitials((name[0][0] + name[1][0]).toUpperCase());
+            initStateProvider
+                .setInitials((name[0][0] + name[1][0]).toUpperCase());
           }
         }
       }
@@ -168,7 +171,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                         fit: BoxFit.contain,
-                        image: AssetImage('assets/images/hisabkitabUIProfile.png'),
+                        image:
+                            AssetImage('assets/images/hisabkitabUIProfile.png'),
                       )),
                       child: CircleAvatar(
                         radius: 45.0,
@@ -185,7 +189,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                     ),
                     SizedBox(height: 10.0),
                     HeaderWidget(
-                      headerText: provider.userProfile?.name ?? appLocalizations.translate('unknown'),
+                      headerText: provider.userProfile?.name ??
+                          appLocalizations.translate('unknown'),
                       maxFontSize: 22,
                       minFontSize: 20,
                       textColor: Colors.black,
@@ -215,7 +220,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
                                   hintText: appLocalizations.translate('name'),
                                   alignLabelWithHint: true,
@@ -230,7 +236,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin:
+                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 controller: _mobileController,
@@ -238,7 +245,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                                   _mobile = value;
                                 },
                                 validator: (value) {
-                                  String result = ValidationMixin.validateMobile(value);
+                                  String result =
+                                      ValidationMixin.validateMobile(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -248,9 +256,11 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: appLocalizations.translate('mobile'),
+                                  hintText:
+                                      appLocalizations.translate('mobile'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -263,7 +273,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
+                              margin:
+                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 15.0),
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 controller: _emailController,
@@ -271,7 +282,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                                   _email = value;
                                 },
                                 validator: (value) {
-                                  String result = ValidationMixin.validateEmail(value);
+                                  String result =
+                                      ValidationMixin.validateEmail(value);
                                   if (result != null)
                                     return appLocalizations.translate(result);
                                   else
@@ -281,9 +293,11 @@ class _AccountState extends State<Account> with ValidationMixin {
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                                   fillColor: Colors.white,
-                                  hintText: appLocalizations.translate('emailId'),
+                                  hintText:
+                                      appLocalizations.translate('emailId'),
                                   alignLabelWithHint: true,
                                   hintStyle: GoogleFonts.nunito(
                                     color: Colors.grey.shade400,
@@ -308,7 +322,8 @@ class _AccountState extends State<Account> with ValidationMixin {
                           _submit();
                         },
                         child: HeaderWidget(
-                          headerText: appLocalizations.translate('updateProfile'),
+                          headerText:
+                              appLocalizations.translate('updateProfile'),
                           maxFontSize: 20,
                           minFontSize: 18,
                           textColor: Colors.white,
@@ -374,7 +389,8 @@ class _AccountState extends State<Account> with ValidationMixin {
             provider.isLoading
                 ? Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                     ),
                   )
                 : Container(),
@@ -412,12 +428,15 @@ class _AccountState extends State<Account> with ValidationMixin {
       /// Save the text field's data... this internally calls the onSaved() method in the [TextFormField]
       _formState.save();
 
-      if ((_name != null && _name.isNotEmpty) || (_mobile != null && _mobile.isNotEmpty) || (_email != null && _email.isNotEmpty)) {
+      if ((_name != null && _name.isNotEmpty) ||
+          (_mobile != null && _mobile.isNotEmpty) ||
+          (_email != null && _email.isNotEmpty)) {
         /// Makes the loader to rotate
         provider.setLoading(true);
 
         /// Creates an instance of [UserProfile]
-        UserProfile userProfile = UserProfile(name: _name, mobile: _mobile, email: _email);
+        UserProfile userProfile =
+            UserProfile(name: _name, mobile: _mobile, email: _email);
 
         /// Calls the user profile update API and handles the response
         APIController.updateUserProfile(userProfile).then((response) {
@@ -426,11 +445,13 @@ class _AccountState extends State<Account> with ValidationMixin {
 
           /// Mainly handles the error response here
           if (response.error?.isNotEmpty ?? false) {
-            if (response.error.contains('This mobile number is already registered')) {
+            if (response.error
+                .contains('This mobile number is already registered')) {
               _showSnackBar(appLocalizations.translate('alreadyExistingError'));
             } else {
               String error = response.error;
-              if (response.statusCode == 0) error = appLocalizations.translate(error);
+              if (response.statusCode == 0)
+                error = appLocalizations.translate(error);
 
               _showSnackBar(error);
             }
@@ -443,9 +464,11 @@ class _AccountState extends State<Account> with ValidationMixin {
             List<String> name = response.name?.split(' ');
             if (name != null) {
               if (name.length == 1) {
-                provider.setInitials(name[0][0].toUpperCase(), willNotify: false);
+                provider.setInitials(name[0][0].toUpperCase(),
+                    willNotify: false);
               } else if (name.length > 1) {
-                provider.setInitials((name[0][0] + name[1][0]).toUpperCase(), willNotify: false);
+                provider.setInitials((name[0][0] + name[1][0]).toUpperCase(),
+                    willNotify: false);
               }
             }
 
@@ -464,7 +487,7 @@ class _AccountState extends State<Account> with ValidationMixin {
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => WelcomeScreen(),
+        builder: (context) => SplashScreen(),
       ),
     );
   }
@@ -515,7 +538,8 @@ class _AccountState extends State<Account> with ValidationMixin {
     var langJsonString = await rootBundle.loadString('lang/langs.json');
     List langList = json.decode(langJsonString);
     langList.forEach((item) {
-      Map<String, String> map = (item as Map).map((key, value) => MapEntry(key, value != null ? value.toString() : null));
+      Map<String, String> map = (item as Map).map((key, value) =>
+          MapEntry(key, value != null ? value.toString() : null));
       availableLangList.add(map);
     });
   }
@@ -536,7 +560,9 @@ class _AccountState extends State<Account> with ValidationMixin {
             widget.languageUpdateCallback();
             Navigator.of(context).pop();
           },
-          child: LanguageOption(language: language, isSelected: languageCode == _currentSelectedLang),
+          child: LanguageOption(
+              language: language,
+              isSelected: languageCode == _currentSelectedLang),
         ),
         index != availableLangList.length - 1 ? Divider() : Container()
       ],
@@ -569,7 +595,8 @@ class LanguageOption extends StatelessWidget {
           widthFactor: 1.5,
           child: Text(
             language,
-            style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
+            style: TextStyle(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
           ),
         ),
       ),
