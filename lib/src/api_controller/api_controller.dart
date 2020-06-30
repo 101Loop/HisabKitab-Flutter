@@ -29,21 +29,20 @@ class APIController {
     }
 
     int statusCode = response.statusCode;
+    String responseBody = response.body;
 
+    print('login response: ' + responseBody);
     if (statusCode == Constants.HTTP_200_OK) {
-      String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
 
       User user = User.fromJson(parsedResponse);
       String _token = user.data.token;
       SharedPrefs.saveToken(_token);
-      print(_token);
       return user;
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -80,15 +79,15 @@ class APIController {
 
     int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('user profile response: ' + responseBody);
     if (statusCode == Constants.HTTP_200_OK) {
-      String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
       return UserProfile.fromJson(parsedResponse[0]);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -131,15 +130,15 @@ class APIController {
 
     int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('update user profile response: ' + responseBody);
     if (statusCode == Constants.HTTP_200_OK || statusCode == Constants.HTTP_202_ACCEPTED) {
-      String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
       return UserProfile.fromJson(parsedResponse['data']);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json?.decode(errorMessage);
+          var errorResponse = json?.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -159,7 +158,7 @@ class APIController {
             UserProfile(error: errorResponse);
           }
         } on TypeError catch (_) {
-          return UserProfile(error: errorMessage);
+          return UserProfile(error: responseBody);
         } catch (e) {
           return UserProfile(error: e.toString());
         }
@@ -184,13 +183,14 @@ class APIController {
 
     int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('update password response: ' + responseBody);
     if (statusCode == Constants.HTTP_202_ACCEPTED) {
       return PasswordResponse(data: 'passwordUpdatedSuccessfully', statusCode: statusCode);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -240,19 +240,20 @@ class APIController {
 
     final int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('OTP response: ' + responseBody);
     if (statusCode == Constants.HTTP_201_CREATED || statusCode == Constants.HTTP_202_ACCEPTED) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       apiResponse = PasswordResponse(data: parsedResponse['data']['message'], statusCode: statusCode);
       return apiResponse;
     } else if (statusCode == Constants.HTTP_200_OK) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       apiResponse = PasswordResponse(data: parsedResponse['data']['token'], statusCode: statusCode);
       return apiResponse;
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -273,7 +274,7 @@ class APIController {
           return PasswordResponse(data: e.toString(), statusCode: statusCode);
         }
       }
-      return PasswordResponse(data: errorMessage, statusCode: statusCode);
+      return PasswordResponse(data: responseBody, statusCode: statusCode);
     }
   }
 
@@ -295,16 +296,17 @@ class APIController {
     }
 
     final int statusCode = response.statusCode;
+    String responseBody = response.body;
+    print('register user response: ' + response.body);
 
     if (statusCode == Constants.HTTP_201_CREATED) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       user = UserAccount.fromJson(parsedResponse);
       return user;
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -351,14 +353,16 @@ class APIController {
 
     final int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('get transaction response: ' + response.body);
+
     if (statusCode == Constants.HTTP_200_OK) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       return PaginatedResponse.fromJson(parsedResponse);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -376,7 +380,7 @@ class APIController {
           return PaginatedResponse.withError(e.toString());
         }
       }
-      return PaginatedResponse.withError(errorMessage);
+      return PaginatedResponse.withError(responseBody);
     }
   }
 
@@ -397,14 +401,15 @@ class APIController {
 
     final int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('add/update transaction response: ' + response.body);
     if (statusCode == Constants.HTTP_201_CREATED || statusCode == Constants.HTTP_200_OK) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       return TransactionDetails.fromJson(parsedResponse, message: id != -1 ? 'transactionUpdatedSuccessful' : 'transactionAddedSuccessful');
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -422,7 +427,7 @@ class APIController {
           } else if (errorResponse['mode'] != null) {
             return TransactionDetails.withError(errorResponse['mode'][0]);
           } else {
-            return TransactionDetails.withError(errorMessage);
+            return TransactionDetails.withError(responseBody);
           }
         } catch (e) {
           return TransactionDetails.withError(e.toString());
@@ -436,7 +441,9 @@ class APIController {
   static void deleteTransaction(int transactionId) async {
     final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
     try {
-      client.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
+      final response = await client.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
+
+      print('delete transaction response: ' + response.body);
     } catch (_) {
       return;
     }
