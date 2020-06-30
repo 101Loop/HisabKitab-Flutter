@@ -13,6 +13,9 @@ import 'package:http/http.dart' as http;
 
 /// API controller class
 class APIController {
+  /// HTTP client, APIs will be called using this, makes easy to mock APIs
+  static http.Client client = http.Client();
+
   /// Calls login API
   static Future<User> login(User user) async {
     Map<String, String> headers = {"Content-Type": "application/json"};
@@ -20,7 +23,7 @@ class APIController {
     var response;
 
     try {
-      response = await http.post(Constants.LOGIN_URL, headers: headers, body: json.encode(user.toMap()));
+      response = await client.post(Constants.LOGIN_URL, headers: headers, body: json.encode(user.toMap()));
     } catch (_) {
       return User(error: 'serverError', statusCode: 0);
     }
@@ -70,7 +73,7 @@ class APIController {
     var response;
 
     try {
-      response = await http.get(Constants.PROFILE_URL, headers: headers);
+      response = await client.get(Constants.PROFILE_URL, headers: headers);
     } catch (_) {
       return UserProfile(error: 'serverError', statusCode: 0);
     }
@@ -121,7 +124,7 @@ class APIController {
     var response;
 
     try {
-      response = await http.patch(Constants.UPDATE_PROFILE_URL, headers: headers, body: json.encode(data.toMap()));
+      response = await client.patch(Constants.UPDATE_PROFILE_URL, headers: headers, body: json.encode(data.toMap()));
     } catch (_) {
       return UserProfile(error: 'serverError', statusCode: 0);
     }
@@ -174,7 +177,7 @@ class APIController {
     var response;
 
     try {
-      response = await http.patch(Constants.UPDATE_PASSWORD_URL, headers: headers, body: json.encode({"new_password": password}));
+      response = await client.patch(Constants.UPDATE_PASSWORD_URL, headers: headers, body: json.encode({"new_password": password}));
     } catch (_) {
       return PasswordResponse(data: 'somethingWentWrong', statusCode: 0);
     }
@@ -230,7 +233,7 @@ class APIController {
 
     var response;
     try {
-      response = await http.post(Constants.LOGIN_OTP_URL, headers: headers, body: json.encode(data));
+      response = await client.post(Constants.LOGIN_OTP_URL, headers: headers, body: json.encode(data));
     } catch (_) {
       return PasswordResponse(data: 'serverError', statusCode: 0);
     }
@@ -280,7 +283,7 @@ class APIController {
 
     var response;
     try {
-      response = await http.post(
+      response = await client.post(
         Constants.REGISTER_URL,
         headers: headers,
         body: json.encode(
@@ -341,7 +344,7 @@ class APIController {
 
     var response;
     try {
-      response = await http.get(next ?? Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
+      response = await client.get(next ?? Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
     } catch (_) {
       return PaginatedResponse.withError('serverError', statusCode: 0);
     }
@@ -384,9 +387,9 @@ class APIController {
     var response;
     try {
       if (id == -1) {
-        response = await http.post(Constants.ADD_TRANSACTION_URL, headers: headers, body: json.encode(data.toMap()));
+        response = await client.post(Constants.ADD_TRANSACTION_URL, headers: headers, body: json.encode(data.toMap()));
       } else {
-        response = await http.patch(Constants.TRANSACTION_URL + '$id/update/', headers: headers, body: json.encode(data.toMap()));
+        response = await client.patch(Constants.TRANSACTION_URL + '$id/update/', headers: headers, body: json.encode(data.toMap()));
       }
     } catch (_) {
       return TransactionDetails.withError('serverError', statusCode: 0);
@@ -433,7 +436,7 @@ class APIController {
   static void deleteTransaction(int transactionId) async {
     final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
     try {
-      http.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
+      client.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
     } catch (_) {
       return;
     }

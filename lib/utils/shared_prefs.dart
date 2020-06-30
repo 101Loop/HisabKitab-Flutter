@@ -4,17 +4,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
   /// Uniquely identifies the user, used for communicating with the server
-  static String _token;
+  static String appToken;
 
   /// Gets the [token]
-  static String get token => _token;
+  static String get token => appToken;
 
   /// Saves [token] in the shared prefs
   static void saveToken(String token){
     prefs.remove(Constants.TOKEN);
     prefs.setString(Constants.TOKEN, token);
 
-    _token = token;
+    appToken = token;
   }
 
   /// Deletes token from the shared prefs
