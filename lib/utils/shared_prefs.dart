@@ -11,10 +11,12 @@ class SharedPrefs {
 
   /// Saves [token] in the shared prefs
   static void saveToken(String token){
-    prefs.remove(Constants.TOKEN);
-    prefs.setString(Constants.TOKEN, token);
+    if (prefs != null){
+      prefs.remove(Constants.TOKEN);
+      prefs.setString(Constants.TOKEN, token);
 
-    appToken = token;
+      appToken = token;
+    }
   }
 
   /// Deletes token from the shared prefs
