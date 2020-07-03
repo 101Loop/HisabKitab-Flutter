@@ -10,9 +10,11 @@ import 'package:hisabkitab/utils/const.dart' as Constants;
 import 'package:hisabkitab/utils/shared_prefs.dart';
 import 'package:http/http.dart' as http;
 
-
 /// API controller class
 class APIController {
+  /// HTTP client, APIs will be called using this, makes easy to mock APIs
+  static http.Client client = http.Client();
+
   /// Calls login API
   static Future<User> login(User user) async {
     Map<String, String> headers = {"Content-Type": "application/json"};
@@ -20,27 +22,26 @@ class APIController {
     var response;
 
     try {
-      response = await http.post(Constants.LOGIN_URL, headers: headers, body: json.encode(user.toMap()));
+      response = await client.post(Constants.LOGIN_URL, headers: headers, body: json.encode(user.toMap()));
     } catch (_) {
       return User(error: 'serverError', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
+    String responseBody = response.body;
 
+    print('login response: ' + responseBody);
     if (statusCode == Constants.HTTP_200_OK) {
-      String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
 
       User user = User.fromJson(parsedResponse);
       String _token = user.data.token;
       SharedPrefs.saveToken(_token);
-      print(_token);
       return user;
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -70,39 +71,32 @@ class APIController {
     var response;
 
     try {
-      response = await http.get(Constants.PROFILE_URL, headers: headers);
+      response = await client.get(Constants.PROFILE_URL, headers: headers);
     } catch (_) {
       return UserProfile(error: 'serverError', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('user profile response: ' + responseBody);
     if (statusCode == Constants.HTTP_200_OK) {
-      String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
       return UserProfile.fromJson(parsedResponse[0]);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
+          if (errorResponse is String)
+            return UserProfile(error: errorResponse, statusCode: statusCode);
+          else if (errorResponse is List) return UserProfile(error: errorResponse[0]);
 
-          if (errorResponse['detail'] != null) {
-            var detail = errorResponse['detail'];
-            return UserProfile(error: detail.toString());
-          } else if (errorResponse['data'] != null) {
-            var data = errorResponse['data'];
-            var dataObject = json.encode(data);
-            var parsedData = json.decode(dataObject);
-            var nonFieldErrors = parsedData['non_field_errors'];
-            if (nonFieldErrors != null) {
-              String message = nonFieldErrors[0];
-              return UserProfile(error: message);
-            } else {
-              return UserProfile(error: errorResponse);
+          final errorValues = errorResponse.entries;
+          if (errorValues.length > 0) {
+            for (MapEntry entry in errorValues) {
+              String error = entry.value is String ? entry.value : entry.value[0];
+              return UserProfile(error: entry.key + ': ' + error, statusCode: statusCode);
             }
-          } else {
-            UserProfile(error: errorResponse);
           }
         } catch (e) {
           return UserProfile(error: e.toString());
@@ -121,42 +115,35 @@ class APIController {
     var response;
 
     try {
-      response = await http.patch(Constants.UPDATE_PROFILE_URL, headers: headers, body: json.encode(data.toMap()));
+      response = await client.patch(Constants.UPDATE_PROFILE_URL, headers: headers, body: json.encode(data.toMap()));
     } catch (_) {
       return UserProfile(error: 'serverError', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('update user profile response: ' + responseBody);
     if (statusCode == Constants.HTTP_200_OK || statusCode == Constants.HTTP_202_ACCEPTED) {
-      String responseBody = response.body.toString();
       var parsedResponse = json.decode(responseBody);
       return UserProfile.fromJson(parsedResponse['data']);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json?.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
+          if (errorResponse is String)
+            return UserProfile(error: errorResponse, statusCode: statusCode);
+          else if (errorResponse is List) return UserProfile(error: errorResponse[0]);
 
-          if (errorResponse['detail'] != null) {
-            var detail = errorResponse['detail'];
-            return UserProfile(error: detail.toString());
-          } else if (errorResponse['data'] != null) {
-            var data = errorResponse['data'];
-            var dataObject = json.encode(data);
-            var parsedData = json.decode(dataObject);
-            var nonFieldErrors = parsedData['non_field_errors'];
-            if (nonFieldErrors != null) {
-              String message = nonFieldErrors[0];
-              return UserProfile(error: message);
-            } else {
-              return UserProfile(error: errorResponse);
+          final errorValues = errorResponse.entries;
+          if (errorValues.length > 0) {
+            for (MapEntry entry in errorValues) {
+              String error = entry.value is String ? entry.value : entry.value[0];
+              return UserProfile(error: entry.key + ': ' + error, statusCode: statusCode);
             }
-          } else {
-            UserProfile(error: errorResponse);
           }
         } on TypeError catch (_) {
-          return UserProfile(error: errorMessage);
+          return UserProfile(error: responseBody);
         } catch (e) {
           return UserProfile(error: e.toString());
         }
@@ -174,41 +161,33 @@ class APIController {
     var response;
 
     try {
-      response = await http.patch(Constants.UPDATE_PASSWORD_URL, headers: headers, body: json.encode({"new_password": password}));
+      response = await client.patch(Constants.UPDATE_PASSWORD_URL, headers: headers, body: json.encode({"new_password": password}));
     } catch (_) {
       return PasswordResponse(data: 'somethingWentWrong', statusCode: 0);
     }
 
     int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('update password response: ' + responseBody);
     if (statusCode == Constants.HTTP_202_ACCEPTED) {
       return PasswordResponse(data: 'passwordUpdatedSuccessfully', statusCode: statusCode);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
+          if (errorResponse is String)
+            return PasswordResponse(data: errorResponse, statusCode: statusCode);
+          else if (errorResponse is List) return PasswordResponse(data: errorResponse[0]);
 
-          if (errorResponse['detail'] != null) {
-            var detail = errorResponse['detail'];
-            return PasswordResponse(data: detail.toString(), statusCode: statusCode);
-          } else if (errorResponse['data'] != null) {
-            var data = errorResponse['data'];
-            var dataObject = json.encode(data);
-            var parsedData = json.decode(dataObject);
-            var nonFieldErrors = parsedData['non_field_errors'];
-            var error = parsedData['new_password'];
-            if (nonFieldErrors != null) {
-              String message = nonFieldErrors[0];
-              return PasswordResponse(data: message, statusCode: statusCode);
-            } else if (error != null) {
-              return PasswordResponse(data: error[0].toString(), statusCode: statusCode);
-            } else {
-              return PasswordResponse(data: errorResponse.toString(), statusCode: statusCode);
+          final errorValues = errorResponse.entries;
+          if (errorValues.length > 0) {
+            for (MapEntry entry in errorValues) {
+              String error = entry.value is String ? entry.value : entry.value[0];
+              return PasswordResponse(data: entry.key + ': ' + error, statusCode: statusCode);
             }
-          } else {
-            return PasswordResponse(data: errorResponse.toString(), statusCode: statusCode);
           }
+          return PasswordResponse(data: 'serverError', statusCode: 0);
         } catch (e) {
           return PasswordResponse(data: e.toString(), statusCode: statusCode);
         }
@@ -223,33 +202,36 @@ class APIController {
     final Map<String, String> headers = {"Content-Type": "application/json"};
     final Map<String, String> data = {"value": email};
 
-    if (otp != null)
-      data['otp'] = otp.toString();
+    if (otp != null) data['otp'] = otp.toString();
 
     PasswordResponse apiResponse;
 
     var response;
     try {
-      response = await http.post(Constants.LOGIN_OTP_URL, headers: headers, body: json.encode(data));
+      response = await client.post(Constants.LOGIN_OTP_URL, headers: headers, body: json.encode(data));
     } catch (_) {
       return PasswordResponse(data: 'serverError', statusCode: 0);
     }
 
     final int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('OTP response: ' + responseBody);
     if (statusCode == Constants.HTTP_201_CREATED || statusCode == Constants.HTTP_202_ACCEPTED) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       apiResponse = PasswordResponse(data: parsedResponse['data']['message'], statusCode: statusCode);
       return apiResponse;
     } else if (statusCode == Constants.HTTP_200_OK) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       apiResponse = PasswordResponse(data: parsedResponse['data']['token'], statusCode: statusCode);
       return apiResponse;
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
+          if (errorResponse is String)
+            return PasswordResponse(data: errorResponse, statusCode: statusCode);
+          else if (errorResponse is List) return PasswordResponse(data: errorResponse[0]);
 
           if (errorResponse['detail'] != null) {
             var detail = errorResponse['detail'];
@@ -266,11 +248,12 @@ class APIController {
               return PasswordResponse(data: otpMessage, statusCode: statusCode);
             }
           }
+          return PasswordResponse(data: 'serverError', statusCode: 0);
         } catch (e) {
           return PasswordResponse(data: e.toString(), statusCode: statusCode);
         }
       }
-      return PasswordResponse(data: errorMessage, statusCode: statusCode);
+      return PasswordResponse(data: responseBody, statusCode: statusCode);
     }
   }
 
@@ -280,7 +263,7 @@ class APIController {
 
     var response;
     try {
-      response = await http.post(
+      response = await client.post(
         Constants.REGISTER_URL,
         headers: headers,
         body: json.encode(
@@ -292,27 +275,31 @@ class APIController {
     }
 
     final int statusCode = response.statusCode;
+    String responseBody = response.body;
+    print('register user response: ' + response.body);
 
     if (statusCode == Constants.HTTP_201_CREATED) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       user = UserAccount.fromJson(parsedResponse);
       return user;
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
+          if (errorResponse is String)
+            return UserAccount.withError(errorResponse, statusCode: statusCode);
+          else if (errorResponse is List) return UserAccount.withError(errorResponse[0]);
 
-          if (errorResponse['detail'] != null) {
-            var detail = errorResponse['detail'];
-            return UserAccount.withError(detail.toString());
-          } else if (errorResponse['data'] != null) {
-            var data = errorResponse['data'];
-            var dataObject = json.encode(data);
-            var parsedData = json.decode(dataObject);
-            var nonFieldErrors = parsedData['non_field_errors'];
-            if (nonFieldErrors != null) {
-              return UserAccount.withError('alreadyExistingError', statusCode: 0);
+          final errorData = errorResponse['data'];
+          final errorValues = errorData.entries;
+          if (errorValues.length > 0) {
+            for (MapEntry entry in errorValues) {
+              String error = entry.value is String ? entry.value : entry.value[0];
+
+              if (error.contains('exists'))
+                error = 'alreadyExistingError';
+
+              return UserAccount.withError(error, statusCode: statusCode);
             }
           }
         } catch (e) {
@@ -341,39 +328,39 @@ class APIController {
 
     var response;
     try {
-      response = await http.get(next ?? Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
+      response = await client.get(next ?? Constants.GET_TRANSACTION_URL + queryParams, headers: headers);
     } catch (_) {
       return PaginatedResponse.withError('serverError', statusCode: 0);
     }
 
     final int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('get transaction response: ' + response.body);
+
     if (statusCode == Constants.HTTP_200_OK) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       return PaginatedResponse.fromJson(parsedResponse);
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
+          if (errorResponse is String)
+            return PaginatedResponse.withError(errorResponse, statusCode: statusCode);
+          else if (errorResponse is List) return PaginatedResponse.withError(errorResponse[0], statusCode: statusCode);
 
-          if (errorResponse['detail'] != null) {
-            var detail = errorResponse['detail'];
-            return PaginatedResponse.withError(detail.toString());
-          } else if (errorResponse['data'] != null) {
-            var data = errorResponse['data'];
-            var dataObject = json.encode(data);
-            var parsedData = json.decode(dataObject);
-            var nonFieldErrors = parsedData['non_field_errors'];
-            if (nonFieldErrors != null) {
-              return PaginatedResponse.withError(nonFieldErrors[0].toString());
+          final errorValues = errorResponse.entries;
+          if (errorValues.length > 0) {
+            for (MapEntry entry in errorValues) {
+              String error = entry.value is String ? entry.value : entry.value[0];
+              return PaginatedResponse.withError(entry.key + ': ' + error, statusCode: statusCode);
             }
           }
         } catch (e) {
-          return PaginatedResponse.withError(e.toString());
+          return PaginatedResponse.withError(e.toString(), statusCode: statusCode);
         }
       }
-      return PaginatedResponse.withError(errorMessage);
+      return PaginatedResponse.withError(responseBody, statusCode: statusCode);
     }
   }
 
@@ -384,9 +371,9 @@ class APIController {
     var response;
     try {
       if (id == -1) {
-        response = await http.post(Constants.ADD_TRANSACTION_URL, headers: headers, body: json.encode(data.toMap()));
+        response = await client.post(Constants.ADD_TRANSACTION_URL, headers: headers, body: json.encode(data.toMap()));
       } else {
-        response = await http.patch(Constants.TRANSACTION_URL + '$id/update/', headers: headers, body: json.encode(data.toMap()));
+        response = await client.patch(Constants.TRANSACTION_URL + '$id/update/', headers: headers, body: json.encode(data.toMap()));
       }
     } catch (_) {
       return TransactionDetails.withError('serverError', statusCode: 0);
@@ -394,33 +381,27 @@ class APIController {
 
     final int statusCode = response.statusCode;
 
+    String responseBody = response.body;
+    print('add/update transaction response: ' + response.body);
     if (statusCode == Constants.HTTP_201_CREATED || statusCode == Constants.HTTP_200_OK) {
-      var parsedResponse = json.decode(response.body);
+      var parsedResponse = json.decode(responseBody);
       return TransactionDetails.fromJson(parsedResponse, message: id != -1 ? 'transactionUpdatedSuccessful' : 'transactionAddedSuccessful');
     } else {
-      String errorMessage = response.body.toString();
-      if (errorMessage != null) {
+      if (responseBody != null) {
         try {
-          var errorResponse = json.decode(errorMessage);
+          var errorResponse = json.decode(responseBody);
+          if (errorResponse is String)
+            return TransactionDetails.withError(errorResponse, statusCode: statusCode);
+          else if (errorResponse is List) return TransactionDetails.withError(errorResponse[0], statusCode: statusCode);
 
-          if (errorResponse['detail'] != null) {
-            var detail = errorResponse['detail'];
-            return TransactionDetails.withError(detail.toString());
-          } else if (errorResponse['data'] != null) {
-            var data = errorResponse['data'];
-            var dataObject = json.encode(data);
-            var parsedData = json.decode(dataObject);
-            var nonFieldErrors = parsedData['non_field_errors'];
-            if (nonFieldErrors != null) {
-              return TransactionDetails.withError(nonFieldErrors);
-            } else {
-              return TransactionDetails.withError('somethingWentWrong', statusCode: 0);
+          final errorValues = errorResponse.entries;
+          if (errorValues.length > 0) {
+            for (MapEntry entry in errorValues) {
+              String error = entry.value is String ? entry.value : entry.value[0];
+              return TransactionDetails.withError(entry.key + ': ' + error, statusCode: statusCode);
             }
-          } else if (errorResponse['mode'] != null) {
-            return TransactionDetails.withError(errorResponse['mode'][0]);
-          } else {
-            return TransactionDetails.withError(errorMessage);
           }
+          return TransactionDetails.withError('somethingWentWrong', statusCode: statusCode);
         } catch (e) {
           return TransactionDetails.withError(e.toString());
         }
@@ -433,7 +414,9 @@ class APIController {
   static void deleteTransaction(int transactionId) async {
     final Map<String, String> headers = {"Content-Type": "application/json", "Authorization": SharedPrefs.token};
     try {
-      http.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
+      final response = await client.delete(Constants.TRANSACTION_URL + '$transactionId' + '/delete/', headers: headers);
+
+      print('delete transaction response: ' + response.body);
     } catch (_) {
       return;
     }
