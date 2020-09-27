@@ -28,7 +28,7 @@ This guide is for those who are new to GitHub and Contribution.
 
 - We encourage contribution, even if the contributor is in his/her early stage
   of learning. So, don't hesitate to propose your changes.
-- Take this small [guide](#updating-the-forked-repo) to configure your repo.
+- Take this small [guide](#working-in-a-forked-project) to configure your repo.
 - Create a separate branch for your changes:
   ```
   git checkout -b <your-branch-name>
@@ -76,7 +76,8 @@ If it's already forked you can clone it to your workspace and then follow the gu
 
 In root of your project, follow the steps:
 
-**Adding upstream remo**
+**Adding upstream repo**
+----
 Add the original repo's remote. Follow this step only for once. <br>
 
 Using https:
@@ -90,9 +91,11 @@ Using ssh:
 ```
 git remote add upstream git@github.com:101Loop/HisabKitab-Flutter.git
 ```
-**Updating the forked repo**
-**Step 1:** Fetch all the branches of remote upstream. Follow all the steps from
-here, to update your forked repo.
+
+
+## Updating the forked repo
+
+**Step 1:** Fetch all the branches of remote upstream.
 
 ```
 get fetch upstream
