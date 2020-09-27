@@ -66,13 +66,18 @@ This guide is for those who are new to GitHub and Contribution.
     After this, you can follow the [guide below](#updating-the-forked-repo) from
     `Step 2`.
 
-### Updating the forked repo
+
+
+### Working in a forked project
 
 ---
+First of all, you need to fork the repo. It will basically create a copy of this repo in your account.<br>
+If it's already forked you can clone it to your workspace and then follow the guide below.
 
-In root of your project, follow the following steps:
+In root of your project, follow the steps:
 
-**Step 1** Add the original repo's remote. Follow this step only for once. <br>
+**Adding upstream remo**
+Add the original repo's remote. Follow this step only for once. <br>
 
 Using https:
 
@@ -85,21 +90,21 @@ Using ssh:
 ```
 git remote add upstream git@github.com:101Loop/HisabKitab-Flutter.git
 ```
-
-**Step 2** Fetch all the branches of remote upstream. Follow all the steps from
+**Updating the forked repo**
+**Step 1:** Fetch all the branches of remote upstream. Follow all the steps from
 here, to update your forked repo.
 
 ```
 get fetch upstream
 ```
 
-**Step 3** Rewrite your master with upstream's master
+**Step 2:** Rewrite your master with upstream's master
 
 ```
 git rebase upstream/master
 ```
 
-**Step 4** Finally, push the updates from original repo to your forked repo:
+**Step 3:** Finally, push the updates from original repo to your forked repo:
 
 ```
 git push
