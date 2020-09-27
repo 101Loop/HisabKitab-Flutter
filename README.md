@@ -23,19 +23,19 @@ family, business or corporate.<br>
 
 Download or clone this repo by using the link below:<br>
 
-Using https:
+Using `HTTPS`:
 
 ```
 https://github.com/101Loop/HisabKitab-Flutter.git
 ```
 
-Using ssh:
+Using `SSH`:
 
 ```
 git@github.com:101Loop/HisabKitab-Flutter.git
 ```
 
-Using git-cli:
+Using `GitHub CLI`:
 
 ```
 gh repo clone 101Loop/HisabKitab-Flutter
