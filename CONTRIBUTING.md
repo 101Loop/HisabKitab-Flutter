@@ -22,6 +22,7 @@ questions if something is unclear!
   a short note, so we know you're done.
 - Avoid breaking backwards compatibility.
 
+<br>
 ## First timer guide!
 
 This guide is for those who are new to GitHub and Contribution.
@@ -67,10 +68,9 @@ This guide is for those who are new to GitHub and Contribution.
     `Step 2`.
 
 
+<br>
+## Working in a forked project
 
-### Working in a forked project
-
----
 First of all, you need to fork the repo. It will basically create a copy of this repo in your account.<br>
 If it's already forked you can clone it to your workspace and then follow the guide below.
 
@@ -93,7 +93,7 @@ git remote add upstream git@github.com:101Loop/HisabKitab-Flutter.git
 ```
 
 
-## Updating the forked repo
+### Updating the forked repo
 
 **Step 1:** Fetch all the branches of remote upstream.
 
