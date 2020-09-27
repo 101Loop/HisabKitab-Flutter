@@ -21,18 +21,18 @@ family, business or corporate.<br>
 
 **Step 1:**
 
-Download or clone this repo by using the link below:<br>
+Download or clone this repo:<br>
 
 Using `HTTPS`:
 
 ```
-https://github.com/101Loop/HisabKitab-Flutter.git
+git clone https://github.com/101Loop/HisabKitab-Flutter.git
 ```
 
 Using `SSH`:
 
 ```
-git@github.com:101Loop/HisabKitab-Flutter.git
+git clone git@github.com:101Loop/HisabKitab-Flutter.git
 ```
 
 Using `GitHub CLI`:
@@ -52,13 +52,11 @@ flutter pub get
 
 **Step 3:**
 
-Finally, you can run this project locally by using the following command:
+Finally, you can run this project locally by using the following command or by using your IDE:
 
 ```
 flutter run
 ```
-
-or by using your IDE.
 
 # Contributing
 
