@@ -75,24 +75,25 @@ Then you can clone it to your workspace and then follow [this guide](#adding-ups
 
 ### Adding upstream repo
 
-Add the original repo's remote. <br>
+- Add the original repo's remote. <br>
 
-Using https:
+  Using https:
 
-```
-git remote add upstream https://github.com/101Loop/HisabKitab-Flutter.git
-```
+  ```
+  git remote add upstream https://github.com/101Loop/HisabKitab-Flutter.git
+  ```
 
-Using ssh:
+  Using ssh:
 
-```
-git remote add upstream git@github.com:101Loop/HisabKitab-Flutter.git
-```
+  ```
+  git remote add upstream git@github.com:101Loop/HisabKitab-Flutter.git
+  ```
+- Now, that you have added the original repo's remote URL, you can update your repo from the original repo.
 
 
 ### Updating the forked repo
 
-These steps are only necessary for updating your forked repo. If your forked repo is already even with the original repo, then you don't need to perform these steps.
+The following steps are only necessary for updating your forked repo. If your forked repo is already even with the original repo, then you don't need to perform these steps.
 
 **Step 1:** Fetch all the branches of remote upstream.
 
