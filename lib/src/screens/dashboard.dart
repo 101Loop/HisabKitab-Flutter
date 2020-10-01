@@ -37,8 +37,7 @@ class Dashboard extends StatefulWidget {
 }
 
 @visibleForTesting
-class DashboardState extends State<Dashboard>
-    with AutomaticKeepAliveClientMixin {
+class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin {
   /// Device's height and width
   double deviceHeight;
   double deviceWidth;
@@ -79,16 +78,10 @@ class DashboardState extends State<Dashboard>
       /// Ensures that the build is done already
       WidgetsBinding.instance.addPostFrameCallback((_) {
         /// Sets the query params
-        if (initStateProvider.searchQuery.isNotEmpty)
-          queryParams += 'search=${initStateProvider.searchQuery}&';
-        if (initStateProvider.dateQuery.isNotEmpty)
-          queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
-        if (initStateProvider.minAmountQuery != null &&
-            initStateProvider.minAmountQuery > 0)
-          queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
-        if (initStateProvider.maxAmountQuery != null &&
-            initStateProvider.maxAmountQuery > 0)
-          queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
+        if (initStateProvider.searchQuery.isNotEmpty) queryParams += 'search=${initStateProvider.searchQuery}&';
+        if (initStateProvider.dateQuery.isNotEmpty) queryParams += 'transaction_date=${initStateProvider.dateQuery}&';
+        if (initStateProvider.minAmountQuery != null && initStateProvider.minAmountQuery > 0) queryParams += 'start_amount=${initStateProvider.minAmountQuery}&';
+        if (initStateProvider.maxAmountQuery != null && initStateProvider.maxAmountQuery > 0) queryParams += 'end_amount=${initStateProvider.maxAmountQuery}&';
         if (initStateProvider.isCashQuery) queryParams += 'mode=1&';
         if (initStateProvider.isCardQuery) queryParams += 'mode=5&';
         if (initStateProvider.isChequeQuery) queryParams += 'mode=2&';
@@ -96,18 +89,15 @@ class DashboardState extends State<Dashboard>
 
         if (initStateProvider.isEarning) {
           if (initStateProvider.isSpending) {
-            initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS,
-                willNotify: false);
+            initStateProvider.setTransactionType(Constants.ALL_TRANSACTIONS, willNotify: false);
           } else {
             queryParams += 'category=C&';
-            initStateProvider.setTransactionType(Constants.CREDIT,
-                willNotify: false);
+            initStateProvider.setTransactionType(Constants.CREDIT, willNotify: false);
           }
         } else {
           if (initStateProvider.isSpending) {
             queryParams += 'category=D&';
-            initStateProvider.setTransactionType(Constants.DEBIT,
-                willNotify: false);
+            initStateProvider.setTransactionType(Constants.DEBIT, willNotify: false);
           }
         }
 
@@ -115,8 +105,7 @@ class DashboardState extends State<Dashboard>
         _futureTransactionDetails = APIController.getTransaction(queryParams);
         _futureTransactionDetails.then((response) {
           var list = response.results as List;
-          List<TransactionDetails> transactionList =
-              list?.map((item) => TransactionDetails.fromJson(item))?.toList();
+          List<TransactionDetails> transactionList = list?.map((item) => TransactionDetails.fromJson(item))?.toList();
 
           double creditAmount = 0;
           double debitAmount = 0;
@@ -129,8 +118,7 @@ class DashboardState extends State<Dashboard>
             }
           });
 
-          initStateProvider.setCreditAmount(creditAmount.toString(),
-              willNotify: false);
+          initStateProvider.setCreditAmount(creditAmount.toString(), willNotify: false);
           initStateProvider.setDebitAmount(debitAmount.toString());
         });
       });
@@ -173,8 +161,7 @@ class DashboardState extends State<Dashboard>
                     _haveFilters()
                         ? FlatButton(
                             onPressed: () async {
-                              provider.setTransactionType('A',
-                                  willNotify: false);
+                              provider.setTransactionType('A', willNotify: false);
                               _clearFilter();
                               _refreshScreen();
                             },
@@ -210,14 +197,9 @@ class DashboardState extends State<Dashboard>
             SizedBox(height: 20.0),
             provider.transactionType == Constants.CREDIT
                 ? GreenCard(totalBalance: provider.creditAmount)
-                : provider.transactionType == Constants.DEBIT
-                    ? RedCard(totalBalance: provider.debitAmount)
-                    : RedGreenCard(
-                        totalEarning: provider.creditAmount,
-                        totalExpense: provider.debitAmount),
+                : provider.transactionType == Constants.DEBIT ? RedCard(totalBalance: provider.debitAmount) : RedGreenCard(totalEarning: provider.creditAmount, totalExpense: provider.debitAmount),
             SizedBox(height: 15.0),
-            (provider.transactionType != Constants.CREDIT &&
-                    provider.transactionType != Constants.DEBIT)
+            (provider.transactionType != Constants.CREDIT && provider.transactionType != Constants.DEBIT)
                 ? DataAnnotation(
                     earning: provider.creditAmount,
                     expense: provider.debitAmount,
@@ -228,9 +210,7 @@ class DashboardState extends State<Dashboard>
               key: ValueKey('transactionType'),
               headerText: provider.transactionType == Constants.CREDIT
                   ? appLocalizations.translate('earnings')
-                  : provider.transactionType == Constants.DEBIT
-                      ? appLocalizations.translate('expenditures')
-                      : appLocalizations.translate('allTransactions'),
+                  : provider.transactionType == Constants.DEBIT ? appLocalizations.translate('expenditures') : appLocalizations.translate('allTransactions'),
               maxFontSize: 22.0,
               minFontSize: 20.0,
               textColor: Colors.black,
@@ -240,8 +220,7 @@ class DashboardState extends State<Dashboard>
               child: provider.needsUpdate
                   ? FutureBuilder(
                       future: _futureTransactionDetails,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<PaginatedResponse> snapshot) {
+                      builder: (BuildContext context, AsyncSnapshot<PaginatedResponse> snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (!_fetchedList && snapshot.hasData) {
                             _fetchedList = true;
@@ -251,28 +230,16 @@ class DashboardState extends State<Dashboard>
                             provider.setLoading(false, willNotify: false);
 
                             var list = snapshot.data.results as List;
-                            provider.setTransactionList(
-                                list
-                                    ?.map((item) =>
-                                        TransactionDetails.fromJson(item))
-                                    ?.toList(),
-                                willNotify: false);
-                            provider.setInitialTransactionList(
-                                provider.transactionList,
-                                willNotify: false);
+                            provider.setTransactionList(list?.map((item) => TransactionDetails.fromJson(item))?.toList(), willNotify: false);
+                            provider.setInitialTransactionList(provider.transactionList, willNotify: false);
 
                             if (provider.transactionType == Constants.CREDIT) {
-                              provider.transactionList?.removeWhere(
-                                  (item) => item.category != Constants.CREDIT);
-                            } else if (provider.transactionType ==
-                                Constants.DEBIT) {
-                              provider.transactionList?.removeWhere(
-                                  (item) => item.category == Constants.CREDIT);
+                              provider.transactionList?.removeWhere((item) => item.category != Constants.CREDIT);
+                            } else if (provider.transactionType == Constants.DEBIT) {
+                              provider.transactionList?.removeWhere((item) => item.category == Constants.CREDIT);
                             }
 
-                            if (provider.transactionList.length < 10 &&
-                                _next != null &&
-                                _next.isNotEmpty) {
+                            if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
                               _loadMore();
                             }
                           } else {
@@ -292,8 +259,7 @@ class DashboardState extends State<Dashboard>
                     child: Column(
                       children: <Widget>[
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Constants.primaryColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
                         ),
                         SizedBox(height: 5),
                         Text(appLocalizations.translate('pleaseWait')),
@@ -344,8 +310,7 @@ class DashboardState extends State<Dashboard>
             builder: (context) {
               provider = Provider.of<AppState>(context);
               return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -359,12 +324,7 @@ class DashboardState extends State<Dashboard>
                         child: Center(
                           child: Text(
                             appLocalizations.translate('earnings'),
-                            style: GoogleFonts.nunito(
-                                fontSize: 16.0,
-                                fontWeight: !_haveFilters() &&
-                                        provider.transactionType == 'C'
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'C' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -379,12 +339,7 @@ class DashboardState extends State<Dashboard>
                         child: Center(
                           child: Text(
                             appLocalizations.translate('expenditures'),
-                            style: GoogleFonts.nunito(
-                                fontSize: 16.0,
-                                fontWeight: !_haveFilters() &&
-                                        provider.transactionType == 'D'
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'D' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -399,12 +354,7 @@ class DashboardState extends State<Dashboard>
                         child: Center(
                           child: Text(
                             appLocalizations.translate('allTransactions'),
-                            style: GoogleFonts.nunito(
-                                fontSize: 16.0,
-                                fontWeight: !_haveFilters() &&
-                                        provider.transactionType == 'A'
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: !_haveFilters() && provider.transactionType == 'A' ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -424,11 +374,7 @@ class DashboardState extends State<Dashboard>
                         child: Center(
                           child: Text(
                             appLocalizations.translate('moreFilterOption'),
-                            style: GoogleFonts.nunito(
-                                fontSize: 16.0,
-                                fontWeight: _haveFilters()
-                                    ? FontWeight.bold
-                                    : FontWeight.normal),
+                            style: GoogleFonts.nunito(fontSize: 16.0, fontWeight: _haveFilters() ? FontWeight.bold : FontWeight.normal),
                           ),
                         ),
                       ),
@@ -443,11 +389,7 @@ class DashboardState extends State<Dashboard>
   _listViewBuilder() {
     return NotificationListener(
       onNotification: (ScrollNotification scrollInfo) {
-        if (scrollInfo.metrics.pixels >
-                scrollInfo.metrics.maxScrollExtent - 10 &&
-            !provider.isLoadingItems &&
-            !_isLoadingItems &&
-            (_next != null || provider.next != null)) {
+        if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 10 && !provider.isLoadingItems && !_isLoadingItems && (_next != null || provider.next != null)) {
           _isLoadingItems = true;
           _loadMore();
           return true;
@@ -460,17 +402,14 @@ class DashboardState extends State<Dashboard>
         physics: BouncingScrollPhysics(),
         itemCount: provider.transactionList?.length,
         itemBuilder: (context, index) {
-          TransactionDetails _currentTransaction =
-              provider.transactionList?.elementAt(index);
+          TransactionDetails _currentTransaction = provider.transactionList?.elementAt(index);
 
           return GestureDetector(
             onTap: () {
               provider.setAutoValidate(false, willNotify: false);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (BuildContext context) => AddTransaction(
-                      transactionType: 'editTransaction',
-                      transaction: _currentTransaction),
+                  builder: (BuildContext context) => AddTransaction(transactionType: 'editTransaction', transaction: _currentTransaction),
                 ),
               );
             },
@@ -492,8 +431,7 @@ class DashboardState extends State<Dashboard>
                           onPressed: () {
                             print(_currentTransaction.id);
                             print(_currentTransaction.amount);
-                            APIController.deleteTransaction(
-                                _currentTransaction.id);
+                            APIController.deleteTransaction(_currentTransaction.id);
                             Navigator.of(context).pop(true);
 
                             provider.transactionList.removeAt(index);
@@ -512,9 +450,7 @@ class DashboardState extends State<Dashboard>
                 );
               },
               child: ListCard(
-                icon: _currentTransaction.category == Constants.CREDIT
-                    ? Earning.earning
-                    : Spending.spending,
+                icon: _currentTransaction.category == Constants.CREDIT ? Earning.earning : Spending.spending,
                 name: _currentTransaction.contact.name,
                 amount: _currentTransaction.amount.toString(),
                 transactionType: _currentTransaction.category,
@@ -566,32 +502,27 @@ class DashboardState extends State<Dashboard>
   }
 
   /// Returns the sorted list
-  List<TransactionDetails> sortList(
-      List<TransactionDetails> list, int sortScheme) {
+  List<TransactionDetails> sortList(List<TransactionDetails> list, int sortScheme) {
     switch (sortScheme) {
       case 0:
 
         /// Name ascending
-        list.sort((transaction1, transaction2) => transaction1.contact?.name
-            ?.compareTo(transaction2.contact?.name ?? ''));
+        list.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
         break;
       case 1:
 
         /// Name descending
-        list.sort((transaction1, transaction2) => transaction2.contact?.name
-            ?.compareTo(transaction1.contact?.name ?? ''));
+        list.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
         break;
       case 2:
 
         /// Amount high to low
-        list.sort((transaction1, transaction2) =>
-            transaction2.amount?.compareTo(transaction1.amount ?? 0));
+        list.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
         break;
       case 3:
 
         /// Amount low to high
-        list.sort((transaction1, transaction2) =>
-            transaction1.amount?.compareTo(transaction2.amount ?? 0));
+        list.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
         break;
     }
 
@@ -616,22 +547,17 @@ class DashboardState extends State<Dashboard>
           print('$_next should be fetched next');
 
           var list = response.results as List;
-          _tempList.addAll(
-              list?.map((item) => TransactionDetails.fromJson(item))?.toList());
+          _tempList.addAll(list?.map((item) => TransactionDetails.fromJson(item))?.toList());
           provider.setTransactionList(_tempList, willNotify: false);
           provider.setInitialTransactionList(_tempList, willNotify: false);
 
           if (provider.transactionType == Constants.CREDIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category != Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category != Constants.CREDIT);
           } else if (provider.transactionType == Constants.DEBIT) {
-            provider.transactionList
-                .removeWhere((item) => item.category == Constants.CREDIT);
+            provider.transactionList.removeWhere((item) => item.category == Constants.CREDIT);
           }
 
-          if (provider.transactionList.length < 10 &&
-              _next != null &&
-              _next.isNotEmpty) {
+          if (provider.transactionList.length < 10 && _next != null && _next.isNotEmpty) {
             _loadMore();
           }
 
@@ -679,10 +605,7 @@ class DashboardState extends State<Dashboard>
         .map((SortingItems val) => PopupMenuItem<SortingItems>(
             child: Text(
               AppLocalizations.of(context).translate(val.name),
-              style: TextStyle(
-                  fontWeight: provider.sortScheme == val.sortScheme
-                      ? FontWeight.bold
-                      : FontWeight.normal),
+              style: TextStyle(fontWeight: provider.sortScheme == val.sortScheme ? FontWeight.bold : FontWeight.normal),
             ),
             value: val))
         .toList();
@@ -696,17 +619,13 @@ class DashboardState extends State<Dashboard>
               valueColor: AlwaysStoppedAnimation<Color>(Constants.primaryColor),
             ),
           )
-        : provider.transactionList != null &&
-                provider.transactionList.length > 0
-            ? _listViewBuilder()
-            : _nothingToShowWidget();
+        : provider.transactionList != null && provider.transactionList.length > 0 ? _listViewBuilder() : _nothingToShowWidget();
   }
 
   /// Navigates the user to the same screen to update the views
   void _refreshScreen() {
     provider.setNeedsUpdate(true, willNotify: false);
-    Navigator.of(context).pushReplacement(
-        NonAnimatedPageRoute(builder: (BuildContext context) => MainScreen()));
+    Navigator.of(context).pushReplacement(NonAnimatedPageRoute(builder: (BuildContext context) => MainScreen()));
   }
 
   /// Sets the type of transaction, clears the filter and refreshes the screen with new values
@@ -722,8 +641,7 @@ class DashboardState extends State<Dashboard>
 ///
 /// Represents the [earning] and [expense] in percentage
 class DataAnnotation extends StatelessWidget {
-  DataAnnotation({Key key, @required this.earning, @required this.expense})
-      : super(key: key);
+  DataAnnotation({Key key, @required this.earning, @required this.expense}) : super(key: key);
 
   /// Total earning and expense amount
   final String earning;
@@ -769,13 +687,8 @@ class DataAnnotation extends StatelessWidget {
               ],
             ),
             Text(
-              earningPercentage(earning, expense) == 'NaN'
-                  ? '0 %'
-                  : earningPercentage(earning, expense) + ' %',
-              style: TextStyle(
-                  fontSize: 13.0,
-                  color: Constants.primaryColor,
-                  fontWeight: FontWeight.bold),
+              earningPercentage(earning, expense) == 'NaN' ? '0 %' : earningPercentage(earning, expense) + ' %',
+              style: TextStyle(fontSize: 13.0, color: Constants.primaryColor, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -798,13 +711,8 @@ class DataAnnotation extends StatelessWidget {
               ],
             ),
             Text(
-              expensePercentage(earning, expense) == 'NaN'
-                  ? '0 %'
-                  : expensePercentage(earning, expense) + ' %',
-              style: TextStyle(
-                  fontSize: 13.0,
-                  color: Colors.red.shade400,
-                  fontWeight: FontWeight.bold),
+              expensePercentage(earning, expense) == 'NaN' ? '0 %' : expensePercentage(earning, expense) + ' %',
+              style: TextStyle(fontSize: 13.0, color: Colors.red.shade400, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -888,11 +796,7 @@ class GreenCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: compactCurrency(totalBalance),
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: compactCurrency(totalBalance), maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -981,11 +885,7 @@ class RedCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 5.0),
-                  HeaderWidget(
-                      headerText: compactCurrency(totalBalance),
-                      maxFontSize: 30,
-                      minFontSize: 28,
-                      textColor: Colors.white),
+                  HeaderWidget(headerText: compactCurrency(totalBalance), maxFontSize: 30, minFontSize: 28, textColor: Colors.white),
                 ],
               ),
             ),
@@ -1015,8 +915,7 @@ class RedGreenCard extends StatelessWidget {
 
     /// Calculates color portion to be shown according to the amount of earning and expenditure
     final _end = _expense > _earning ? Alignment.center : Alignment.centerRight;
-    final _begin =
-        _earning > _expense ? Alignment.center : Alignment.centerLeft;
+    final _begin = _earning > _expense ? Alignment.center : Alignment.centerLeft;
 
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
@@ -1074,16 +973,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: compactCurrency(totalEarning),
-                            maxFontSize: 26,
-                            minFontSize: 23,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: compactCurrency(totalEarning), maxFontSize: 26, minFontSize: 23, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -1095,16 +989,11 @@ class RedGreenCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             '₹',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0),
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
                         ),
                         SizedBox(width: 5.0),
-                        HeaderWidget(
-                            headerText: compactCurrency(totalExpense),
-                            maxFontSize: 26,
-                            minFontSize: 23,
-                            textColor: Colors.white),
+                        HeaderWidget(headerText: compactCurrency(totalExpense), maxFontSize: 26, minFontSize: 23, textColor: Colors.white),
                       ],
                     ),
                   ),
@@ -1158,9 +1047,7 @@ class ListCard extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
-        color: transactionType == Constants.DEBIT
-            ? Colors.red.shade100
-            : Constants.lightGreen.withRed(210),
+        color: transactionType == Constants.DEBIT ? Colors.red.shade100 : Constants.lightGreen.withRed(210),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1244,9 +1131,7 @@ class ListCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.nunito(
-                    color: transactionType != Constants.CREDIT
-                        ? Colors.red.shade300
-                        : Constants.primaryColor,
+                    color: transactionType != Constants.CREDIT ? Colors.red.shade300 : Constants.primaryColor,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -1257,9 +1142,7 @@ class ListCard extends StatelessWidget {
               Container(
                 width: deviceWidth * 0.15,
                 child: AutoSizeText(
-                  transactionType == Constants.CREDIT
-                      ? appLocalizations.translate('credit')
-                      : appLocalizations.translate('debit'),
+                  transactionType == Constants.CREDIT ? appLocalizations.translate('credit') : appLocalizations.translate('debit'),
                   minFontSize: 10,
                   maxFontSize: 14,
                   maxLines: 1,
