@@ -74,6 +74,7 @@ class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin
 
     /// Only re-initialize the screen, if required
     if (initStateProvider.needsUpdate)
+
       /// Ensures that the build is done already
       WidgetsBinding.instance.addPostFrameCallback((_) {
         /// Sets the query params
@@ -503,16 +504,24 @@ class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin
   /// Returns the sorted list
   List<TransactionDetails> sortList(List<TransactionDetails> list, int sortScheme) {
     switch (sortScheme) {
-      case 0: /// Name ascending
+      case 0:
+
+        /// Name ascending
         list.sort((transaction1, transaction2) => transaction1.contact?.name?.compareTo(transaction2.contact?.name ?? ''));
         break;
-      case 1: /// Name descending
+      case 1:
+
+        /// Name descending
         list.sort((transaction1, transaction2) => transaction2.contact?.name?.compareTo(transaction1.contact?.name ?? ''));
         break;
-      case 2: /// Amount high to low
+      case 2:
+
+        /// Amount high to low
         list.sort((transaction1, transaction2) => transaction2.amount?.compareTo(transaction1.amount ?? 0));
         break;
-      case 3: /// Amount low to high
+      case 3:
+
+        /// Amount low to high
         list.sort((transaction1, transaction2) => transaction1.amount?.compareTo(transaction2.amount ?? 0));
         break;
     }
@@ -572,22 +581,6 @@ class DashboardState extends State<Dashboard> with AutomaticKeepAliveClientMixin
 
   @override
   bool get wantKeepAlive => true;
-
-  /// Submits the filter and updates the screen
-  void _submit() {
-    provider.setEarning(provider.isTempEarning, willNotify: false);
-    provider.setSpending(provider.isTempSpending, willNotify: false);
-    provider.setSearchQuery(provider.tempSearchQuery, willNotify: false);
-    provider.setDateQuery(provider.tempDateTime, willNotify: false);
-    provider.setMinAmountQuery(provider.tempMinAmountQuery, willNotify: false);
-    provider.setMaxAmountQuery(provider.tempMaxAmountQuery, willNotify: false);
-    provider.setCashQuery(provider.isTempCashQuery, willNotify: false);
-    provider.setCardQuery(provider.isTempCardQuery, willNotify: false);
-    provider.setChequeQuery(provider.isTempChequeQuery, willNotify: false);
-    provider.setAccountQuery(provider.isTempAccountQuery, willNotify: false);
-
-    _refreshScreen();
-  }
 
   /// Returns, if the filter is applied or not
   bool _haveFilters() {
