@@ -21,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
   /// Device's height and width
   double deviceHeight;
   double deviceWidth;
-  
+
   /// Holds the app's state
   AppState provider;
 
