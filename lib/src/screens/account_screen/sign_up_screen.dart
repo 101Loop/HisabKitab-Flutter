@@ -106,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.autoValidate,
+                                    autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                     validator: (value) {
                                       String result = ValidationMixin.validateField(value);
                                       if (result != null)
@@ -137,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.autoValidate,
+                                    autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                     validator: (value) {
                                       String result = ValidationMixin.validateEmail(value);
                                       if (result != null)
@@ -168,7 +168,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                   child: TextFormField(
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.autoValidate,
+                                    autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                     validator: (value) {
                                       String result = ValidationMixin.validateMobile(value);
                                       if (result != null)
@@ -200,7 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     obscureText: provider.isHideText,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.autoValidate,
+                                    autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                     validator: (value) {
                                       String result = ValidationMixin.validatePassword(value);
                                       if (result != null)
@@ -247,7 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen> with ValidationMixin {
                                     obscureText: provider.isHideText1,
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
-                                    autovalidate: provider.autoValidate,
+                                    autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                     validator: (value) {
                                       if (value != _password.text) {
                                         return appLocalizations.translate('passwordMustMatch');

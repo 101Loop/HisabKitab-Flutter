@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
                                     key: ValueKey('usernameField'),
-                                    autovalidate: provider.autoValidate,
+                                    autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                     controller: usernameController,
                                     validator: (value) {
                                       String result = ValidationMixin.validateField(value);
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
                                     cursorColor: primaryColor,
                                     textAlign: TextAlign.left,
                                     controller: passwordController,
-                                    autovalidate: provider.autoValidate,
+                                    autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                     validator: (value) {
                                       String result = ValidationMixin.validateField(value);
                                       if (result != null)

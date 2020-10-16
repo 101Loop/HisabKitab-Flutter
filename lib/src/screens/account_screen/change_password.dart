@@ -93,7 +93,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                                 onSaved: (value) {
                                   _password = value;
                                 },
-                                autovalidate: provider.autoValidate,
+                                autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                 obscureText: true,
                                 cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
@@ -129,7 +129,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> with Valida
                                     return result;
                                 },
                                 obscureText: true,
-                                autovalidate: provider.autoValidate,
+                                autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                 cursorColor: Constants.primaryColor,
                                 textAlign: TextAlign.left,
                                 keyboardType: TextInputType.text,
