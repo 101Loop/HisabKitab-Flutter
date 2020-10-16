@@ -203,42 +203,19 @@ class _MainScreenState extends State<MainScreen> {
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(RupeeIcon.rupee_icon, size: 18),
-                  title: Padding(
-                    padding: const EdgeInsets.only(top: 3.0),
-                    child: Text(
-                      appLocalizations.translate('dashboard'),
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
+                  label: appLocalizations.translate('dashboard'),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person_outline),
-                  title: Text(
-                    appLocalizations.translate('account'),
-                    style: TextStyle(
-                      fontSize: 12,
-                    ),
-                  ),
+                  label: appLocalizations.translate('account'),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.info_outline),
-                  title: Text(
-                    appLocalizations.translate('aboutUs'),
-                    style: TextStyle(
-                      fontSize: 12,
-                    ),
-                  ),
+                  label: appLocalizations.translate('aboutUs'),
                 ),
                 BottomNavigationBarItem(
                   icon: Container(),
-                  title: Text(
-                    '',
-                    style: TextStyle(
-                      fontSize: 12,
-                    ),
-                  ),
+                  label: '',
                 ),
               ],
               backgroundColor: primaryColor,

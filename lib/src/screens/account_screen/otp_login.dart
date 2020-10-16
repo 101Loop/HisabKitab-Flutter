@@ -82,7 +82,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Form(
-                        autovalidate: provider.autoValidate,
+                        autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                         key: _formKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                   else
                                     return result;
                                 },
-                                autovalidate: provider.autoValidate,
+                                autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
@@ -142,7 +142,7 @@ class _OTPLoginScreenState extends State<OTPLoginScreen> with ValidationMixin {
                                         else
                                           return result;
                                       },
-                                      autovalidate: provider.autoValidate,
+                                      autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                       maxLength: 7,
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(

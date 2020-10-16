@@ -200,7 +200,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   else
                                     return result;
                                 },
-                                autovalidate: provider.autoValidate,
+                                autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                 onSaved: (value) {
                                   _contact = value;
                                 },
@@ -249,7 +249,7 @@ class _AddTransactionState extends State<AddTransaction> with ValidationMixin {
                                   else
                                     return result;
                                 },
-                                autovalidate: provider.autoValidate,
+                                autovalidateMode: provider.autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                                 onSaved: (value) {
                                   _amount = value;
                                 },
